@@ -35,6 +35,12 @@
 		AA11000000000063 /* Introduction5View.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000000000064 /* Introduction5View.swift */; };
 		AA11000000000065 /* Introduction6View.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000000000066 /* Introduction6View.swift */; };
 		AA11000000000067 /* Introduction7View.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000000000068 /* Introduction7View.swift */; };
+		AA1100000000006B /* LevelModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1100000000006C /* LevelModels.swift */; };
+		AA1100000000006D /* StatusModulo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1100000000006E /* StatusModulo.swift */; };
+		AA1100000000006F /* LocalLevelsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000000000070 /* LocalLevelsDataSource.swift */; };
+		AA11000000000071 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000000000072 /* HomeViewModel.swift */; };
+		AA11000000000073 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000000000074 /* HomeView.swift */; };
+		AA11000000000075 /* levels.json in Resources */ = {isa = PBXBuildFile; fileRef = AA11000000000076 /* levels.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -68,6 +74,12 @@
 		AA11000000000064 /* Introduction5View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Introduction5View.swift; sourceTree = "<group>"; };
 		AA11000000000066 /* Introduction6View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Introduction6View.swift; sourceTree = "<group>"; };
 		AA11000000000068 /* Introduction7View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Introduction7View.swift; sourceTree = "<group>"; };
+		AA1100000000006C /* LevelModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelModels.swift; sourceTree = "<group>"; };
+		AA1100000000006E /* StatusModulo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusModulo.swift; sourceTree = "<group>"; };
+		AA11000000000070 /* LocalLevelsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalLevelsDataSource.swift; sourceTree = "<group>"; };
+		AA11000000000072 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		AA11000000000074 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		AA11000000000076 /* levels.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = levels.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,6 +108,7 @@
 				AA11000000000004 /* ContentView.swift */,
 				AA11000000000006 /* Assets.xcassets */,
 				AA1100000000000A /* Info.plist */,
+				AA11000000000076 /* levels.json */,
 				AA1100000000000D /* Preview Content */,
 				AA11000000000040 /* Navigation */,
 				AA11000000000041 /* Core */,
@@ -155,8 +168,22 @@
 				AA11000000000046 /* Auth */,
 				AA11000000000047 /* Gamificacao */,
 				AA11000000000069 /* Introduction */,
+				AA1100000000006A /* Home */,
 			);
 			path = Features;
+			sourceTree = "<group>";
+		};
+		AA1100000000006A /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				AA1100000000006C /* LevelModels.swift */,
+				AA1100000000006E /* StatusModulo.swift */,
+				AA11000000000070 /* LocalLevelsDataSource.swift */,
+				AA11000000000072 /* HomeViewModel.swift */,
+				AA11000000000074 /* HomeView.swift */,
+			);
+			name = Home;
+			path = Home;
 			sourceTree = "<group>";
 		};
 		AA11000000000069 /* Introduction */ = {
@@ -322,6 +349,7 @@
 			files = (
 				AA11000000000005 /* Assets.xcassets in Resources */,
 				AA11000000000007 /* Preview Assets.xcassets in Resources */,
+				AA11000000000075 /* levels.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -358,6 +386,11 @@
 				AA11000000000063 /* Introduction5View.swift in Sources */,
 				AA11000000000065 /* Introduction6View.swift in Sources */,
 				AA11000000000067 /* Introduction7View.swift in Sources */,
+				AA1100000000006B /* LevelModels.swift in Sources */,
+				AA1100000000006D /* StatusModulo.swift in Sources */,
+				AA1100000000006F /* LocalLevelsDataSource.swift in Sources */,
+				AA11000000000071 /* HomeViewModel.swift in Sources */,
+				AA11000000000073 /* HomeView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

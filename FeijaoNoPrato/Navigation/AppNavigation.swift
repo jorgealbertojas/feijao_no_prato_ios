@@ -122,7 +122,7 @@ struct AppNavigation: View {
         case .introduction7(let n):
             Introduction7View(initialScreen: n, navigate: navigateReplacing)
         case .home, .profile, .progress, .resources, .food:
-            MainTabView()
+            MainTabView(navigate: { path.append($0) })
         case .screenModule:
             Text("ScreenModule — TODO")
         case .screenSection:

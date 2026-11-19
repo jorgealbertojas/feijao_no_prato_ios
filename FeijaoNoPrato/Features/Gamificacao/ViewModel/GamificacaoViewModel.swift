@@ -4,10 +4,12 @@
 import Foundation
 import Combine
 
-struct PontuacaoState {
+struct PontuacaoState: Equatable {
     var totalAcumulado: Int = 0
     var totalConsumido: Int = 0
     var isLoading: Bool = false
+    var ultimoModulo: Int = 0
+    var ultimoSessao: Int = 0
 
     var saldo: Int { totalAcumulado - totalConsumido }
 }
@@ -15,24 +17,26 @@ struct PontuacaoState {
 @MainActor
 final class GamificacaoViewModel: ObservableObject {
 
-    @Published var pontuacaoState = PontuacaoState()
+    @Published var pontuacao = PontuacaoState()
 
-    // Repository is injected at the tab level via AppDependencies;
-    // for now it uses defaults so the UI compiles and previews work.
-    func loadPontuacao(repository: GamificacaoRepository? = nil) {
+    func carregar(repository: GamificacaoRepository? = nil) {
         guard let repository else { return }
         let p = repository.getPontuacao()
-        pontuacaoState.totalAcumulado = p.totalAcumulado
-        pontuacaoState.totalConsumido = p.totalConsumido
+        pontuacao.totalAcumulado = p.totalAcumulado
+        pontuacao.totalConsumido = p.totalConsumido
     }
 
     func addPoints(_ amount: Int, repository: GamificacaoRepository? = nil) {
         repository?.addPoints(amount)
-        pontuacaoState.totalAcumulado += amount
+        pontuacao.totalAcumulado += amount
     }
 
     func consumePoints(_ amount: Int, repository: GamificacaoRepository? = nil) {
         repository?.consumePoints(amount)
-        pontuacaoState.totalConsumido += amount
+        pontuacao.totalConsumido += amount
+    }
+
+    func adicionarBonusIAAoEntrarSessao1(modulo: Int, sessao: Int) {
+        // stub — gamification bonus for entering session 1
     }
 }

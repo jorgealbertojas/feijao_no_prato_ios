@@ -14,6 +14,20 @@ final class AppPreferences {
         case hasCompletedIntro = "app_has_completed_intro"
         case gamificacaoPoints = "app_gamificacao_points"
         case iaQuantity = "app_ia_quantity"
+        // Progress tracking
+        case moduloAtual = "app_modulo_atual"
+        case sessaoAtual = "app_sessao_atual"
+        case moduloVisual = "app_modulo_visual"
+        case sessaoVisual = "app_sessao_visual"
+        case moduloVisualMax = "app_modulo_visual_max"
+        case sessaoVisualMax = "app_sessao_visual_max"
+        case moduloConcluido = "app_modulo_concluido"
+        case sessaoConcluida = "app_sessao_concluida"
+        case nivelAtual = "app_nivel_atual"
+        case titleSalvo = "app_title_salvo"
+        case totalTela = "app_total_tela"
+        case lastSection = "app_last_section"
+        case paragraphIndex = "app_paragraph_index"
     }
 
     var userName: String? {
@@ -44,6 +58,108 @@ final class AppPreferences {
     var iaQuantity: Int {
         get { defaults.integer(forKey: Key.iaQuantity.rawValue) }
         set { defaults.set(newValue, forKey: Key.iaQuantity.rawValue) }
+    }
+
+    // MARK: - Progress tracking
+
+    var moduloAtual: Int {
+        get { defaults.integer(forKey: Key.moduloAtual.rawValue) }
+        set { defaults.set(newValue, forKey: Key.moduloAtual.rawValue) }
+    }
+
+    var sessaoAtual: Int {
+        get { defaults.integer(forKey: Key.sessaoAtual.rawValue) }
+        set { defaults.set(newValue, forKey: Key.sessaoAtual.rawValue) }
+    }
+
+    var moduloVisual: Int {
+        get { defaults.integer(forKey: Key.moduloVisual.rawValue) }
+        set { defaults.set(newValue, forKey: Key.moduloVisual.rawValue) }
+    }
+
+    var sessaoVisual: Int {
+        get { defaults.integer(forKey: Key.sessaoVisual.rawValue) }
+        set { defaults.set(newValue, forKey: Key.sessaoVisual.rawValue) }
+    }
+
+    var moduloVisualMax: Int {
+        get { defaults.integer(forKey: Key.moduloVisualMax.rawValue) }
+        set { defaults.set(newValue, forKey: Key.moduloVisualMax.rawValue) }
+    }
+
+    var sessaoVisualMax: Int {
+        get { defaults.integer(forKey: Key.sessaoVisualMax.rawValue) }
+        set { defaults.set(newValue, forKey: Key.sessaoVisualMax.rawValue) }
+    }
+
+    var moduloConcluido: Int {
+        get { defaults.integer(forKey: Key.moduloConcluido.rawValue) }
+        set { defaults.set(newValue, forKey: Key.moduloConcluido.rawValue) }
+    }
+
+    var sessaoConcluida: Int {
+        get { defaults.integer(forKey: Key.sessaoConcluida.rawValue) }
+        set { defaults.set(newValue, forKey: Key.sessaoConcluida.rawValue) }
+    }
+
+    var nivelAtual: String {
+        get { defaults.string(forKey: Key.nivelAtual.rawValue) ?? "" }
+        set { defaults.set(newValue, forKey: Key.nivelAtual.rawValue) }
+    }
+
+    var titleSalvo: String {
+        get { defaults.string(forKey: Key.titleSalvo.rawValue) ?? "" }
+        set { defaults.set(newValue, forKey: Key.titleSalvo.rawValue) }
+    }
+
+    var totalTela: Int {
+        get { defaults.integer(forKey: Key.totalTela.rawValue) }
+        set { defaults.set(newValue, forKey: Key.totalTela.rawValue) }
+    }
+
+    var lastSection: Int {
+        get { defaults.integer(forKey: Key.lastSection.rawValue) }
+        set { defaults.set(newValue, forKey: Key.lastSection.rawValue) }
+    }
+
+    var paragraphIndex: Int {
+        get { defaults.integer(forKey: Key.paragraphIndex.rawValue) }
+        set { defaults.set(newValue, forKey: Key.paragraphIndex.rawValue) }
+    }
+
+    // MARK: - Session-specific page tracking (keyed by module+session)
+
+    func getSessionTotalPages(modulo: Int, sessao: Int) -> Int {
+        defaults.integer(forKey: "app_session_total_pages_\(modulo)_\(sessao)")
+    }
+
+    func saveSessionTotalPages(modulo: Int, sessao: Int, total: Int) {
+        defaults.set(total, forKey: "app_session_total_pages_\(modulo)_\(sessao)")
+    }
+
+    func getSessionViewedPages(modulo: Int, sessao: Int) -> Int {
+        defaults.integer(forKey: "app_session_viewed_pages_\(modulo)_\(sessao)")
+    }
+
+    func saveSessionViewedPages(modulo: Int, sessao: Int, viewed: Int) {
+        defaults.set(viewed, forKey: "app_session_viewed_pages_\(modulo)_\(sessao)")
+    }
+
+    func getSessionPageIndex(modulo: Int, sessao: Int) -> Int {
+        defaults.integer(forKey: "app_session_page_index_\(modulo)_\(sessao)")
+    }
+
+    func saveSessionPageIndex(modulo: Int, sessao: Int, index: Int) {
+        defaults.set(index, forKey: "app_session_page_index_\(modulo)_\(sessao)")
+    }
+
+    func clearSessionPageIndex(modulo: Int, sessao: Int) {
+        defaults.removeObject(forKey: "app_session_page_index_\(modulo)_\(sessao)")
+    }
+
+    func saveUserProgress(currentModule: Int, currentSection: Int) {
+        moduloAtual = currentModule
+        sessaoAtual = currentSection
     }
 
     func clearAll() {

@@ -5,12 +5,14 @@ import SwiftUI
 
 struct MainTabView: View {
 
+    var navigate: (AppRoute) -> Void
+
     @EnvironmentObject var appDependencies: AppDependencies
     @StateObject private var gamificacaoViewModel = GamificacaoViewModel()
 
     var body: some View {
         TabView {
-            HomeView()
+            HomeView(navigate: navigate)
                 .tabItem {
                     Label("Início", systemImage: "house")
                 }
@@ -39,10 +41,6 @@ struct MainTabView: View {
 }
 
 // MARK: - Tab placeholder views (will be replaced by real screen ports)
-
-struct HomeView: View {
-    var body: some View { Text("HomeView — TODO") }
-}
 
 struct ProgressView_: View {
     var body: some View { Text("ProgressView — TODO") }
