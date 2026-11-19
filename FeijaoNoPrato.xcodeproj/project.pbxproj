@@ -23,6 +23,10 @@
 		AA11000000000032 /* GamificacaoRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000000000033 /* GamificacaoRepository.swift */; };
 		AA11000000000034 /* GamificacaoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000000000035 /* GamificacaoViewModel.swift */; };
 		AA11000000000036 /* PontuacaoUsuario.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000000000037 /* PontuacaoUsuario.swift */; };
+		AA11000000000050 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000000000051 /* AuthViewModel.swift */; };
+		AA11000000000052 /* EmailInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000000000053 /* EmailInputView.swift */; };
+		AA11000000000054 /* CodeVerificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000000000055 /* CodeVerificationView.swift */; };
+		AA11000000000056 /* ScreenRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000000000057 /* ScreenRegisterView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +48,10 @@
 		AA11000000000033 /* GamificacaoRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamificacaoRepository.swift; sourceTree = "<group>"; };
 		AA11000000000035 /* GamificacaoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamificacaoViewModel.swift; sourceTree = "<group>"; };
 		AA11000000000037 /* PontuacaoUsuario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PontuacaoUsuario.swift; sourceTree = "<group>"; };
+		AA11000000000051 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
+		AA11000000000053 /* EmailInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailInputView.swift; sourceTree = "<group>"; };
+		AA11000000000055 /* CodeVerificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeVerificationView.swift; sourceTree = "<group>"; };
+		AA11000000000057 /* ScreenRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRegisterView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,6 +146,7 @@
 			isa = PBXGroup;
 			children = (
 				AA11000000000048 /* Auth Repository */,
+				AA1100000000005A /* Auth ViewModel */,
 				AA11000000000049 /* Auth Presentation */,
 			);
 			name = Auth;
@@ -156,9 +165,21 @@
 			isa = PBXGroup;
 			children = (
 				AA11000000000031 /* LoginStartView.swift */,
+				AA11000000000053 /* EmailInputView.swift */,
+				AA11000000000055 /* CodeVerificationView.swift */,
+				AA11000000000057 /* ScreenRegisterView.swift */,
 			);
 			name = Presentation;
 			path = Presentation;
+			sourceTree = "<group>";
+		};
+		AA1100000000005A /* Auth ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				AA11000000000051 /* AuthViewModel.swift */,
+			);
+			name = ViewModel;
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
 		AA11000000000047 /* Gamificacao */ = {
@@ -290,6 +311,10 @@
 				AA11000000000032 /* GamificacaoRepository.swift in Sources */,
 				AA11000000000034 /* GamificacaoViewModel.swift in Sources */,
 				AA11000000000036 /* PontuacaoUsuario.swift in Sources */,
+				AA11000000000050 /* AuthViewModel.swift in Sources */,
+				AA11000000000052 /* EmailInputView.swift in Sources */,
+				AA11000000000054 /* CodeVerificationView.swift in Sources */,
+				AA11000000000056 /* ScreenRegisterView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

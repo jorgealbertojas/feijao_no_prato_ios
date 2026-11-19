@@ -51,6 +51,13 @@ struct AppNavigation: View {
     @EnvironmentObject var appDependencies: AppDependencies
     @State private var path = NavigationPath()
 
+    private func makeAuthViewModel() -> AuthViewModel {
+        AuthViewModel(
+            authRepository: appDependencies.authRepository,
+            appPreferences: appDependencies.appPreferences
+        )
+    }
+
     var body: some View {
         NavigationStack(path: $path) {
             // Start at the login/splash screen
@@ -69,11 +76,31 @@ struct AppNavigation: View {
         case .start:
             LoginStartView(navigate: { path.append($0) })
         case .email:
-            Text("EmailInputView — TODO")
+            EmailInputView(
+                navigate: { path.append($0) },
+                dismiss: { path.removeLast() },
+                viewModel: makeAuthViewModel()
+            )
         case .verify(let email):
-            Text("CodeVerificationView(\(email)) — TODO")
+            CodeVerificationView(
+                email: email,
+                onSuccess: { route in
+                    path.removeLast(path.count)
+                    path.append(route)
+                },
+                dismiss: { path.removeLast() },
+                isRegisterFlow: false,
+                viewModel: makeAuthViewModel()
+            )
         case .register:
-            Text("ScreenRegisterView — TODO")
+            ScreenRegisterView(
+                navigate: { route in
+                    path.removeLast(path.count)
+                    path.append(route)
+                },
+                dismiss: { path.removeLast() },
+                viewModel: makeAuthViewModel()
+            )
         case .introduction1(let n):
             Text("Introduction1(\(n)) — TODO")
         case .introduction2(let n):

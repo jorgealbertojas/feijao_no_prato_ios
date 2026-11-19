@@ -6,7 +6,7 @@ import Foundation
 final class AuthRepository {
 
     private let client: NetworkClient
-    private let authPreferences: AuthPreferences
+    let authPreferences: AuthPreferences
     private let appPreferences: AppPreferences
 
     init(client: NetworkClient, authPreferences: AuthPreferences, appPreferences: AppPreferences) {
