@@ -183,6 +183,7 @@
 				AA11000000000049 /* Auth Presentation */,
 			);
 			name = Auth;
+			path = Auth;
 			sourceTree = "<group>";
 		};
 		AA11000000000048 /* Auth Repository */ = {
@@ -222,6 +223,7 @@
 				AA1100000000004B /* Gamificacao ViewModel */,
 			);
 			name = Gamificacao;
+			path = Gamificacao;
 			sourceTree = "<group>";
 		};
 		AA1100000000004A /* Gamificacao Repository */ = {
