@@ -127,8 +127,8 @@ struct AppNavigation: View {
             Text("ScreenModule — TODO")
         case .screenSection:
             Text("ScreenSection — TODO")
-        case .moduleDetail(let id):
-            Text("ModuleDetail(\(id)) — TODO")
+        case .moduleDetail:
+            ModuleDetailView(dismiss: { path.removeLast() })
         case .gamificacao:
             Text("GamificacaoView — TODO")
         case .takePhoto, .howItWorksCard, .mealAnalysis, .confirmPhotoFromGallery, .attachFood:

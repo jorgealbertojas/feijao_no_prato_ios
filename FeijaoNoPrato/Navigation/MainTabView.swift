@@ -18,7 +18,7 @@ struct MainTabView: View {
                 }
                 .tag(0)
 
-            ProgressView_()
+            ProgressView_(navigate: navigate)
                 .tabItem {
                     Label("Progresso", systemImage: "chart.bar")
                 }
@@ -41,10 +41,6 @@ struct MainTabView: View {
 }
 
 // MARK: - Tab placeholder views (will be replaced by real screen ports)
-
-struct ProgressView_: View {
-    var body: some View { Text("ProgressView — TODO") }
-}
 
 struct ResourcesView: View {
     var body: some View { Text("ResourcesView — TODO") }

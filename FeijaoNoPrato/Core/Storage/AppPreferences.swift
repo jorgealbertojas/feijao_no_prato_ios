@@ -28,6 +28,8 @@ final class AppPreferences {
         case totalTela = "app_total_tela"
         case lastSection = "app_last_section"
         case paragraphIndex = "app_paragraph_index"
+        case totalCamera = "app_total_camera"
+        case alimentacaoScores = "app_alimentacao_scores"
     }
 
     var userName: String? {
@@ -155,6 +157,16 @@ final class AppPreferences {
 
     func clearSessionPageIndex(modulo: Int, sessao: Int) {
         defaults.removeObject(forKey: "app_session_page_index_\(modulo)_\(sessao)")
+    }
+
+    var totalCamera: Int {
+        get { defaults.integer(forKey: Key.totalCamera.rawValue) }
+        set { defaults.set(newValue, forKey: Key.totalCamera.rawValue) }
+    }
+
+    var alimentacaoScores: [Int] {
+        get { defaults.array(forKey: Key.alimentacaoScores.rawValue) as? [Int] ?? [] }
+        set { defaults.set(newValue, forKey: Key.alimentacaoScores.rawValue) }
     }
 
     func saveUserProgress(currentModule: Int, currentSection: Int) {
