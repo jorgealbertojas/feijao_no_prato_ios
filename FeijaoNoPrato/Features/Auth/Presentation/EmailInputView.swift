@@ -62,7 +62,7 @@ struct EmailInputView: View {
                     .cornerRadius(8)
 
                     if showError {
-                        Text("Código incorreto. Tente novamente.")
+                        Text("E-mail não encontrado. Tente novamente.")
                             .font(.caption)
                             .foregroundColor(.red)
                             .padding(.top, 4)
