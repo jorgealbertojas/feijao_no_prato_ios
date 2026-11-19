@@ -7,7 +7,7 @@ final class AuthPreferences {
 
     private let defaults = UserDefaults.standard
 
-    private enum Key: String {
+    private enum Key: String, CaseIterable {
         case token = "auth_token"
         case email = "auth_email"
         case isLoggedIn = "auth_is_logged_in"
@@ -33,4 +33,3 @@ final class AuthPreferences {
     }
 }
 
-private extension AuthPreferences.Key: CaseIterable {}
