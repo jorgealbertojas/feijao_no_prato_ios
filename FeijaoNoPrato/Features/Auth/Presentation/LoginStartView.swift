@@ -111,33 +111,12 @@ struct LoginStartView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color.white)
-            .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous).corners(.top))
+            .clipShape(RoundedCornerShape(corners: [.topLeft, .topRight], radius: 32))
         }
         .background(Color.brandOrange.ignoresSafeArea())
     }
 }
 
-// MARK: - RoundedCorner helper
-
-private extension RoundedRectangle {
-    func corners(_ corners: UIRectCorner) -> some Shape {
-        RoundedCornerShape(corners: corners, radius: 32)
-    }
-}
-
-private struct RoundedCornerShape: Shape {
-    var corners: UIRectCorner
-    var radius: CGFloat
-
-    func path(in rect: CGRect) -> Path {
-        let path = UIBezierPath(
-            roundedRect: rect,
-            byRoundingCorners: corners,
-            cornerRadii: CGSize(width: radius, height: radius)
-        )
-        return Path(path.cgPath)
-    }
-}
 
 #Preview {
     LoginStartView(navigate: { _ in })
