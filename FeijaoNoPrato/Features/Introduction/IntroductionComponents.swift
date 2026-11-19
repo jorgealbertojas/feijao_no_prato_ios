@@ -66,7 +66,7 @@ struct IntroductionFooterCard<Content: View>: View {
         .padding(.bottom, 8)
         .frame(maxWidth: .infinity)
         .background(isTransparent ? Color.clear : Color.white)
-        .clipShape(RoundedCornersShape(radius: 32, corners: [.topLeft, .topRight]))
+        .clipShape(UnevenRoundedRectangle(topLeadingRadius: 32, bottomLeadingRadius: 0, bottomTrailingRadius: 0, topTrailingRadius: 32))
     }
 }
 

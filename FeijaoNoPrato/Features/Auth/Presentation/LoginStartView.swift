@@ -111,7 +111,7 @@ struct LoginStartView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color.white)
-            .clipShape(RoundedCornerShape(corners: [.topLeft, .topRight], radius: 32))
+            .clipShape(UnevenRoundedRectangle(topLeadingRadius: 32, bottomLeadingRadius: 0, bottomTrailingRadius: 0, topTrailingRadius: 32))
         }
         .background(Color.brandOrange.ignoresSafeArea())
     }
