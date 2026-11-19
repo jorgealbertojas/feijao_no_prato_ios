@@ -27,6 +27,14 @@
 		AA11000000000052 /* EmailInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000000000053 /* EmailInputView.swift */; };
 		AA11000000000054 /* CodeVerificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000000000055 /* CodeVerificationView.swift */; };
 		AA11000000000056 /* ScreenRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000000000057 /* ScreenRegisterView.swift */; };
+		AA11000000000058 /* IntroductionComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000000000059 /* IntroductionComponents.swift */; };
+		AA1100000000005B /* Introduction1View.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1100000000005C /* Introduction1View.swift */; };
+		AA1100000000005D /* Introduction2View.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1100000000005E /* Introduction2View.swift */; };
+		AA1100000000005F /* Introduction3View.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000000000060 /* Introduction3View.swift */; };
+		AA11000000000061 /* Introduction4View.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000000000062 /* Introduction4View.swift */; };
+		AA11000000000063 /* Introduction5View.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000000000064 /* Introduction5View.swift */; };
+		AA11000000000065 /* Introduction6View.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000000000066 /* Introduction6View.swift */; };
+		AA11000000000067 /* Introduction7View.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000000000068 /* Introduction7View.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +60,14 @@
 		AA11000000000053 /* EmailInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailInputView.swift; sourceTree = "<group>"; };
 		AA11000000000055 /* CodeVerificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeVerificationView.swift; sourceTree = "<group>"; };
 		AA11000000000057 /* ScreenRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRegisterView.swift; sourceTree = "<group>"; };
+		AA11000000000059 /* IntroductionComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroductionComponents.swift; sourceTree = "<group>"; };
+		AA1100000000005C /* Introduction1View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Introduction1View.swift; sourceTree = "<group>"; };
+		AA1100000000005E /* Introduction2View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Introduction2View.swift; sourceTree = "<group>"; };
+		AA11000000000060 /* Introduction3View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Introduction3View.swift; sourceTree = "<group>"; };
+		AA11000000000062 /* Introduction4View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Introduction4View.swift; sourceTree = "<group>"; };
+		AA11000000000064 /* Introduction5View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Introduction5View.swift; sourceTree = "<group>"; };
+		AA11000000000066 /* Introduction6View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Introduction6View.swift; sourceTree = "<group>"; };
+		AA11000000000068 /* Introduction7View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Introduction7View.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,8 +154,25 @@
 			children = (
 				AA11000000000046 /* Auth */,
 				AA11000000000047 /* Gamificacao */,
+				AA11000000000069 /* Introduction */,
 			);
 			path = Features;
+			sourceTree = "<group>";
+		};
+		AA11000000000069 /* Introduction */ = {
+			isa = PBXGroup;
+			children = (
+				AA11000000000059 /* IntroductionComponents.swift */,
+				AA1100000000005C /* Introduction1View.swift */,
+				AA1100000000005E /* Introduction2View.swift */,
+				AA11000000000060 /* Introduction3View.swift */,
+				AA11000000000062 /* Introduction4View.swift */,
+				AA11000000000064 /* Introduction5View.swift */,
+				AA11000000000066 /* Introduction6View.swift */,
+				AA11000000000068 /* Introduction7View.swift */,
+			);
+			name = Introduction;
+			path = Introduction;
 			sourceTree = "<group>";
 		};
 		AA11000000000046 /* Auth */ = {
@@ -315,6 +348,14 @@
 				AA11000000000052 /* EmailInputView.swift in Sources */,
 				AA11000000000054 /* CodeVerificationView.swift in Sources */,
 				AA11000000000056 /* ScreenRegisterView.swift in Sources */,
+				AA11000000000058 /* IntroductionComponents.swift in Sources */,
+				AA1100000000005B /* Introduction1View.swift in Sources */,
+				AA1100000000005D /* Introduction2View.swift in Sources */,
+				AA1100000000005F /* Introduction3View.swift in Sources */,
+				AA11000000000061 /* Introduction4View.swift in Sources */,
+				AA11000000000063 /* Introduction5View.swift in Sources */,
+				AA11000000000065 /* Introduction6View.swift in Sources */,
+				AA11000000000067 /* Introduction7View.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

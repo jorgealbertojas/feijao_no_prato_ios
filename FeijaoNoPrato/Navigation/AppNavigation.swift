@@ -51,6 +51,12 @@ struct AppNavigation: View {
     @EnvironmentObject var appDependencies: AppDependencies
     @State private var path = NavigationPath()
 
+    // Replace current route — mirrors NavController.navigateReplacing
+    private func navigateReplacing(_ route: AppRoute) {
+        if !path.isEmpty { path.removeLast() }
+        path.append(route)
+    }
+
     private func makeAuthViewModel() -> AuthViewModel {
         AuthViewModel(
             authRepository: appDependencies.authRepository,
@@ -102,19 +108,19 @@ struct AppNavigation: View {
                 viewModel: makeAuthViewModel()
             )
         case .introduction1(let n):
-            Text("Introduction1(\(n)) — TODO")
+            Introduction1View(initialScreen: n, navigate: navigateReplacing)
         case .introduction2(let n):
-            Text("Introduction2(\(n)) — TODO")
+            Introduction2View(initialScreen: n, navigate: navigateReplacing)
         case .introduction3(let n):
-            Text("Introduction3(\(n)) — TODO")
+            Introduction3View(initialScreen: n, navigate: navigateReplacing)
         case .introduction4(let n):
-            Text("Introduction4(\(n)) — TODO")
+            Introduction4View(initialScreen: n, navigate: navigateReplacing)
         case .introduction5(let n):
-            Text("Introduction5(\(n)) — TODO")
+            Introduction5View(initialScreen: n, navigate: navigateReplacing)
         case .introduction6(let n):
-            Text("Introduction6(\(n)) — TODO")
+            Introduction6View(initialScreen: n, navigate: navigateReplacing)
         case .introduction7(let n):
-            Text("Introduction7(\(n)) — TODO")
+            Introduction7View(initialScreen: n, navigate: navigateReplacing)
         case .home, .profile, .progress, .resources, .food:
             MainTabView()
         case .screenModule:
