@@ -14,14 +14,14 @@ struct HomeView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Spacer().frame(height: 35)
+            HomeHeaderView(saldo: gamificacaoViewModel.pontuacao.saldo)
             ProgressCardView(viewModel: viewModel, navigate: navigate)
             Spacer().frame(height: 2)
             TrailView(viewModel: viewModel, navigate: navigate)
         }
+        .navigationBarHidden(true)
         .onAppear {
             viewModel.loadAll()
-            gamificacaoViewModel.carregar()
         }
         .onChange(of: gamificacaoViewModel.pontuacao) { pontuacao in
             viewModel.updateWithGamificacao(
@@ -29,6 +29,37 @@ struct HomeView: View {
                 sessaoServidor: pontuacao.ultimoSessao
             )
         }
+    }
+}
+
+// MARK: - HomeHeaderView
+
+private struct HomeHeaderView: View {
+    let saldo: Int
+
+    var body: some View {
+        HStack {
+            // Logo — mirrors EasterEggIcon / R.drawable.icon_main (104×40dp vector)
+            Text("🌱 feijão no prato")
+                .font(.system(size: 17, weight: .bold))
+                .foregroundColor(.primary)
+
+            Spacer()
+
+            // Bean count — mirrors icon_point + points display in BottomBar.kt
+            HStack(spacing: 4) {
+                Image("icon_bean")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 28, height: 28)
+                Text("\(saldo)")
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundColor(.primary)
+            }
+        }
+        .padding(.horizontal, 32)
+        .padding(.top, 16)
+        .padding(.bottom, 12)
     }
 }
 
@@ -40,13 +71,15 @@ struct ProgressCardView: View {
     var navigate: (AppRoute) -> Void
 
     var body: some View {
-        RoundedRectangle(cornerRadius: 12)
-            .fill(Color.white)
+        cardContent
             .frame(maxWidth: .infinity)
             .frame(minHeight: 106)
-            .overlay(cardContent)
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color.white)
+                    .shadow(color: .black.opacity(0.04), radius: 4, x: 0, y: 2)
+            )
             .padding(.horizontal, 32)
-            .shadow(color: .black.opacity(0.04), radius: 4, x: 0, y: 2)
     }
 
     private var cardContent: some View {
@@ -228,7 +261,6 @@ struct TrailNodeRow: View {
 
     private var sectionNode: some View {
         let size = CGFloat(item.sectionItem.section.imageSize)
-        let isCircle = !item.isSpecialModule
         let alpha: Double = item.imageState == .locked ? 0.3 : 0.9
 
         return Group {
@@ -242,22 +274,18 @@ struct TrailNodeRow: View {
         .onTapGesture(perform: onTap)
     }
 
+    // Mirrors LevelScreen.kt: imagem3=completed(green), imagem2=inProgress(yellow), imagem1=available/locked
     private func circleView(size: CGFloat) -> some View {
-        ZStack {
-            Circle()
-                .fill(nodeColor)
-                .frame(width: size, height: size)
-
-            if item.imageState != .locked {
-                Circle()
-                    .strokeBorder(nodeColor.opacity(0.6), lineWidth: 2)
-                    .frame(width: size, height: size)
-            }
-
-            Text("\(item.sectionItem.sessaoDaVez)")
-                .font(.system(size: size * 0.28, weight: .bold))
-                .foregroundColor(nodeTextColor)
+        let imageName: String
+        switch item.imageState {
+        case .completed:  imageName = "imagem3"
+        case .inProgress: imageName = "imagem2"
+        case .available, .locked: imageName = "imagem1"
         }
+        return Image(imageName)
+            .resizable()
+            .scaledToFit()
+            .frame(width: size, height: size)
     }
 
     private func specialModuleView(size: CGFloat) -> some View {
@@ -279,23 +307,6 @@ struct TrailNodeRow: View {
         }
     }
 
-    private var nodeColor: Color {
-        switch item.imageState {
-        case .completed: return Color(red: 0.3, green: 0.72, blue: 0.42)
-        case .inProgress: return Color(red: 0.98, green: 0.75, blue: 0.1)
-        case .available: return .white
-        case .locked: return Color(white: 0.85)
-        }
-    }
-
-    private var nodeTextColor: Color {
-        switch item.imageState {
-        case .completed: return .white
-        case .inProgress: return Color(red: 0.5, green: 0.35, blue: 0.0)
-        case .available, .locked: return Color(white: 0.5)
-        }
-    }
-
     private var specialColor: Color {
         switch item.sectionItem.moduleIndex {
         case 9: return .brandOrange
@@ -314,6 +325,7 @@ struct TrailNodeRow: View {
 }
 
 // MARK: - TrailDividerView
+// Mirrors myDivider.kt: level name text centered above, then Row(Divider, "Módulo X" pill, Divider)
 
 struct TrailDividerView: View {
     let label: String
@@ -321,26 +333,35 @@ struct TrailDividerView: View {
 
     var body: some View {
         if !label.isEmpty {
-            HStack(spacing: 8) {
-                Rectangle()
-                    .fill(Color(white: 0.8))
-                    .frame(height: 1)
-                    .frame(maxWidth: .infinity)
+            VStack(alignment: .center, spacing: 12) {
+                Text(label)
+                    .font(.system(size: 11, weight: .bold))
+                    .foregroundColor(Color(white: 0.45))
+                    .frame(maxWidth: .infinity, alignment: .center)
 
-                VStack(spacing: 0) {
-                    Text(label)
-                        .font(.system(size: 11, weight: .bold))
-                        .foregroundColor(Color(white: 0.45))
-                    Text("MÓD. \(moduleNumber)")
-                        .font(.system(size: 10))
-                        .foregroundColor(Color(white: 0.6))
+                HStack(spacing: 8) {
+                    Rectangle()
+                        .fill(Color(white: 0.8))
+                        .frame(height: 1)
+                        .frame(maxWidth: .infinity)
+
+                    Text("Módulo \(moduleNumber)")
+                        .font(.system(size: 11))
+                        .foregroundColor(Color(white: 0.5))
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 4)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(Color(white: 0.8), lineWidth: 1)
+                        )
+
+                    Rectangle()
+                        .fill(Color(white: 0.8))
+                        .frame(height: 1)
+                        .frame(maxWidth: .infinity)
                 }
-                .padding(.horizontal, 8)
-                .padding(.vertical, 4)
-                .background(Color(white: 0.95))
-                .clipShape(Capsule())
             }
-            .padding(.vertical, 12)
+            .padding(.vertical, 16)
         }
     }
 }
