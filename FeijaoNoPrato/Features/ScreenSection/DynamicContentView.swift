@@ -51,7 +51,7 @@ struct DynamicContentView: View {
             ChipRow(text: item.texto ?? "")
 
         case "Espacamento":
-            let size = CGFloat(Int(item.tamanho ?? "8") ?? 8)
+            let size = CGFloat(item.tamanho ?? 8)
             Spacer().frame(height: size)
 
         case "Imagem":

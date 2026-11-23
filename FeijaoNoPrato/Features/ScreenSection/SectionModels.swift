@@ -63,7 +63,7 @@ struct SectionItem: Codable {
     let nomeArquivo: String?
     let alinhamento: String?
     let descricao: String?
-    let tamanho: String?
+    let tamanho: Double?
     let direcao: String?
     let modelo: String?
     let ehMultiplaEscolha: Bool?
