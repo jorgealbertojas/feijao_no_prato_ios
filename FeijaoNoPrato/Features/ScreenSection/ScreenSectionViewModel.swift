@@ -84,7 +84,7 @@ final class ScreenSectionViewModel: ObservableObject {
             prefs.saveSessionTotalPages(modulo: moduloAtual, sessao: sessaoAtual + 1, total: pages.count)
             loadState = .loaded
         } catch {
-            loadState = .error(String(describing: error))
+            loadState = .error(error.localizedDescription)
         }
     }
 
