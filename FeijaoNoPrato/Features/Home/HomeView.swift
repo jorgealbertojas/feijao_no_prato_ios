@@ -12,6 +12,9 @@ struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel()
     @EnvironmentObject private var gamificacaoViewModel: GamificacaoViewModel
 
+    // Android neutral_100 / carioquina_introdution = #F1ECE1
+    private static let trailBackground = Color(red: 0.945, green: 0.925, blue: 0.882)
+
     var body: some View {
         VStack(spacing: 0) {
             HomeHeaderView(saldo: gamificacaoViewModel.pontuacao.saldo)
@@ -19,6 +22,7 @@ struct HomeView: View {
             Spacer().frame(height: 2)
             TrailView(viewModel: viewModel, navigate: navigate)
         }
+        .background(HomeView.trailBackground.ignoresSafeArea())
         .navigationBarHidden(true)
         .onAppear {
             viewModel.loadAll()
