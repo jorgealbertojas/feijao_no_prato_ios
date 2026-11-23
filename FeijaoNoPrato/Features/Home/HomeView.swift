@@ -39,10 +39,17 @@ private struct HomeHeaderView: View {
 
     var body: some View {
         HStack {
-            // Logo — mirrors EasterEggIcon / R.drawable.icon_main (104×40dp vector)
-            Text("🌱 feijão no prato")
-                .font(.system(size: 17, weight: .bold))
-                .foregroundColor(.primary)
+            // Logo — mirrors EasterEggIcon (icon_main icon + icon_main_name text)
+            HStack(spacing: 6) {
+                Image("icon_logo")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 40, height: 40)
+                Text("feijão\nno prato")
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundColor(.primary)
+                    .lineSpacing(0)
+            }
 
             Spacer()
 

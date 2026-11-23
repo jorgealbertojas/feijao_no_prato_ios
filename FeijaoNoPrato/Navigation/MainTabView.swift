@@ -26,21 +26,36 @@ struct MainTabView: View {
 
             ProgressView_(navigate: navigate)
                 .tabItem {
-                    Label("Progresso", systemImage: "chart.bar")
+                    Label {
+                        Text("Progresso")
+                    } icon: {
+                        Image("icon_progress_tab")
+                            .renderingMode(.template)
+                    }
                 }
                 .tag(1)
 
             ResourcesView(navigate: navigate)
                 .tabItem {
-                    Label("Feira", systemImage: "bag")
+                    Label {
+                        Text("Feira")
+                    } icon: {
+                        Image("icon_feira_tab")
+                            .renderingMode(.template)
+                    }
                 }
                 .tag(2)
 
-            // IA tab — uses outer navigate so pushes go onto the outer NavigationStack
+            // Prato tab — mirrors Android "Prato" (IaFood) tab
             IaFoodView(navigate: navigate, dismiss: nil)
                 .environmentObject(iaFoodViewModel)
                 .tabItem {
-                    Label("IA", systemImage: "brain.head.profile")
+                    Label {
+                        Text("Prato")
+                    } icon: {
+                        Image("icon_prato_tab")
+                            .renderingMode(.template)
+                    }
                 }
                 .tag(3)
 
