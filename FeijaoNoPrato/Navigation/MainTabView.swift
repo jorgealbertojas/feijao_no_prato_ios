@@ -26,23 +26,15 @@ struct MainTabView: View {
 
             ProgressView_(navigate: navigate)
                 .tabItem {
-                    Label {
-                        Text("Progresso")
-                    } icon: {
-                        Image("icon_progress_tab")
-                            .renderingMode(.template)
-                    }
+                    Image("icon_progress_tab")
+                    Text("Progresso")
                 }
                 .tag(1)
 
             ResourcesView(navigate: navigate)
                 .tabItem {
-                    Label {
-                        Text("Feira")
-                    } icon: {
-                        Image("icon_feira_tab")
-                            .renderingMode(.template)
-                    }
+                    Image("icon_feira_tab")
+                    Text("Feira")
                 }
                 .tag(2)
 
@@ -50,12 +42,8 @@ struct MainTabView: View {
             IaFoodView(navigate: navigate, dismiss: nil)
                 .environmentObject(iaFoodViewModel)
                 .tabItem {
-                    Label {
-                        Text("Prato")
-                    } icon: {
-                        Image("icon_prato_tab")
-                            .renderingMode(.template)
-                    }
+                    Image("icon_prato_tab")
+                    Text("Prato")
                 }
                 .tag(3)
 
