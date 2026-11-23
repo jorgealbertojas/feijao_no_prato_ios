@@ -1,15 +1,16 @@
 {
   "images" : [
     {
-      "filename" : "icon_bean.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "icon_bean@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "icon_bean@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
