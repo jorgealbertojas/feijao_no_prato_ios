@@ -13,59 +13,62 @@ struct ProgressView_: View {
     var navigate: (AppRoute) -> Void
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 20) {
-                Spacer().frame(height: 50)
+        VStack(alignment: .leading, spacing: 0) {
+            // "Progresso" title — mirrors the Column overlay in ProgressScreen.kt
+            Text("Progresso")
+                .font(.system(size: 24, weight: .bold))
+                .padding(.horizontal, 16)
+                .padding(.top, 16)
+                .padding(.bottom, 20)
 
-                // Full-width progress card (Progresso Total)
-                ProgressoTotalCard(
-                    progressoPercent: viewModel.progressoPercent,
-                    modulosCompletos: viewModel.modulosCompletos,
-                    navigate: navigate
-                )
+            ScrollView {
+                VStack(spacing: 20) {
+                    // Full-width progress card (Progresso Total)
+                    ProgressoTotalCard(
+                        progressoPercent: viewModel.progressoPercent,
+                        modulosCompletos: viewModel.modulosCompletos,
+                        navigate: navigate
+                    )
 
-                // Two cards: Feijões + Pratos avaliados
-                HStack(spacing: 16) {
-                    StatCard(
-                        value: "\(gamificacaoViewModel.pontuacao.saldo)",
-                        label: "Feijões\nconquistados",
-                        icon: "leaf.fill",
-                        iconColor: .green
-                    )
-                    StatCard(
-                        value: "\(viewModel.totalCamera)",
-                        label: "Pratos\navaliados",
-                        icon: "camera.fill",
-                        iconColor: .brandOrange
-                    )
+                    // Two cards: Feijões + Pratos avaliados (26pt gap, left card taps → history)
+                    HStack(spacing: 26) {
+                        StatCard(
+                            value: "\(gamificacaoViewModel.pontuacao.saldo)",
+                            label: "Feijões\nconquistados",
+                            assetImage: "icon_bean",
+                            onTap: { navigate(.history) }
+                        )
+                        StatCard(
+                            value: "\(viewModel.totalCamera)",
+                            label: "Pratos\navaliados",
+                            icon: "camera.fill",
+                            iconColor: .brandOrange
+                        )
+                    }
+
+                    // Alimentação history card
+                    AlimentacaoHistoryCard(scores: viewModel.alimentacaoScores)
+
+                    // Two cards: Seções completas + Desafios (26pt gap, no tap)
+                    HStack(spacing: 26) {
+                        StatCard(
+                            value: "\(viewModel.sessoesCompletas)",
+                            label: "Seções\nCompletas"
+                        )
+                        StatCard(
+                            value: "\(viewModel.desafiosCompletos)",
+                            label: "Desafios"
+                        )
+                    }
+
+                    Spacer().frame(height: 60)
                 }
-
-                // Alimentação history card
-                AlimentacaoHistoryCard(scores: viewModel.alimentacaoScores)
-
-                // Two cards: Seções completas + Desafios
-                HStack(spacing: 16) {
-                    StatCard(
-                        value: "\(viewModel.sessoesCompletas)",
-                        label: "Seções\nCompletas",
-                        icon: nil,
-                        iconColor: .clear
-                    )
-                    StatCard(
-                        value: "\(viewModel.desafiosCompletos)",
-                        label: "Desafios",
-                        icon: nil,
-                        iconColor: .clear
-                    )
-                }
-
-                Spacer().frame(height: 60)
+                .padding(.horizontal, 20)
             }
-            .padding(.horizontal, 20)
         }
+        .navigationBarHidden(true)
         .onAppear {
             viewModel.carregar()
-            gamificacaoViewModel.carregar()
         }
     }
 }
@@ -85,6 +88,7 @@ private struct ProgressoTotalCard: View {
             .frame(minHeight: 130)
             .overlay(cardContent)
             .shadow(color: .black.opacity(0.08), radius: 4, x: 0, y: 2)
+            .onTapGesture { navigate(.moduleDetail(id: 1)) }
     }
 
     private var cardContent: some View {
@@ -111,9 +115,7 @@ private struct ProgressoTotalCard: View {
 
             Spacer()
 
-            FlowerProgressView(modulosCompletos: modulosCompletos, onModuleClick: { modulo in
-                navigate(.moduleDetail(id: modulo))
-            })
+            FlowerProgressView(modulosCompletos: modulosCompletos)
             .frame(width: 70, height: 70)
             .padding(.trailing, 16)
         }
@@ -121,41 +123,25 @@ private struct ProgressoTotalCard: View {
     }
 }
 
-// MARK: - FlowerProgressView (replaces FlowerModules.kt + petala images)
+// MARK: - FlowerProgressView (replaces FlowerModules.kt)
+// Mirrors FlowerModules.kt: 0→petala1, 1→petala2, … 9→petala10
 
 private struct FlowerProgressView: View {
 
     let modulosCompletos: Int
-    var onModuleClick: (Int) -> Void
 
     var body: some View {
-        ZStack {
-            // Background ring
-            Circle()
-                .stroke(Color(white: 0.9), lineWidth: 8)
+        let imageIndex = modulosCompletos.clamped(to: 0...9)
+        Image("petala\(imageIndex + 1)")
+            .resizable()
+            .scaledToFit()
+            .animation(.easeInOut(duration: 0.4), value: modulosCompletos)
+    }
+}
 
-            // Progress arc
-            Circle()
-                .trim(from: 0, to: CGFloat(modulosCompletos) / 8.0)
-                .stroke(
-                    Color(red: 0.3, green: 0.72, blue: 0.42),
-                    style: StrokeStyle(lineWidth: 8, lineCap: .round)
-                )
-                .rotationEffect(.degrees(-90))
-                .animation(.easeInOut(duration: 0.5), value: modulosCompletos)
-
-            VStack(spacing: 0) {
-                Text("\(modulosCompletos)")
-                    .font(.system(size: 18, weight: .bold))
-                    .foregroundColor(.black)
-                Text("/ 8")
-                    .font(.system(size: 11))
-                    .foregroundColor(Color(white: 0.5))
-            }
-        }
-        .onTapGesture {
-            if modulosCompletos > 0 { onModuleClick(modulosCompletos) }
-        }
+private extension Comparable {
+    func clamped(to range: ClosedRange<Self>) -> Self {
+        min(max(self, range.lowerBound), range.upperBound)
     }
 }
 
@@ -165,8 +151,10 @@ private struct StatCard: View {
 
     let value: String
     let label: String
-    let icon: String?
-    let iconColor: Color
+    var icon: String? = nil
+    var iconColor: Color = .clear
+    var assetImage: String? = nil
+    var onTap: (() -> Void)? = nil
 
     var body: some View {
         RoundedRectangle(cornerRadius: 12)
@@ -175,12 +163,18 @@ private struct StatCard: View {
             .frame(height: 120)
             .overlay(cardContent)
             .shadow(color: .black.opacity(0.06), radius: 4, x: 0, y: 2)
+            .onTapGesture { onTap?() }
     }
 
     private var cardContent: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: 8) {
-                if let icon {
+                if let assetImage {
+                    Image(assetImage)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 25, height: 25)
+                } else if let icon {
                     Image(systemName: icon)
                         .resizable()
                         .scaledToFit()
