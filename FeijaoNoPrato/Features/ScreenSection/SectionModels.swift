@@ -92,6 +92,34 @@ struct SectionItem: Codable {
         case imagens = "Imagens"
         case itens = "Itens"
     }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        tipo = try c.decodeIfPresent(String.self, forKey: .tipo)
+        texto = try c.decodeIfPresent(String.self, forKey: .texto)
+        id = try c.decodeIfPresent(String.self, forKey: .id)
+        url = try c.decodeIfPresent(String.self, forKey: .url)
+        personalizacao = try c.decodeIfPresent(String.self, forKey: .personalizacao)
+        nomeArquivo = try c.decodeIfPresent(String.self, forKey: .nomeArquivo)
+        alinhamento = try c.decodeIfPresent(String.self, forKey: .alinhamento)
+        descricao = try c.decodeIfPresent(String.self, forKey: .descricao)
+        // Tamanho: API sends a number; Gson coerces to String on Android, so defensive decode both.
+        if let dbl = try? c.decodeIfPresent(Double.self, forKey: .tamanho) {
+            tamanho = dbl
+        } else if let str = try? c.decodeIfPresent(String.self, forKey: .tamanho) {
+            tamanho = Double(str)
+        } else {
+            tamanho = nil
+        }
+        direcao = try c.decodeIfPresent(String.self, forKey: .direcao)
+        modelo = try c.decodeIfPresent(String.self, forKey: .modelo)
+        ehMultiplaEscolha = try c.decodeIfPresent(Bool.self, forKey: .ehMultiplaEscolha)
+        descricaOopcaoCorreta = try c.decodeIfPresent(String.self, forKey: .descricaOopcaoCorreta)
+        textoFeedbackPositivo = try c.decodeIfPresent(String.self, forKey: .textoFeedbackPositivo)
+        opcoes = try c.decodeIfPresent([SectionOption].self, forKey: .opcoes)
+        imagens = try c.decodeIfPresent([SectionItemImage].self, forKey: .imagens)
+        itens = try c.decodeIfPresent([SectionItem].self, forKey: .itens)
+    }
 }
 
 struct SectionOption: Codable {
@@ -103,6 +131,19 @@ struct SectionOption: Codable {
         case descricao = "Descricao"
         case textoFeedbackNegativo = "TextoFeedbackNegativo"
         case ehCorreta = "EhCorreta"
+    }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        descricao = try c.decodeIfPresent(String.self, forKey: .descricao)
+        textoFeedbackNegativo = try c.decodeIfPresent(String.self, forKey: .textoFeedbackNegativo)
+        // API may send EhCorreta as a JSON boolean (true/false) even though Android declares String.
+        // Gson coerces boolean→String silently; JSONDecoder does not, so we handle both.
+        if let boolVal = try? c.decode(Bool.self, forKey: .ehCorreta) {
+            ehCorreta = boolVal ? "true" : "false"
+        } else {
+            ehCorreta = try c.decodeIfPresent(String.self, forKey: .ehCorreta)
+        }
     }
 }
 
