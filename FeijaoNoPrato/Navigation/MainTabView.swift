@@ -20,7 +20,8 @@ struct MainTabView: View {
         TabView {
             HomeView(navigate: navigate)
                 .tabItem {
-                    Label("Início", systemImage: "house")
+                    Image("icon_home_tab")
+                    Text("Início")
                 }
                 .tag(0)
 
@@ -49,7 +50,8 @@ struct MainTabView: View {
 
             ProfileView(navigate: navigate, onLogout: onLogout, appDependencies: appDependencies)
                 .tabItem {
-                    Label("Perfil", systemImage: "person")
+                    Image("icon_profile_tab")
+                    Text("Perfil")
                 }
                 .tag(4)
         }
