@@ -295,39 +295,18 @@ struct TrailNodeRow: View {
             .frame(width: size, height: size)
     }
 
+    // Mirrors LevelScreen.kt: moduleIndex 9/10/11 use character images, no circle clip, ContentScale.Fit
     private func specialModuleView(size: CGFloat) -> some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 12)
-                .fill(specialColor.opacity(0.15))
-                .frame(width: size + 20, height: size + 20)
-
-            Image(systemName: specialSymbol)
-                .resizable()
-                .scaledToFit()
-                .frame(width: size * 0.5, height: size * 0.5)
-                .foregroundColor(specialColor)
-
-            Text("S\(item.sectionItem.sessaoDaVez)")
-                .font(.system(size: 10, weight: .bold))
-                .foregroundColor(specialColor)
-                .offset(y: size * 0.3)
-        }
-    }
-
-    private var specialColor: Color {
+        let imageName: String
         switch item.sectionItem.moduleIndex {
-        case 9: return .brandOrange
-        case 10: return Color(red: 0.6, green: 0.35, blue: 0.15)
-        default: return Color(red: 0.2, green: 0.6, blue: 0.3)
+        case 9:  imageName = "icon_fixando_new"
+        case 10: imageName = "icon_feijuca_convida"
+        default: imageName = "icon_praticando"
         }
-    }
-
-    private var specialSymbol: String {
-        switch item.sectionItem.moduleIndex {
-        case 9: return "checkmark.seal.fill"
-        case 10: return "person.2.fill"
-        default: return "figure.walk"
-        }
+        return Image(imageName)
+            .resizable()
+            .scaledToFit()
+            .frame(width: size + 20, height: size + 20)
     }
 }
 
