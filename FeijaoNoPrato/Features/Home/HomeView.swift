@@ -98,11 +98,10 @@ struct ProgressCardView: View {
             VStack(alignment: .leading, spacing: 0) {
                 // Level + module + section location
                 HStack(spacing: 4) {
-                    Image(systemName: "mappin.circle.fill")
+                    Image("icon_localization")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 12, height: 12)
-                        .foregroundColor(.brandOrange)
+                        .frame(width: 12, height: 16)
 
                     let location = "\(viewModel.nivelExibicao), MÓD. \(viewModel.moduloAtual), SEÇÃO \(viewModel.sessaoAtual)"
                     Text(location)
@@ -139,12 +138,11 @@ struct ProgressCardView: View {
 
             Spacer().frame(width: 16)
 
-            // Menu icon
-            Image(systemName: "list.bullet.rectangle")
+            // Menu icon — mirrors icon_menu_new at 74x110dp in Android CustomCardView
+            Image("icon_menu_new")
                 .resizable()
                 .scaledToFit()
                 .frame(width: 34, height: 60)
-                .foregroundColor(.brandOrange)
                 .padding(.trailing, 20)
                 .onTapGesture {
                     navigate(.screenModule)
