@@ -419,19 +419,25 @@ struct SectionDialogSheet: View {
             }
 
             HStack(spacing: 12) {
-                Button("Cancelar", action: onCancel)
-                    .foregroundColor(.secondary)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 14)
-                    .background(Color(white: 0.95))
-                    .cornerRadius(12)
+                Button(action: onCancel) {
+                    Text("Cancelar")
+                        .foregroundColor(.secondary)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 14)
+                        .background(Color(white: 0.95))
+                        .cornerRadius(12)
+                }
+                .buttonStyle(.plain)
 
-                Button("INICIAR SEÇÃO", action: onNavigate)
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 14)
-                    .background(Color.brandOrange)
-                    .cornerRadius(12)
+                Button(action: onNavigate) {
+                    Text("INICIAR SEÇÃO")
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 14)
+                        .background(Color.brandOrange)
+                        .cornerRadius(12)
+                }
+                .buttonStyle(.plain)
             }
             .font(.system(size: 15, weight: .semibold))
             .padding(.horizontal, 20)
