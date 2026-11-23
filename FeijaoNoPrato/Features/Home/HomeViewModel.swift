@@ -242,8 +242,6 @@ final class HomeViewModel: ObservableObject {
             let ehPrimeiraSessaoDoProximoModulo = terminouModuloAtual && modIdx == moduloAtual + 1 && sessao == 1
             let sessaoAnteriorConcluida = statusAtual == .proximaLiberado && sessao == sessaoAtual + 1 && statusAnterior == .sessaoConcluida
 
-            let isClickable = ehPrimeiraSessaoDoModulo1 || desbloqueioEspecialFinal || statusAtual != .bloqueado
-
             let isClickableSeTerminou =
                 ehPrimeiraSessaoDoModulo1 ||
                 sessaoJaPercorridaSemBloqueio ||

@@ -43,15 +43,42 @@
 		AA11000000000075 /* levels.json in Resources */ = {isa = PBXBuildFile; fileRef = AA11000000000076 /* levels.json */; };
 		AA11000000000077 /* ProgressViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000000000078 /* ProgressViewModel.swift */; };
 		AA11000000000079 /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1100000000007A /* ProgressView.swift */; };
+		AA1100000000007C /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1100000000007D /* ProfileViewModel.swift */; };
+		AA1100000000007E /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1100000000007F /* ProfileView.swift */; };
+		AA11000000000080 /* ProfileTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000000000081 /* ProfileTextView.swift */; };
+		AA11000000000083 /* ResourceItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000000000084 /* ResourceItem.swift */; };
+		AA11000000000085 /* ResourcesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000000000086 /* ResourcesViewModel.swift */; };
+		AA11000000000087 /* ResourcesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000000000088 /* ResourcesView.swift */; };
+		AA11000000000089 /* ResourceListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1100000000008A /* ResourceListView.swift */; };
+		AA1100000000008B /* ResourceDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1100000000008C /* ResourceDetailView.swift */; };
+		AA1100000000008E /* resources_local.json in Resources */ = {isa = PBXBuildFile; fileRef = AA1100000000008F /* resources_local.json */; };
+		AA11000000000090 /* ScreenModuleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000000000091 /* ScreenModuleViewModel.swift */; };
+		AA11000000000092 /* ScreenModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000000000093 /* ScreenModuleView.swift */; };
+		AA11000000000095 /* SectionModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000000000096 /* SectionModels.swift */; };
+		AA11000000000097 /* ScreenSectionRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000000000098 /* ScreenSectionRepository.swift */; };
+		AA11000000000099 /* ScreenSectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1100000000009A /* ScreenSectionViewModel.swift */; };
+		AA1100000000009B /* DynamicContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1100000000009C /* DynamicContentView.swift */; };
+		AA1100000000009D /* ScreenSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1100000000009E /* ScreenSectionView.swift */; };
+		AA110000000000A0 /* GamificacaoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA110000000000A1 /* GamificacaoView.swift */; };
+		AA110000000000A3 /* IaFoodViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA110000000000A4 /* IaFoodViewModel.swift */; };
+		AA110000000000A5 /* IaFoodView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA110000000000A6 /* IaFoodView.swift */; };
+		AA110000000000A7 /* ConfirmPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA110000000000A8 /* ConfirmPhotoView.swift */; };
+		AA110000000000A9 /* MealAnalysisView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA110000000000AA /* MealAnalysisView.swift */; };
+		AA110000000000AB /* HowItWorksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA110000000000AC /* HowItWorksView.swift */; };
+		AA110000000000AE /* CameraPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA110000000000AF /* CameraPickerView.swift */; };
+		AA110000000000B0 /* HistoricoFeijoesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA110000000000B1 /* HistoricoFeijoesView.swift */; };
+		AA110000000000C0 /* FilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA110000000000C1 /* FilterView.swift */; };
+		AA110000000000C2 /* HistoryMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA110000000000C3 /* HistoryMenuView.swift */; };
+		AA110000000000C4 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA110000000000C5 /* WebView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		AA11000000000009 /* FeijaoNoPrato.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FeijaoNoPrato.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA11000000000002 /* FeijaoNoPratoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeijaoNoPratoApp.swift; sourceTree = "<group>"; };
 		AA11000000000004 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		AA11000000000006 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		AA1100000000000A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AA11000000000008 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		AA11000000000009 /* FeijaoNoPrato.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FeijaoNoPrato.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA1100000000000A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AA11000000000021 /* AppNavigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppNavigation.swift; sourceTree = "<group>"; };
 		AA11000000000023 /* AppDependencies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDependencies.swift; sourceTree = "<group>"; };
 		AA11000000000025 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
@@ -81,9 +108,36 @@
 		AA11000000000070 /* LocalLevelsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalLevelsDataSource.swift; sourceTree = "<group>"; };
 		AA11000000000072 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		AA11000000000074 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		AA11000000000076 /* levels.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = levels.json; sourceTree = "<group>"; };
 		AA11000000000078 /* ProgressViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressViewModel.swift; sourceTree = "<group>"; };
 		AA1100000000007A /* ProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
-		AA11000000000076 /* levels.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = levels.json; sourceTree = "<group>"; };
+		AA1100000000007D /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
+		AA1100000000007F /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		AA11000000000081 /* ProfileTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileTextView.swift; sourceTree = "<group>"; };
+		AA11000000000084 /* ResourceItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceItem.swift; sourceTree = "<group>"; };
+		AA11000000000086 /* ResourcesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourcesViewModel.swift; sourceTree = "<group>"; };
+		AA11000000000088 /* ResourcesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourcesView.swift; sourceTree = "<group>"; };
+		AA1100000000008A /* ResourceListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceListView.swift; sourceTree = "<group>"; };
+		AA1100000000008C /* ResourceDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceDetailView.swift; sourceTree = "<group>"; };
+		AA1100000000008F /* resources_local.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = resources_local.json; sourceTree = "<group>"; };
+		AA11000000000091 /* ScreenModuleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenModuleViewModel.swift; sourceTree = "<group>"; };
+		AA11000000000093 /* ScreenModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenModuleView.swift; sourceTree = "<group>"; };
+		AA11000000000096 /* SectionModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionModels.swift; sourceTree = "<group>"; };
+		AA11000000000098 /* ScreenSectionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenSectionRepository.swift; sourceTree = "<group>"; };
+		AA1100000000009A /* ScreenSectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenSectionViewModel.swift; sourceTree = "<group>"; };
+		AA1100000000009C /* DynamicContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicContentView.swift; sourceTree = "<group>"; };
+		AA1100000000009E /* ScreenSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenSectionView.swift; sourceTree = "<group>"; };
+		AA110000000000A1 /* GamificacaoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamificacaoView.swift; sourceTree = "<group>"; };
+		AA110000000000A4 /* IaFoodViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IaFoodViewModel.swift; sourceTree = "<group>"; };
+		AA110000000000A6 /* IaFoodView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IaFoodView.swift; sourceTree = "<group>"; };
+		AA110000000000A8 /* ConfirmPhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmPhotoView.swift; sourceTree = "<group>"; };
+		AA110000000000AA /* MealAnalysisView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealAnalysisView.swift; sourceTree = "<group>"; };
+		AA110000000000AC /* HowItWorksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HowItWorksView.swift; sourceTree = "<group>"; };
+		AA110000000000AF /* CameraPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPickerView.swift; sourceTree = "<group>"; };
+		AA110000000000B1 /* HistoricoFeijoesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoricoFeijoesView.swift; sourceTree = "<group>"; };
+		AA110000000000C1 /* FilterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterView.swift; sourceTree = "<group>"; };
+		AA110000000000C3 /* HistoryMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryMenuView.swift; sourceTree = "<group>"; };
+		AA110000000000C5 /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,14 +151,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		AA1100000000000F /* = */ = {
-			isa = PBXGroup;
-			children = (
-				AA1100000000000C /* FeijaoNoPrato */,
-				AA1100000000000E /* Products */,
-			);
-			sourceTree = "<group>";
-		};
 		AA1100000000000C /* FeijaoNoPrato */ = {
 			isa = PBXGroup;
 			children = (
@@ -113,12 +159,37 @@
 				AA11000000000006 /* Assets.xcassets */,
 				AA1100000000000A /* Info.plist */,
 				AA11000000000076 /* levels.json */,
+				AA1100000000008F /* resources_local.json */,
 				AA1100000000000D /* Preview Content */,
 				AA11000000000040 /* Navigation */,
 				AA11000000000041 /* Core */,
 				AA11000000000042 /* Features */,
 			);
 			path = FeijaoNoPrato;
+			sourceTree = "<group>";
+		};
+		AA1100000000000D /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				AA11000000000008 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		AA1100000000000E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AA11000000000009 /* FeijaoNoPrato.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		AA1100000000000F = {
+			isa = PBXGroup;
+			children = (
+				AA1100000000000C /* FeijaoNoPrato */,
+				AA1100000000000E /* Products */,
+			);
 			sourceTree = "<group>";
 		};
 		AA11000000000040 /* Navigation */ = {
@@ -139,6 +210,23 @@
 				AA11000000000045 /* Storage */,
 			);
 			path = Core;
+			sourceTree = "<group>";
+		};
+		AA11000000000042 /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				AA11000000000046 /* Auth */,
+				AA11000000000047 /* Gamificacao */,
+				AA11000000000069 /* Introduction */,
+				AA1100000000006A /* Home */,
+				AA1100000000007B /* Progress */,
+				AA11000000000082 /* Profile */,
+				AA1100000000008D /* Resources */,
+				AA11000000000094 /* ScreenModule */,
+				AA1100000000009F /* ScreenSection */,
+				AA110000000000AD /* IaFood */,
+			);
+			path = Features;
 			sourceTree = "<group>";
 		};
 		AA11000000000043 /* Theme */ = {
@@ -166,39 +254,68 @@
 			path = Storage;
 			sourceTree = "<group>";
 		};
-		AA11000000000042 /* Features */ = {
+		AA11000000000046 /* Auth */ = {
 			isa = PBXGroup;
 			children = (
-				AA11000000000046 /* Auth */,
-				AA11000000000047 /* Gamificacao */,
-				AA11000000000069 /* Introduction */,
-				AA1100000000006A /* Home */,
-				AA1100000000007B /* Progress */,
+				AA11000000000048 /* Repository */,
+				AA1100000000005A /* ViewModel */,
+				AA11000000000049 /* Presentation */,
 			);
-			path = Features;
+			path = Auth;
 			sourceTree = "<group>";
 		};
-		AA1100000000007B /* Progress */ = {
+		AA11000000000047 /* Gamificacao */ = {
 			isa = PBXGroup;
 			children = (
-				AA11000000000078 /* ProgressViewModel.swift */,
-				AA1100000000007A /* ProgressView.swift */,
+				AA1100000000004A /* Repository */,
+				AA1100000000004B /* ViewModel */,
+				AA110000000000A2 /* View */,
 			);
-			name = Progress;
-			path = Progress;
+			path = Gamificacao;
 			sourceTree = "<group>";
 		};
-		AA1100000000006A /* Home */ = {
+		AA11000000000048 /* Repository */ = {
 			isa = PBXGroup;
 			children = (
-				AA1100000000006C /* LevelModels.swift */,
-				AA1100000000006E /* StatusModulo.swift */,
-				AA11000000000070 /* LocalLevelsDataSource.swift */,
-				AA11000000000072 /* HomeViewModel.swift */,
-				AA11000000000074 /* HomeView.swift */,
+				AA1100000000002F /* AuthRepository.swift */,
 			);
-			name = Home;
-			path = Home;
+			path = Repository;
+			sourceTree = "<group>";
+		};
+		AA11000000000049 /* Presentation */ = {
+			isa = PBXGroup;
+			children = (
+				AA11000000000031 /* LoginStartView.swift */,
+				AA11000000000053 /* EmailInputView.swift */,
+				AA11000000000055 /* CodeVerificationView.swift */,
+				AA11000000000057 /* ScreenRegisterView.swift */,
+			);
+			path = Presentation;
+			sourceTree = "<group>";
+		};
+		AA1100000000004A /* Repository */ = {
+			isa = PBXGroup;
+			children = (
+				AA11000000000033 /* GamificacaoRepository.swift */,
+				AA11000000000037 /* PontuacaoUsuario.swift */,
+			);
+			path = Repository;
+			sourceTree = "<group>";
+		};
+		AA1100000000004B /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				AA11000000000035 /* GamificacaoViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		AA1100000000005A /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				AA11000000000051 /* AuthViewModel.swift */,
+			);
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
 		AA11000000000069 /* Introduction */ = {
@@ -213,95 +330,96 @@
 				AA11000000000066 /* Introduction6View.swift */,
 				AA11000000000068 /* Introduction7View.swift */,
 			);
-			name = Introduction;
 			path = Introduction;
 			sourceTree = "<group>";
 		};
-		AA11000000000046 /* Auth */ = {
+		AA1100000000006A /* Home */ = {
 			isa = PBXGroup;
 			children = (
-				AA11000000000048 /* Auth Repository */,
-				AA1100000000005A /* Auth ViewModel */,
-				AA11000000000049 /* Auth Presentation */,
+				AA1100000000006C /* LevelModels.swift */,
+				AA1100000000006E /* StatusModulo.swift */,
+				AA11000000000070 /* LocalLevelsDataSource.swift */,
+				AA11000000000072 /* HomeViewModel.swift */,
+				AA11000000000074 /* HomeView.swift */,
 			);
-			name = Auth;
-			path = Auth;
+			path = Home;
 			sourceTree = "<group>";
 		};
-		AA11000000000048 /* Auth Repository */ = {
+		AA1100000000007B /* Progress */ = {
 			isa = PBXGroup;
 			children = (
-				AA1100000000002F /* AuthRepository.swift */,
+				AA11000000000078 /* ProgressViewModel.swift */,
+				AA1100000000007A /* ProgressView.swift */,
 			);
-			name = Repository;
-			path = Repository;
+			path = Progress;
 			sourceTree = "<group>";
 		};
-		AA11000000000049 /* Auth Presentation */ = {
+		AA11000000000082 /* Profile */ = {
 			isa = PBXGroup;
 			children = (
-				AA11000000000031 /* LoginStartView.swift */,
-				AA11000000000053 /* EmailInputView.swift */,
-				AA11000000000055 /* CodeVerificationView.swift */,
-				AA11000000000057 /* ScreenRegisterView.swift */,
+				AA1100000000007D /* ProfileViewModel.swift */,
+				AA1100000000007F /* ProfileView.swift */,
+				AA11000000000081 /* ProfileTextView.swift */,
 			);
-			name = Presentation;
-			path = Presentation;
+			path = Profile;
 			sourceTree = "<group>";
 		};
-		AA1100000000005A /* Auth ViewModel */ = {
+		AA1100000000008D /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				AA11000000000051 /* AuthViewModel.swift */,
+				AA11000000000084 /* ResourceItem.swift */,
+				AA11000000000086 /* ResourcesViewModel.swift */,
+				AA11000000000088 /* ResourcesView.swift */,
+				AA1100000000008A /* ResourceListView.swift */,
+				AA110000000000C1 /* FilterView.swift */,
+				AA1100000000008C /* ResourceDetailView.swift */,
 			);
-			name = ViewModel;
-			path = ViewModel;
+			path = Resources;
 			sourceTree = "<group>";
 		};
-		AA11000000000047 /* Gamificacao */ = {
+		AA11000000000094 /* ScreenModule */ = {
 			isa = PBXGroup;
 			children = (
-				AA1100000000004A /* Gamificacao Repository */,
-				AA1100000000004B /* Gamificacao ViewModel */,
+				AA11000000000091 /* ScreenModuleViewModel.swift */,
+				AA11000000000093 /* ScreenModuleView.swift */,
 			);
-			name = Gamificacao;
-			path = Gamificacao;
+			path = ScreenModule;
 			sourceTree = "<group>";
 		};
-		AA1100000000004A /* Gamificacao Repository */ = {
+		AA1100000000009F /* ScreenSection */ = {
 			isa = PBXGroup;
 			children = (
-				AA11000000000033 /* GamificacaoRepository.swift */,
-				AA11000000000037 /* PontuacaoUsuario.swift */,
+				AA11000000000096 /* SectionModels.swift */,
+				AA11000000000098 /* ScreenSectionRepository.swift */,
+				AA1100000000009A /* ScreenSectionViewModel.swift */,
+				AA1100000000009C /* DynamicContentView.swift */,
+				AA110000000000C5 /* WebView.swift */,
+				AA1100000000009E /* ScreenSectionView.swift */,
 			);
-			name = Repository;
-			path = Repository;
+			path = ScreenSection;
 			sourceTree = "<group>";
 		};
-		AA1100000000004B /* Gamificacao ViewModel */ = {
+		AA110000000000A2 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				AA11000000000035 /* GamificacaoViewModel.swift */,
+				AA110000000000A1 /* GamificacaoView.swift */,
+				AA110000000000B1 /* HistoricoFeijoesView.swift */,
 			);
-			name = ViewModel;
-			path = ViewModel;
+			path = View;
 			sourceTree = "<group>";
 		};
-		AA1100000000000D /* Preview Content */ = {
+		AA110000000000AD /* IaFood */ = {
 			isa = PBXGroup;
 			children = (
-				AA11000000000008 /* Preview Assets.xcassets */,
+				AA110000000000A4 /* IaFoodViewModel.swift */,
+				AA110000000000A6 /* IaFoodView.swift */,
+				AA110000000000C3 /* HistoryMenuView.swift */,
+				AA110000000000A8 /* ConfirmPhotoView.swift */,
+				AA110000000000AA /* MealAnalysisView.swift */,
+				AA110000000000AC /* HowItWorksView.swift */,
+				AA110000000000AF /* CameraPickerView.swift */,
 			);
-			name = "Preview Content";
-			path = "Preview Content";
-			sourceTree = "<group>";
-		};
-		AA1100000000000E /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				AA11000000000009 /* FeijaoNoPrato.app */,
-			);
-			name = Products;
+			path = IaFood;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -365,6 +483,7 @@
 				AA11000000000005 /* Assets.xcassets in Resources */,
 				AA11000000000007 /* Preview Assets.xcassets in Resources */,
 				AA11000000000075 /* levels.json in Resources */,
+				AA1100000000008E /* resources_local.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -408,6 +527,32 @@
 				AA11000000000073 /* HomeView.swift in Sources */,
 				AA11000000000077 /* ProgressViewModel.swift in Sources */,
 				AA11000000000079 /* ProgressView.swift in Sources */,
+				AA1100000000007C /* ProfileViewModel.swift in Sources */,
+				AA1100000000007E /* ProfileView.swift in Sources */,
+				AA11000000000080 /* ProfileTextView.swift in Sources */,
+				AA11000000000083 /* ResourceItem.swift in Sources */,
+				AA11000000000085 /* ResourcesViewModel.swift in Sources */,
+				AA11000000000087 /* ResourcesView.swift in Sources */,
+				AA11000000000089 /* ResourceListView.swift in Sources */,
+				AA110000000000C0 /* FilterView.swift in Sources */,
+				AA1100000000008B /* ResourceDetailView.swift in Sources */,
+				AA11000000000090 /* ScreenModuleViewModel.swift in Sources */,
+				AA11000000000092 /* ScreenModuleView.swift in Sources */,
+				AA110000000000A0 /* GamificacaoView.swift in Sources */,
+				AA110000000000B0 /* HistoricoFeijoesView.swift in Sources */,
+				AA11000000000095 /* SectionModels.swift in Sources */,
+				AA11000000000097 /* ScreenSectionRepository.swift in Sources */,
+				AA11000000000099 /* ScreenSectionViewModel.swift in Sources */,
+				AA1100000000009B /* DynamicContentView.swift in Sources */,
+				AA110000000000C4 /* WebView.swift in Sources */,
+				AA1100000000009D /* ScreenSectionView.swift in Sources */,
+				AA110000000000A3 /* IaFoodViewModel.swift in Sources */,
+				AA110000000000A5 /* IaFoodView.swift in Sources */,
+				AA110000000000C2 /* HistoryMenuView.swift in Sources */,
+				AA110000000000A7 /* ConfirmPhotoView.swift in Sources */,
+				AA110000000000A9 /* MealAnalysisView.swift in Sources */,
+				AA110000000000AB /* HowItWorksView.swift in Sources */,
+				AA110000000000AE /* CameraPickerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -537,7 +682,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = B4TSTCKUMQ;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = FeijaoNoPrato/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
@@ -546,7 +691,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.softjads.feijaonoprato";
+				PRODUCT_BUNDLE_IDENTIFIER = com.softjads.feijaonoprato;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -561,7 +706,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = B4TSTCKUMQ;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = FeijaoNoPrato/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
@@ -570,7 +715,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.softjads.feijaonoprato";
+				PRODUCT_BUNDLE_IDENTIFIER = com.softjads.feijaonoprato;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -581,15 +726,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		AA11000000000015 /* Build configuration list for PBXProject "FeijaoNoPrato" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				AA11000000000016 /* Debug */,
-				AA11000000000017 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		AA11000000000011 /* Build configuration list for PBXNativeTarget "FeijaoNoPrato" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -599,8 +735,16 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		AA11000000000015 /* Build configuration list for PBXProject "FeijaoNoPrato" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA11000000000016 /* Debug */,
+				AA11000000000017 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
-
 	};
 	rootObject = AA11000000000014 /* Project object */;
 }

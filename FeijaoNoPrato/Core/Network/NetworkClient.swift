@@ -46,4 +46,13 @@ final class NetworkClient {
               (200..<300).contains(http.statusCode) else { throw URLError(.badServerResponse) }
         return try JSONDecoder().decode(T.self, from: data)
     }
+
+    func getWithAuth<T: Decodable>(_ path: String, bearer: String, type: T.Type) async throws -> T {
+        var request = URLRequest(url: baseURL.appendingPathComponent(path))
+        request.setValue("Bearer \(bearer)", forHTTPHeaderField: "Authorization")
+        let (data, response) = try await session.data(for: request)
+        guard let http = response as? HTTPURLResponse,
+              (200..<300).contains(http.statusCode) else { throw URLError(.badServerResponse) }
+        return try JSONDecoder().decode(T.self, from: data)
+    }
 }

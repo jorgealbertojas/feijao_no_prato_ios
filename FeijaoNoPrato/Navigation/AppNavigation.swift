@@ -42,6 +42,13 @@ enum AppRoute: Hashable {
     case attachFood
     case history
 
+    // Resources / Feira
+    case resourceList(title: String, items: [ResourceItem])
+    case resourceDetail(item: ResourceItem, isAvailable: Bool)
+
+    // Profile text pages
+    case profileText(title: String)
+
     // Web
     case webView(url: String)
 }
@@ -49,7 +56,21 @@ enum AppRoute: Hashable {
 struct AppNavigation: View {
 
     @EnvironmentObject var appDependencies: AppDependencies
-    @State private var path = NavigationPath()
+    @State private var path: NavigationPath
+    @StateObject private var iaFoodViewModel = IaFoodViewModel()
+    @StateObject private var gamificacaoViewModel = GamificacaoViewModel()
+
+    // Start at home if the user already has a saved token (mirrors Android startDestination logic)
+    init() {
+        let authPrefs = AuthPreferences()
+        if authPrefs.isLoggedIn, authPrefs.token != nil {
+            var initial = NavigationPath()
+            initial.append(AppRoute.home)
+            _path = State(initialValue: initial)
+        } else {
+            _path = State(initialValue: NavigationPath())
+        }
+    }
 
     // Replace current route — mirrors NavController.navigateReplacing
     private func navigateReplacing(_ route: AppRoute) {
@@ -73,6 +94,9 @@ struct AppNavigation: View {
             .navigationDestination(for: AppRoute.self) { route in
                 destination(for: route)
             }
+        }
+        .onAppear {
+            gamificacaoViewModel.setup(repository: appDependencies.gamificacaoRepository)
         }
     }
 
@@ -121,22 +145,68 @@ struct AppNavigation: View {
             Introduction6View(initialScreen: n, navigate: navigateReplacing)
         case .introduction7(let n):
             Introduction7View(initialScreen: n, navigate: navigateReplacing)
-        case .home, .profile, .progress, .resources, .food:
-            MainTabView(navigate: { path.append($0) })
+        case .home, .profile, .progress, .resources:
+            MainTabView(
+                navigate: { path.append($0) },
+                onLogout: { path.removeLast(path.count) }
+            )
+            .environmentObject(iaFoodViewModel)
+            .environmentObject(gamificacaoViewModel)
         case .screenModule:
-            Text("ScreenModule — TODO")
+            ScreenModuleView(
+                navigate: { path.append($0) },
+                dismiss: { path.removeLast() }
+            )
         case .screenSection:
-            Text("ScreenSection — TODO")
+            ScreenSectionView(
+                navigate: { path.append($0) },
+                dismiss: { path.removeLast() }
+            )
         case .moduleDetail:
             ModuleDetailView(dismiss: { path.removeLast() })
         case .gamificacao:
-            Text("GamificacaoView — TODO")
-        case .takePhoto, .howItWorksCard, .mealAnalysis, .confirmPhotoFromGallery, .attachFood:
-            Text("AI Food screens — TODO")
+            GamificacaoView(dismiss: { path.removeLast() })
+        case .takePhoto, .food:
+            IaFoodView(navigate: { path.append($0) }, dismiss: { path.removeLast() })
+                .environmentObject(iaFoodViewModel)
+        case .confirmPhotoFromGallery:
+            ConfirmPhotoView(navigate: { path.append($0) }, dismiss: { path.removeLast() })
+                .environmentObject(iaFoodViewModel)
+                .environmentObject(gamificacaoViewModel)
+                .environmentObject(appDependencies)
+        case .mealAnalysis:
+            MealAnalysisView(navigate: { path.append($0) }, dismiss: { path.removeLast(path.count) })
+                .environmentObject(iaFoodViewModel)
+        case .howItWorksCard:
+            HowItWorksView(dismiss: { path.removeLast() })
+        case .attachFood:
+            IaFoodView(navigate: { path.append($0) }, dismiss: { path.removeLast() })
+                .environmentObject(iaFoodViewModel)
         case .history:
-            Text("HistoryMenuView — TODO")
+            HistoricoFeijoesView(dismiss: { path.removeLast() })
+                .environmentObject(gamificacaoViewModel)
+        case .resourceList(let title, let items):
+            ResourceListView(
+                title: title,
+                items: items,
+                navigate: { path.append($0) },
+                dismiss: { path.removeLast() }
+            )
+            .environmentObject(gamificacaoViewModel)
+            .environmentObject(appDependencies)
+        case .resourceDetail(let item, let isAvailable):
+            ResourceDetailView(
+                item: item,
+                isAvailable: isAvailable,
+                dismiss: { path.removeLast() },
+                navigate: { path.append($0) }
+            )
+            .environmentObject(gamificacaoViewModel)
+            .environmentObject(appDependencies)
+        case .profileText(let title):
+            ProfileTextView(title: title, dismiss: { path.removeLast() })
         case .webView(let url):
-            Text("WebView(\(url)) — TODO")
+            WebViewScreen(url: url)
         }
     }
 }

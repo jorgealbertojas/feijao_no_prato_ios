@@ -13,6 +13,9 @@ final class AppPreferences {
         case birthDate = "app_birth_date"
         case hasCompletedIntro = "app_has_completed_intro"
         case gamificacaoPoints = "app_gamificacao_points"
+        case gamificacaoPontosConsumidos = "app_gamificacao_pontos_consumidos"
+        case ultimoModulo = "app_ultimo_modulo"
+        case ultimoSessao = "app_ultimo_sessao"
         case iaQuantity = "app_ia_quantity"
         // Progress tracking
         case moduloAtual = "app_modulo_atual"
@@ -30,6 +33,7 @@ final class AppPreferences {
         case paragraphIndex = "app_paragraph_index"
         case totalCamera = "app_total_camera"
         case alimentacaoScores = "app_alimentacao_scores"
+        case rescuedItems = "app_rescued_items"
     }
 
     var userName: String? {
@@ -55,6 +59,21 @@ final class AppPreferences {
     var gamificacaoPoints: Int {
         get { defaults.integer(forKey: Key.gamificacaoPoints.rawValue) }
         set { defaults.set(newValue, forKey: Key.gamificacaoPoints.rawValue) }
+    }
+
+    var gamificacaoPontosConsumidos: Int {
+        get { defaults.integer(forKey: Key.gamificacaoPontosConsumidos.rawValue) }
+        set { defaults.set(newValue, forKey: Key.gamificacaoPontosConsumidos.rawValue) }
+    }
+
+    var ultimoModulo: Int {
+        get { defaults.integer(forKey: Key.ultimoModulo.rawValue) }
+        set { defaults.set(newValue, forKey: Key.ultimoModulo.rawValue) }
+    }
+
+    var ultimoSessao: Int {
+        get { defaults.integer(forKey: Key.ultimoSessao.rawValue) }
+        set { defaults.set(newValue, forKey: Key.ultimoSessao.rawValue) }
     }
 
     var iaQuantity: Int {
@@ -167,6 +186,11 @@ final class AppPreferences {
     var alimentacaoScores: [Int] {
         get { defaults.array(forKey: Key.alimentacaoScores.rawValue) as? [Int] ?? [] }
         set { defaults.set(newValue, forKey: Key.alimentacaoScores.rawValue) }
+    }
+
+    var rescuedItems: [Int] {
+        get { defaults.array(forKey: Key.rescuedItems.rawValue) as? [Int] ?? [] }
+        set { defaults.set(newValue, forKey: Key.rescuedItems.rawValue) }
     }
 
     func saveUserProgress(currentModule: Int, currentSection: Int) {

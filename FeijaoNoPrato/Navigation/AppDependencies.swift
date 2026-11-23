@@ -22,6 +22,8 @@ final class AppDependencies: ObservableObject {
     )
 
     lazy var gamificacaoRepository: GamificacaoRepository = GamificacaoRepository(
-        appPreferences: appPreferences
+        appPreferences: appPreferences,
+        authPreferences: authPreferences,
+        networkClient: networkClient
     )
 }
