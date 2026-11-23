@@ -55,6 +55,8 @@ struct MainTabView: View {
                 }
                 .tag(4)
         }
+        // primary_200 = #9E472E: tints selected icon, label and selection chip
+        .tint(Color(red: 0.620, green: 0.278, blue: 0.180))
         .onAppear {
             // Re-sync backend pontuação every time the main tabs appear.
             // setup() fires at AppNavigation.onAppear which may run before the user
