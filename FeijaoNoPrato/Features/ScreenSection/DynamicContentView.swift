@@ -229,15 +229,15 @@ private struct ConteudoText: View {
     }
 }
 
-// MARK: - DestaqueCard (matches Android: yellow border, no icon, bold text)
+// MARK: - DestaqueCard (Android NutritionTipCard: yellow_200=#dfb400, 10% bg, 12dp radius, 18sp)
 
 private struct DestaqueCard: View {
     let modelo: String?
     let texto: String
     let isCentered: Bool
 
-    // Android QuadroDestaque uses a warm golden border — matches secondary/warning yellow
-    private let borderColor = Color(red: 0.780, green: 0.639, blue: 0.212) // ~#C7A336
+    // Android yellow_200 = #dfb400
+    private let yellow200 = Color(red: 0.875, green: 0.706, blue: 0.0)
 
     private var parsedText: AttributedString {
         (try? AttributedString(
@@ -248,16 +248,18 @@ private struct DestaqueCard: View {
 
     var body: some View {
         Text(parsedText)
-            .font(.system(size: 15, weight: .bold))
+            .font(.system(size: 18))
+            .foregroundColor(Color(red: 0.2, green: 0.2, blue: 0.2))
             .multilineTextAlignment(isCentered ? .center : .leading)
-            .foregroundColor(Color(.label))
             .frame(maxWidth: .infinity, alignment: isCentered ? .center : .leading)
-            .padding(14)
+            .padding(16)
+            .background(yellow200.opacity(0.1))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
             .overlay(
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(borderColor, lineWidth: 2)
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(yellow200, lineWidth: 1)
             )
-            .padding(.vertical, 4)
+            .padding(.vertical, 16)
     }
 }
 

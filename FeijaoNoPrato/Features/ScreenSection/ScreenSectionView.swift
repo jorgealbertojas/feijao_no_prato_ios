@@ -143,10 +143,12 @@ struct ScreenSectionView: View {
             }
 
             if viewModel.nextVisible {
-                let desc = viewModel.nextDescricao
-                let isConfirmar = desc.uppercased() == "CONFIRMAR"
-                let isSeguir = desc.uppercased().contains("SELECT_DOUBLE")
-                let label = isSeguir ? "SEGUIR" : (isConfirmar ? "CONFIRMAR" : (viewModel.isLastPage ? "CONCLUIR" : "PRÓXIMO"))
+                let desc = viewModel.nextDescricao.uppercased()
+                let isConfirmar = desc == "CONFIRMAR"
+                let isSeguir = desc.contains("SELECT_DOUBLE")
+                let isDefaultProximo = desc == "PRÓXIMO"
+                // Use the data label; fall back to PRÓXIMO/CONCLUIR only for the generic default
+                let label = isSeguir ? "SEGUIR" : (isConfirmar ? "CONFIRMAR" : (isDefaultProximo ? (viewModel.isLastPage ? "CONCLUIR" : "PRÓXIMO") : desc))
 
                 Button(action: {
                     if isConfirmar {
@@ -159,7 +161,7 @@ struct ScreenSectionView: View {
                         Text(label)
                             .font(.system(size: 15, weight: .bold))
                             .foregroundColor(.white)
-                        if !isConfirmar && !isSeguir {
+                        if !isConfirmar && !isSeguir && isDefaultProximo && !viewModel.isLastPage {
                             Image(systemName: "arrow.right")
                                 .font(.system(size: 14, weight: .bold))
                                 .foregroundColor(.white)
