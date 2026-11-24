@@ -242,6 +242,7 @@ private struct _SelfSizingWebView: UIViewRepresentable {
     func makeCoordinator() -> Coordinator { Coordinator(heightBinding: $height) }
 
     func makeUIView(context: Context) -> WKWebView {
+        // Message handler receives calculated height from JS after image loads.
         let contentController = WKUserContentController()
         contentController.add(context.coordinator, name: "imageLoaded")
         let config = WKWebViewConfiguration()
@@ -251,25 +252,15 @@ private struct _SelfSizingWebView: UIViewRepresentable {
         webView.isOpaque = false
         webView.scrollView.isScrollEnabled = false
         webView.scrollView.bounces = false
+        webView.navigationDelegate = context.coordinator
         return webView
     }
 
     func updateUIView(_ webView: WKWebView, context: Context) {
-        // Load HTML string so img.onload fires AFTER image downloads and renders.
-        // didFinish fires before the image loads, so scrollHeight there is unreliable.
-        let w = Int(width)
-        let html = """
-        <!DOCTYPE html>
-        <html><head>
-        <meta name="viewport" content="width=\(w),initial-scale=1,maximum-scale=1">
-        <style>*{margin:0;padding:0;box-sizing:border-box;}body{background:transparent;}img{width:\(w)px;height:auto;display:block;}</style>
-        </head><body>
-        <img src="\(url.absoluteString)"
-             onload="window.webkit.messageHandlers.imageLoaded.postMessage(this.offsetHeight)"
-             onerror="window.webkit.messageHandlers.imageLoaded.postMessage(-1)">
-        </body></html>
-        """
-        webView.loadHTMLString(html, baseURL: nil)
+        context.coordinator.targetWidth = width
+        // Load URL directly — avoids CORS restrictions from loadHTMLString(baseURL:nil).
+        // The browser wraps the image in <img> which we access in didFinish via JS.
+        webView.load(URLRequest(url: url))
     }
 
     static func dismantleUIView(_ webView: WKWebView, coordinator: Coordinator) {
@@ -277,9 +268,36 @@ private struct _SelfSizingWebView: UIViewRepresentable {
     }
 
     // Store Binding<CGFloat> as a plain var (not @Binding) to avoid NSObject init ambiguity.
-    class Coordinator: NSObject, WKScriptMessageHandler {
+    class Coordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler {
         var heightBinding: Binding<CGFloat>
+        var targetWidth: CGFloat = 0
         init(heightBinding: Binding<CGFloat>) { self.heightBinding = heightBinding }
+
+        func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+            // After didFinish the main resource (image) is loaded. We inject CSS to make it
+            // full-width, then calculate the rendered height from the image's natural aspect ratio.
+            let w = Int(targetWidth > 0 ? targetWidth : webView.frame.width)
+            let js = """
+            (function(){
+              var s=document.createElement('style');
+              s.textContent='body{margin:0;padding:0;background:transparent;}img{width:100%;height:auto;display:block;}';
+              document.head.appendChild(s);
+              var img=document.querySelector('img');
+              if(!img){return;}
+              function report(){
+                if(img.naturalWidth>0){
+                  var h=(img.naturalHeight/img.naturalWidth)*\(w);
+                  window.webkit.messageHandlers.imageLoaded.postMessage(h);
+                } else {
+                  window.webkit.messageHandlers.imageLoaded.postMessage(img.offsetHeight);
+                }
+              }
+              if(img.complete&&img.naturalWidth>0){report();}
+              else{img.addEventListener('load',report);}
+            })();
+            """
+            webView.evaluateJavaScript(js, completionHandler: nil)
+        }
 
         func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
             guard message.name == "imageLoaded" else { return }
