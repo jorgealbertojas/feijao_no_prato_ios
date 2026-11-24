@@ -27,9 +27,9 @@ struct DynamicContentView: View {
     }
 
     private func isFullWidthItem(_ item: SectionItem) -> Bool {
-        // Carrossel is always full-width; GrupoImagens only when horizontal
-        if item.tipo?.caseInsensitiveCompare("Carrossel") == .orderedSame { return true }
-        return item.tipo?.caseInsensitiveCompare("GrupoImagens") == .orderedSame &&
+        let tipo = item.tipo?.lowercased() ?? ""
+        if tipo == "carrossel" { return true }
+        return tipo == "grupoimagens" &&
                item.direcao?.caseInsensitiveCompare("Horizontal") == .orderedSame
     }
 
@@ -38,9 +38,9 @@ struct DynamicContentView: View {
         let isCentered = item.alinhamento == "Centro"
         let align: TextAlignment = isCentered ? .center : .leading
 
-        switch item.tipo ?? "" {
+        switch item.tipo?.lowercased() ?? "" {
 
-        case "Titulo":
+        case "titulo":
             Text(item.texto ?? "")
                 .font(.system(size: 24, weight: .bold))
                 .foregroundColor(Color(.label))
@@ -48,7 +48,7 @@ struct DynamicContentView: View {
                 .frame(maxWidth: .infinity, alignment: isCentered ? .center : .leading)
                 .padding(.vertical, 4)
 
-        case "SubTitulo":
+        case "subtitulo":
             let subAttr = (try? AttributedString(
                 markdown: preprocessForMarkdown(item.texto ?? ""),
                 options: AttributedString.MarkdownParsingOptions(interpretedSyntax: .inlineOnlyPreservingWhitespace)
@@ -60,17 +60,17 @@ struct DynamicContentView: View {
                 .frame(maxWidth: .infinity, alignment: isCentered ? .center : .leading)
                 .padding(.vertical, 4)
 
-        case "Conteudo":
+        case "conteudo":
             ConteudoText(texto: item.texto ?? "", isCentered: isCentered)
 
-        case "Etiqueta":
+        case "etiqueta":
             ChipRow(text: item.texto ?? "")
 
-        case "Espacamento":
+        case "espacamento":
             let size = CGFloat(item.tamanho ?? 8)
             Spacer().frame(height: size)
 
-        case "Imagem":
+        case "imagem":
             if let name = item.nomeArquivo, !name.isEmpty {
                 let imageURL = URL(string: imageBaseURL + name)
                 AsyncImage(url: imageURL) { phase in
@@ -92,7 +92,7 @@ struct DynamicContentView: View {
                 .padding(.vertical, 8)
             }
 
-        case "GrupoImagens":
+        case "grupoimagens":
             if let imgs = item.imagens, !imgs.isEmpty {
                 let isHorizontal = item.direcao?.caseInsensitiveCompare("Horizontal") == .orderedSame
                 if isHorizontal {
@@ -107,20 +107,20 @@ struct DynamicContentView: View {
                 }
             }
 
-        case "QuadroDestaque":
+        case "quadrodestaque":
             DestaqueCard(modelo: item.modelo, texto: item.texto ?? "", isCentered: isCentered)
 
-        case "Carrossel":
+        case "carrossel":
             if let subitems = item.itens, !subitems.isEmpty {
                 CarrosselView(items: subitems, imageBaseURL: imageBaseURL)
             }
 
-        case "VideoYoutube":
+        case "videoyoutube":
             if let url = item.url, !url.isEmpty {
                 YoutubePreviewButton(videoID: url)
             }
 
-        case "Pergunta":
+        case "pergunta":
             if let opcoes = item.opcoes, !opcoes.isEmpty {
                 PerguntaView(
                     opcoes: opcoes,
@@ -129,14 +129,14 @@ struct DynamicContentView: View {
                 )
             }
 
-        case "LinkExterno":
+        case "linkexterno":
             if let url = item.url ?? item.personalizacao, !url.isEmpty {
                 ContinueButton(label: item.personalizacao ?? "ACESSAR") {
                     navigate(.webView(url: url))
                 }
             }
 
-        case "BotaoExtra":
+        case "botaoextra":
             // Rendered separately via bottom bar; skip inline rendering
             EmptyView()
 
