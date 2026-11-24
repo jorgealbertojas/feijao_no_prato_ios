@@ -120,14 +120,15 @@ struct DynamicContentView: View {
 
                     if isFullWidth {
                         // Android: fillMaxWidth() + wrapContentHeight() + ContentScale.FillWidth
-                        // frame(maxWidth:.infinity) must be on the AsyncImage container itself,
-                        // not only on the inner image — otherwise SwiftUI doesn't expand it.
+                        // AsyncImage needs a concrete width to start downloading; maxWidth:.infinity
+                        // resolves to zero during SwiftUI's initial layout pass and the image never loads.
+                        let contentWidth = UIScreen.main.bounds.width - 32
                         AsyncImage(url: imageURL) { img in
                             img.resizable().scaledToFit()
                         } placeholder: {
-                            Color(.systemGray5).frame(height: 200)
+                            Color(.systemGray5).frame(width: contentWidth, height: 200)
                         }
-                        .frame(maxWidth: .infinity)
+                        .frame(width: contentWidth)
                         .cornerRadius(12)
                         .padding(.vertical, 8)
                     } else {
