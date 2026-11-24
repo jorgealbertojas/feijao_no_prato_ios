@@ -26,6 +26,8 @@ final class GamificacaoViewModel: ObservableObject {
     // Called once from AppNavigation after dependencies are ready
     func setup(repository: GamificacaoRepository) {
         self.repository = repository
+        // Show cached values immediately so the UI is not stuck at 0 while the network loads
+        aplicarCache(repository.cachedPontuacao())
         Task { await carregarDoBackend() }
     }
 
@@ -35,6 +37,14 @@ final class GamificacaoViewModel: ObservableObject {
         guard let repo else { return }
         self.repository = repo
         Task { await carregarDoBackend() }
+    }
+
+    private func aplicarCache(_ p: PontuacaoUsuario) {
+        pontuacao.totalAcumulado = p.totalAcumulado
+        pontuacao.totalConsumido = p.totalConsumido
+        pontuacao.ultimoModulo   = p.ultimoModulo
+        pontuacao.ultimoSessao   = p.ultimoSessao
+        rescuedItems             = p.list_rescue
     }
 
     private func carregarDoBackend() async {

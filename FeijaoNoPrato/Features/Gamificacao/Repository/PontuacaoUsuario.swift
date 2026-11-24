@@ -23,6 +23,16 @@ struct PontoAtividade: Codable, Identifiable {
     let data: String
     let referenciaUnica: String
 
+    init(modulo_numero: String, modulo: String, atividade: String,
+         pontos: Int, data: String, referenciaUnica: String) {
+        self.modulo_numero   = modulo_numero
+        self.modulo          = modulo
+        self.atividade       = atividade
+        self.pontos          = pontos
+        self.data            = data
+        self.referenciaUnica = referenciaUnica
+    }
+
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         modulo_numero   = (try? c.decodeIfPresent(String.self, forKey: .modulo_numero)) ?? ""

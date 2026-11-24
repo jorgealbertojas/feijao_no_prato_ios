@@ -70,8 +70,8 @@ struct MainTabView: View {
             .padding(.bottom, 49) // reserve space for the custom tab bar
 
             // Custom tab bar — matches Android BottomBar.kt colors and background exactly
-            // Android uses containerColor = R.color.carioquina_introdution = #F1ECE1
-            let tabBg = Color(red: 0.945, green: 0.925, blue: 0.882)
+            // Android uses containerColor = R.color.white (white)
+            let tabBg = Color.white
             VStack(spacing: 0) {
                 Divider()
                 HStack(spacing: 0) {
@@ -100,7 +100,7 @@ struct MainTabView: View {
                 .background(tabBg)
                 .padding(.bottom, 20) // above home indicator
             }
-            .background(tabBg)
+            .background(Color.white)
         }
         .ignoresSafeArea(edges: .bottom)
         .onAppear {
