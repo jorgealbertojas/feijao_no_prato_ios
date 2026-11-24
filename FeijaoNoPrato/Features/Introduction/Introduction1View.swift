@@ -10,7 +10,7 @@ struct Introduction1View: View {
     var navigate: (AppRoute) -> Void
 
     @State private var screenNumber: Int
-    @State private var selectedBean: String? = nil
+    @State private var selectedBean: String? = "Vermelho"
 
     private let totalScreens = 6
 
@@ -163,21 +163,20 @@ struct Introduction1View: View {
             .padding(.horizontal, 4)
 
         case 6:
-            VStack(spacing: 24) {
-                Text("Escolha o seu feijão favorito!")
+            // Android: Introduction_1_selectedBean — vertical list, each row has image + name
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Qual desses aparece mais no seu dia a dia?")
                     .font(.system(size: 20, weight: .bold))
-                    .multilineTextAlignment(.center)
-                    .foregroundColor(Color(red: 0.231, green: 0.231, blue: 0.231))
+                    .foregroundColor(Color(red: 0.2, green: 0.2, blue: 0.2))
+                    .padding(.bottom, 6)
 
-                HStack(spacing: 16) {
-                    ForEach(["Carioca", "Preto", "Branco"], id: \.self) { bean in
-                        BeanOptionCard(label: bean, isSelected: selectedBean == bean) {
-                            selectedBean = bean
-                        }
+                ForEach(BeanData.all, id: \.name) { bean in
+                    BeanRowItem(bean: bean, isSelected: selectedBean == bean.name) {
+                        selectedBean = bean.name
                     }
                 }
             }
-            .padding(16)
+            .padding(24)
 
         default:
             EmptyView()
@@ -283,31 +282,58 @@ struct Introduction1View: View {
     }
 }
 
-// MARK: - Bean option card
+// MARK: - Bean data model
 
-private struct BeanOptionCard: View {
-    let label: String
+struct BeanData {
+    let name: String
+    let color: Color
+    let imageName: String
+
+    static let all: [BeanData] = [
+        BeanData(name: "Preto",              color: Color(red: 0.169, green: 0.110, blue: 0.094), imageName: "beans_black"),
+        BeanData(name: "Carioca",            color: Color(red: 0.784, green: 0.635, blue: 0.482), imageName: "beans_carioca"),
+        BeanData(name: "Branco",             color: Color(red: 0.949, green: 0.851, blue: 0.780), imageName: "beans_white"),
+        BeanData(name: "Vermelho",           color: Color(red: 0.608, green: 0.169, blue: 0.169), imageName: "beans_red"),
+        BeanData(name: "Verde",              color: Color(red: 0.537, green: 0.608, blue: 0.129), imageName: "beans_green"),
+        BeanData(name: "Fradinho ou de-corda", color: Color(red: 0.976, green: 0.886, blue: 0.263), imageName: "beans_fradinho"),
+        BeanData(name: "Roxo",              color: Color(red: 0.667, green: 0.325, blue: 1.0),    imageName: "beans_purple"),
+        BeanData(name: "Rajado",             color: Color(red: 0.631, green: 0.353, blue: 0.271), imageName: "beans_rajado"),
+    ]
+}
+
+// MARK: - Bean row item (Android-style: image + name, full-width row)
+
+private struct BeanRowItem: View {
+    let bean: BeanData
     let isSelected: Bool
     let action: () -> Void
 
+    // Android quaternary_11 = #F8F7F3
+    private let rowBg = Color(red: 0.973, green: 0.969, blue: 0.953)
+    // Android selected border = #DE9990
+    private let selectedBorder = Color(red: 0.871, green: 0.600, blue: 0.565)
+
     var body: some View {
         Button(action: action) {
-            VStack(spacing: 8) {
-                ZStack {
-                    Circle()
-                        .fill(isSelected ? Color.brandOrange : Color(white: 0.9))
-                        .frame(width: 70, height: 70)
-                    Text("🫘")
-                        .font(.system(size: 32))
-                }
-                Text(label)
-                    .font(.system(size: 14, weight: .medium))
-                    .foregroundColor(isSelected ? Color.brandOrange : Color(red: 0.4, green: 0.4, blue: 0.4))
+            HStack(spacing: 16) {
+                Image(bean.imageName)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 40, height: 40)
+
+                Text(bean.name)
+                    .font(.system(size: 16, weight: isSelected ? .bold : .regular))
+                    .foregroundColor(isSelected ? bean.color : Color(red: 0.2, green: 0.2, blue: 0.2))
+
+                Spacer()
             }
-            .padding(8)
-            .background(
+            .padding(.vertical, 12)
+            .padding(.horizontal, 16)
+            .background(rowBg)
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .overlay(
                 RoundedRectangle(cornerRadius: 12)
-                    .strokeBorder(isSelected ? Color.brandOrange : Color(white: 0.8), lineWidth: 2)
+                    .strokeBorder(isSelected ? selectedBorder : Color.clear, lineWidth: 2)
             )
         }
     }
