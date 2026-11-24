@@ -267,27 +267,32 @@ private struct DestaqueCard: View {
 
 // MARK: - HorizontalImageCarousel (Android GrupoImagens direcao=="Horizontal")
 // Swipeable card carousel: each card shows image (top) + caption (bottom).
-// Card width is 72% of screen width so the next card always peeks regardless of container width.
+// GeometryReader reads the actual container width at render time so the next card always peeks.
 // Works for all GrupoImagens callers — modelo field is the caption text.
 
 private struct HorizontalImageCarousel: View {
     let images: [SectionItemImage]
     let imageBaseURL: String
 
-    // 72% of screen → next card peeks ~22% at right edge, matching Android proportion
-    private let cardWidth: CGFloat = UIScreen.main.bounds.width * 0.72
-
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 12) {
-                ForEach(Array(images.enumerated()), id: \.offset) { _, img in
-                    ImageCarouselCard(image: img, imageBaseURL: imageBaseURL, cardWidth: cardWidth)
+        GeometryReader { geo in
+            // 78% of container so next card peeks ~16% at right edge
+            let cardWidth = max(geo.size.width * 0.78, 200)
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 12) {
+                    ForEach(Array(images.enumerated()), id: \.offset) { _, img in
+                        ImageCarouselCard(image: img, imageBaseURL: imageBaseURL, cardWidth: cardWidth)
+                    }
                 }
+                .padding(.leading, 16)
+                .padding(.trailing, 8)
+                .padding(.vertical, 8)
             }
-            .padding(.leading, 16)
-            .padding(.trailing, 8)
-            .padding(.vertical, 8)
+            .frame(width: geo.size.width)
         }
+        // Fix GeometryReader height: image + caption (~40pt) + vertical padding (16pt)
+        .frame(height: UIScreen.main.bounds.width * 0.78 * 0.65 + 56)
     }
 }
 
