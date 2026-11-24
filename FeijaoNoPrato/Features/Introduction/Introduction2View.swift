@@ -51,34 +51,32 @@ struct Introduction2View: View {
         switch screenNumber {
 
         case 1:
-            // Android: Introduction_1_6 — balloon card + icon_c2 (250dp)
+            // Android: Introduction_1_6 — speech balloon card + icon_c2 (250dp)
             VStack(spacing: 0) {
-                ZStack(alignment: .bottom) {
-                    VStack(spacing: 0) {
-                        RoundedRectangle(cornerRadius: 24)
-                            .fill(Color.white)
-                            .shadow(color: Color.black.opacity(0.12), radius: 8, x: 0, y: 4)
-                            .overlay(
-                                VStack(spacing: 10) {
-                                    Text("Não é incrível como um alimento tão simples é saudável e é a cara do Brasil?")
-                                        .font(.system(size: 28, weight: .bold))
-                                        .multilineTextAlignment(.center)
-                                        .foregroundColor(Color(red: 0.2, green: 0.2, blue: 0.2))
-                                        .lineSpacing(4)
-                                    Text("Não importa o tipo, o feijão é muito saudável e central na alimentação no Brasil. Por isso ele foi escolhido para te acompanhar!")
-                                        .font(.system(size: 18))
-                                        .multilineTextAlignment(.center)
-                                        .foregroundColor(.black)
-                                        .lineSpacing(4)
-                                }
-                                .padding(.horizontal, 24)
-                                .padding(.vertical, 32)
-                            )
-                        TriangleDown()
-                            .fill(Color.white)
-                            .frame(width: 32, height: 16)
-                    }
+                VStack(spacing: 10) {
+                    Text("Não é incrível como um alimento tão simples é saudável e é a cara do Brasil?")
+                        .font(.system(size: 28, weight: .bold))
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(Color(red: 0.2, green: 0.2, blue: 0.2))
+                        .lineSpacing(4)
+                    Text("Não importa o tipo, o feijão é muito saudável e central na alimentação no Brasil. Por isso ele foi escolhido para te acompanhar!")
+                        .font(.system(size: 18))
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(.black)
+                        .lineSpacing(4)
                 }
+                .padding(.horizontal, 24)
+                .padding(.vertical, 32)
+                .frame(maxWidth: .infinity)
+                .background(
+                    RoundedRectangle(cornerRadius: 24)
+                        .fill(Color.white)
+                        .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 4)
+                )
+
+                TriangleDown()
+                    .fill(Color.white)
+                    .frame(width: 32, height: 18)
 
                 Spacer().frame(height: 30)
 
@@ -109,34 +107,32 @@ struct Introduction2View: View {
             }
 
         case 4:
-            // Android: Introduction_2_6 — balloon card + icon_c2 (300dp)
+            // Android: Introduction_2_6 — speech balloon card + icon_c2 (300dp)
             VStack(spacing: 0) {
-                ZStack(alignment: .bottom) {
-                    VStack(spacing: 0) {
-                        RoundedRectangle(cornerRadius: 24)
-                            .fill(Color.white)
-                            .shadow(color: Color.black.opacity(0.12), radius: 8, x: 0, y: 4)
-                            .overlay(
-                                VStack(spacing: 6) {
-                                    Text("E não vou ser só eu falando, não!")
-                                        .font(.system(size: 28, weight: .bold))
-                                        .multilineTextAlignment(.center)
-                                        .foregroundColor(Color(red: 0.2, green: 0.2, blue: 0.2))
-                                        .lineSpacing(4)
-                                    Text("Nossa jornada vai ter muita interação! Perguntas para fixar o aprendizado e acompanhar sua evolução. Quer ver um exemplo?")
-                                        .font(.system(size: 18))
-                                        .multilineTextAlignment(.center)
-                                        .foregroundColor(.black)
-                                        .lineSpacing(4)
-                                }
-                                .padding(.horizontal, 24)
-                                .padding(.vertical, 32)
-                            )
-                        TriangleDown()
-                            .fill(Color.white)
-                            .frame(width: 32, height: 16)
-                    }
+                VStack(spacing: 6) {
+                    Text("E não vou ser só eu falando, não!")
+                        .font(.system(size: 28, weight: .bold))
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(Color(red: 0.2, green: 0.2, blue: 0.2))
+                        .lineSpacing(4)
+                    Text("Nossa jornada vai ter muita interação! Perguntas para fixar o aprendizado e acompanhar sua evolução. Quer ver um exemplo?")
+                        .font(.system(size: 18))
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(.black)
+                        .lineSpacing(4)
                 }
+                .padding(.horizontal, 24)
+                .padding(.vertical, 32)
+                .frame(maxWidth: .infinity)
+                .background(
+                    RoundedRectangle(cornerRadius: 24)
+                        .fill(Color.white)
+                        .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 4)
+                )
+
+                TriangleDown()
+                    .fill(Color.white)
+                    .frame(width: 32, height: 18)
 
                 Spacer().frame(height: 20)
 

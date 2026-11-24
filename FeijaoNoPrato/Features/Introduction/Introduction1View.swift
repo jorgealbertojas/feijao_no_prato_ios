@@ -83,36 +83,35 @@ struct Introduction1View: View {
             }
 
         case 4:
-            // Android: Introduction_1_4 — balloon card + icon_c3 character (300dp)
+            // Android: Introduction_1_4 — speech balloon card + icon_c3 character (300dp)
             VStack(spacing: 0) {
-                // Balloon card with triangle pointer at bottom
-                ZStack(alignment: .bottom) {
-                    VStack(spacing: 0) {
-                        RoundedRectangle(cornerRadius: 24)
-                            .fill(Color.white)
-                            .shadow(color: Color.black.opacity(0.12), radius: 8, x: 0, y: 4)
-                            .overlay(
-                                VStack(spacing: 6) {
-                                    Text("Oi, prazer,\neu sou o Feijuca!")
-                                        .font(.system(size: 28, weight: .bold))
-                                        .multilineTextAlignment(.center)
-                                        .foregroundColor(Color(red: 0.2, green: 0.2, blue: 0.2))
-                                        .lineSpacing(4)
-                                    Text("É sempre bom ter uma\ncompanhia na trilha.")
-                                        .font(.system(size: 18))
-                                        .multilineTextAlignment(.center)
-                                        .foregroundColor(.black)
-                                        .lineSpacing(4)
-                                }
-                                .padding(.horizontal, 24)
-                                .padding(.vertical, 32)
-                            )
-                        // Triangle pointer pointing down
-                        TriangleDown()
-                            .fill(Color.white)
-                            .frame(width: 32, height: 16)
-                    }
+                // Speech balloon: content VStack with background card + triangle tail
+                VStack(spacing: 6) {
+                    Text("Oi, prazer,\neu sou o Feijuca!")
+                        .font(.system(size: 28, weight: .bold))
+                        .multilineTextAlignment(.center)
+                        // Android primary_200 = #9E472E
+                        .foregroundColor(Color(red: 0.620, green: 0.278, blue: 0.180))
+                        .lineSpacing(4)
+                    Text("É sempre bom ter uma\ncompanhia na trilha.")
+                        .font(.system(size: 18))
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(.black)
+                        .lineSpacing(4)
                 }
+                .padding(.horizontal, 24)
+                .padding(.vertical, 32)
+                .frame(maxWidth: .infinity)
+                .background(
+                    RoundedRectangle(cornerRadius: 24)
+                        .fill(Color.white)
+                        .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 4)
+                )
+
+                // Triangle tail centered pointing down
+                TriangleDown()
+                    .fill(Color.white)
+                    .frame(width: 32, height: 18)
 
                 Spacer().frame(height: 16)
 
@@ -124,34 +123,32 @@ struct Introduction1View: View {
             .padding(.horizontal, 4)
 
         case 5:
-            // Android: Introduction_1_55 — same balloon card layout as case 4, different text
+            // Android: Introduction_1_55 — speech balloon card, same layout as case 4
             VStack(spacing: 0) {
-                ZStack(alignment: .bottom) {
-                    VStack(spacing: 0) {
-                        RoundedRectangle(cornerRadius: 24)
-                            .fill(Color.white)
-                            .shadow(color: Color.black.opacity(0.12), radius: 8, x: 0, y: 4)
-                            .overlay(
-                                VStack(spacing: 10) {
-                                    Text("Provavelmente eu já te acompanho muitos dias à mesa. Pode ser preto, branco, marrom, vermelho…")
-                                        .font(.system(size: 18))
-                                        .multilineTextAlignment(.center)
-                                        .foregroundColor(.black)
-                                        .lineSpacing(4)
-                                    Text("O que importa é\nFeijão no Prato!")
-                                        .font(.system(size: 24, weight: .bold))
-                                        .multilineTextAlignment(.center)
-                                        .foregroundColor(Color(red: 0.2, green: 0.2, blue: 0.2))
-                                        .lineSpacing(4)
-                                }
-                                .padding(.horizontal, 24)
-                                .padding(.vertical, 32)
-                            )
-                        TriangleDown()
-                            .fill(Color.white)
-                            .frame(width: 32, height: 16)
-                    }
+                VStack(spacing: 10) {
+                    Text("Provavelmente eu já te acompanho muitos dias à mesa. Pode ser preto, branco, marrom, vermelho…")
+                        .font(.system(size: 18))
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(.black)
+                        .lineSpacing(4)
+                    Text("O que importa é\nFeijão no Prato!")
+                        .font(.system(size: 24, weight: .bold))
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(Color(red: 0.2, green: 0.2, blue: 0.2))
+                        .lineSpacing(4)
                 }
+                .padding(.horizontal, 24)
+                .padding(.vertical, 32)
+                .frame(maxWidth: .infinity)
+                .background(
+                    RoundedRectangle(cornerRadius: 24)
+                        .fill(Color.white)
+                        .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 4)
+                )
+
+                TriangleDown()
+                    .fill(Color.white)
+                    .frame(width: 32, height: 18)
 
                 Spacer().frame(height: 16)
 
