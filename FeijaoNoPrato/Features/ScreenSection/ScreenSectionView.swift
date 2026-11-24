@@ -141,6 +141,7 @@ struct ScreenSectionView: View {
                         .background(Color.brandOrange)
                         .clipShape(Circle())
                 }
+                .buttonStyle(.plain)
             }
 
             if viewModel.nextVisible {
@@ -161,6 +162,7 @@ struct ScreenSectionView: View {
                             .background(Color.brandOrange)
                             .clipShape(Circle())
                     }
+                    .buttonStyle(.plain)
                 } else {
                     Button(action: {
                         if isConfirmar {
