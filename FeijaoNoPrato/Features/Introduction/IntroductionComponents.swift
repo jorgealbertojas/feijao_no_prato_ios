@@ -197,6 +197,19 @@ func boldText(_ text: String) -> AttributedString {
     )) ?? AttributedString(cleaned)
 }
 
+// MARK: - Triangle pointing down (balloon tail)
+
+struct TriangleDown: Shape {
+    func path(in rect: CGRect) -> Path {
+        Path { p in
+            p.move(to: CGPoint(x: 0, y: 0))
+            p.addLine(to: CGPoint(x: rect.width / 2, y: rect.height))
+            p.addLine(to: CGPoint(x: rect.width, y: 0))
+            p.closeSubpath()
+        }
+    }
+}
+
 // MARK: - Balloon card
 
 struct BalloonCard: View {

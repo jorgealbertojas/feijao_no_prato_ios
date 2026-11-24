@@ -83,18 +83,45 @@ struct Introduction1View: View {
             }
 
         case 4:
-            VStack(spacing: 20) {
-                Image(systemName: "figure.walk.circle.fill")
-                    .resizable().scaledToFit()
-                    .frame(width: 100, height: 100)
-                    .foregroundColor(Color.brandOrange)
-                Text(boldText("**E você terá um amigo nesta viagem...**\n\nCarioquinha vai te guiar pelos 120 dias desta jornada de transformação!"))
-                    .font(.system(size: 18))
-                    .multilineTextAlignment(.center)
-                    .foregroundColor(Color(red: 0.231, green: 0.231, blue: 0.231))
-                    .lineSpacing(6)
+            // Android: Introduction_1_4 — balloon card + icon_c3 character (300dp)
+            VStack(spacing: 0) {
+                // Balloon card with triangle pointer at bottom
+                ZStack(alignment: .bottom) {
+                    VStack(spacing: 0) {
+                        RoundedRectangle(cornerRadius: 24)
+                            .fill(Color.white)
+                            .shadow(color: Color.black.opacity(0.12), radius: 8, x: 0, y: 4)
+                            .overlay(
+                                VStack(spacing: 6) {
+                                    Text("Oi, prazer,\neu sou o Feijuca!")
+                                        .font(.system(size: 28, weight: .bold))
+                                        .multilineTextAlignment(.center)
+                                        .foregroundColor(Color(red: 0.2, green: 0.2, blue: 0.2))
+                                        .lineSpacing(4)
+                                    Text("É sempre bom ter uma\ncompanhia na trilha.")
+                                        .font(.system(size: 18))
+                                        .multilineTextAlignment(.center)
+                                        .foregroundColor(.black)
+                                        .lineSpacing(4)
+                                }
+                                .padding(.horizontal, 24)
+                                .padding(.vertical, 32)
+                            )
+                        // Triangle pointer pointing down
+                        TriangleDown()
+                            .fill(Color.white)
+                            .frame(width: 32, height: 16)
+                    }
+                }
+
+                Spacer().frame(height: 16)
+
+                Image("icon_c3")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 240, height: 240)
             }
-            .padding(24)
+            .padding(.horizontal, 4)
 
         case 5:
             VStack(spacing: 20) {
