@@ -15,7 +15,7 @@ struct DynamicContentView: View {
         VStack(alignment: .leading, spacing: 8) {
             ForEach(Array(items.enumerated()), id: \.offset) { _, item in
                 // GrupoImagens horizontal spans full width — no horizontal padding
-                if item.tipo == "GrupoImagens" && item.direcao == "Horizontal" {
+                if isHorizontalGrupo(item) {
                     itemView(item)
                 } else {
                     itemView(item)
@@ -24,6 +24,11 @@ struct DynamicContentView: View {
             }
         }
         .padding(.vertical, 8)
+    }
+
+    private func isHorizontalGrupo(_ item: SectionItem) -> Bool {
+        item.tipo?.caseInsensitiveCompare("GrupoImagens") == .orderedSame &&
+        item.direcao?.caseInsensitiveCompare("Horizontal") == .orderedSame
     }
 
     @ViewBuilder
@@ -87,7 +92,8 @@ struct DynamicContentView: View {
 
         case "GrupoImagens":
             if let imgs = item.imagens, !imgs.isEmpty {
-                let isHorizontal = item.direcao == "Horizontal"
+                let isHorizontal = item.direcao?.caseInsensitiveCompare("Horizontal") == .orderedSame
+                let _ = print("[GrupoImagens] direcao='\(item.direcao ?? "nil")', count=\(imgs.count), isHorizontal=\(isHorizontal)")
                 if isHorizontal {
                     HorizontalImageCarousel(images: imgs, imageBaseURL: imageBaseURL)
                 } else {
