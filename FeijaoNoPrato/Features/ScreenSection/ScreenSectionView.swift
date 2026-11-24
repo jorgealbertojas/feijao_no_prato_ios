@@ -76,22 +76,26 @@ struct ScreenSectionView: View {
                 .padding(.horizontal, 16)
                 .padding(.top, 8)
 
-            // Scrollable page content
-            ScrollView {
-                if let page = viewModel.currentPage, let items = page.itens {
-                    DynamicContentView(
-                        items: items,
-                        imageBaseURL: viewModel.imageBaseURL,
-                        selectedOption: viewModel.selectedOption,
-                        onOptionSelected: { viewModel.selectedOption = $0 },
-                        navigate: navigate
-                    )
+            // Scrollable page content + floating bottom bar overlay
+            ZStack(alignment: .bottom) {
+                ScrollView {
+                    if let page = viewModel.currentPage, let items = page.itens {
+                        DynamicContentView(
+                            items: items,
+                            imageBaseURL: viewModel.imageBaseURL,
+                            selectedOption: viewModel.selectedOption,
+                            onOptionSelected: { viewModel.selectedOption = $0 },
+                            navigate: navigate
+                        )
+                    }
+                    // Extra padding so last content is not hidden behind floating bar
+                    Spacer().frame(height: 88)
                 }
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-            // Bottom navigation
-            bottomBar
+                // Bottom navigation — floats over content with gradient
+                bottomBar
+            }
         }
     }
 
@@ -184,8 +188,17 @@ struct ScreenSectionView: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
-        .background(Color(.systemBackground))
-        .overlay(Divider(), alignment: .top)
+        .background(
+            LinearGradient(
+                colors: [
+                    Color(.systemBackground).opacity(0),
+                    Color(.systemBackground).opacity(0.85),
+                    Color(.systemBackground)
+                ],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+        )
     }
 }
 
