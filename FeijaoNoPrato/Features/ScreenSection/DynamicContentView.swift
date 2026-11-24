@@ -113,21 +113,35 @@ struct DynamicContentView: View {
                     let isFullWidth = sizeNumber == 300
                     let imageWidth = CGFloat(sizeNumber)
 
-                    // DEBUG — remove after confirming correct tamanho values from API
-                    Text("DEBUG tamanho=\(item.tamanho.map { String($0) } ?? "nil") sizeNumber=\(sizeNumber) full=\(isFullWidth ? "YES" : "NO")")
-                        .font(.system(size: 10))
-                        .foregroundColor(.red)
-                        .padding(2)
-                        .background(Color.yellow.opacity(0.5))
+                    // Android: ContentScale.FillWidth + wrapContentHeight for non-SVG
+                    // → AsyncImage scaledToFit fills the width and auto-sizes height to natural aspect ratio.
+                    // SVG: WebImageView (WKWebView) with explicit frame since AsyncImage can't decode SVG.
+                    let isSvg = imgName.lowercased().contains(".svg") || imgName.lowercased().contains("format=svg")
 
                     if isFullWidth {
-                        // WKWebView (UIViewRepresentable) ignores maxWidth:.infinity — needs explicit width.
-                        // 32 = 2 × 16pt horizontal padding applied by the parent.
-                        let contentWidth = UIScreen.main.bounds.width - 32
-                        WebImageView(url: imageURL)
-                            .frame(width: contentWidth, height: contentWidth)
-                            .cornerRadius(12)
+                        if isSvg {
+                            let contentWidth = UIScreen.main.bounds.width - 32
+                            WebImageView(url: imageURL)
+                                .frame(width: contentWidth, height: contentWidth)
+                                .cornerRadius(12)
+                                .padding(.vertical, 8)
+                        } else {
+                            // matches Android: fillMaxWidth() + wrapContentHeight() + ContentScale.FillWidth
+                            AsyncImage(url: imageURL) { phase in
+                                switch phase {
+                                case .success(let img):
+                                    img.resizable()
+                                        .scaledToFit()
+                                        .frame(maxWidth: .infinity)
+                                        .cornerRadius(12)
+                                default:
+                                    Color(.systemGray5)
+                                        .frame(maxWidth: .infinity, minHeight: 200)
+                                        .cornerRadius(12)
+                                }
+                            }
                             .padding(.vertical, 8)
+                        }
                     } else {
                         let rowAlignment: HorizontalAlignment = {
                             switch item.alinhamento {
@@ -138,10 +152,25 @@ struct DynamicContentView: View {
                         }()
                         HStack {
                             if rowAlignment == .center || rowAlignment == .trailing { Spacer() }
-                            // Height = width * 1.4 — bean characters are portrait, not square
-                            WebImageView(url: imageURL)
-                                .frame(width: imageWidth, height: imageWidth * 1.4)
-                                .cornerRadius(12)
+                            if isSvg {
+                                WebImageView(url: imageURL)
+                                    .frame(width: imageWidth, height: imageWidth * 1.4)
+                                    .cornerRadius(12)
+                            } else {
+                                AsyncImage(url: imageURL) { phase in
+                                    switch phase {
+                                    case .success(let img):
+                                        img.resizable()
+                                            .scaledToFit()
+                                            .frame(width: imageWidth, height: imageWidth * 1.4)
+                                            .cornerRadius(12)
+                                    default:
+                                        Color(.systemGray5)
+                                            .frame(width: imageWidth, height: imageWidth * 1.4)
+                                            .cornerRadius(12)
+                                    }
+                                }
+                            }
                             if rowAlignment == .center || rowAlignment == .leading { Spacer() }
                         }
                         .padding(.vertical, 8)
