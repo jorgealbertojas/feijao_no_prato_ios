@@ -119,29 +119,17 @@ struct DynamicContentView: View {
                     let isSvg = imgName.lowercased().contains(".svg") || imgName.lowercased().contains("format=svg")
 
                     if isFullWidth {
-                        if isSvg {
-                            let contentWidth = UIScreen.main.bounds.width - 32
-                            WebImageView(url: imageURL)
-                                .frame(width: contentWidth, height: contentWidth)
-                                .cornerRadius(12)
-                                .padding(.vertical, 8)
-                        } else {
-                            // matches Android: fillMaxWidth() + wrapContentHeight() + ContentScale.FillWidth
-                            AsyncImage(url: imageURL) { phase in
-                                switch phase {
-                                case .success(let img):
-                                    img.resizable()
-                                        .scaledToFit()
-                                        .frame(maxWidth: .infinity)
-                                        .cornerRadius(12)
-                                default:
-                                    Color(.systemGray5)
-                                        .frame(maxWidth: .infinity, minHeight: 200)
-                                        .cornerRadius(12)
-                                }
-                            }
-                            .padding(.vertical, 8)
+                        // Android: fillMaxWidth() + wrapContentHeight() + ContentScale.FillWidth
+                        // frame(maxWidth:.infinity) must be on the AsyncImage container itself,
+                        // not only on the inner image — otherwise SwiftUI doesn't expand it.
+                        AsyncImage(url: imageURL) { img in
+                            img.resizable().scaledToFit()
+                        } placeholder: {
+                            Color(.systemGray5).frame(height: 200)
                         }
+                        .frame(maxWidth: .infinity)
+                        .cornerRadius(12)
+                        .padding(.vertical, 8)
                     } else {
                         let rowAlignment: HorizontalAlignment = {
                             switch item.alinhamento {
@@ -152,25 +140,13 @@ struct DynamicContentView: View {
                         }()
                         HStack {
                             if rowAlignment == .center || rowAlignment == .trailing { Spacer() }
-                            if isSvg {
-                                WebImageView(url: imageURL)
-                                    .frame(width: imageWidth, height: imageWidth * 1.4)
-                                    .cornerRadius(12)
-                            } else {
-                                AsyncImage(url: imageURL) { phase in
-                                    switch phase {
-                                    case .success(let img):
-                                        img.resizable()
-                                            .scaledToFit()
-                                            .frame(width: imageWidth, height: imageWidth * 1.4)
-                                            .cornerRadius(12)
-                                    default:
-                                        Color(.systemGray5)
-                                            .frame(width: imageWidth, height: imageWidth * 1.4)
-                                            .cornerRadius(12)
-                                    }
-                                }
+                            AsyncImage(url: imageURL) { img in
+                                img.resizable().scaledToFit()
+                            } placeholder: {
+                                Color(.systemGray5)
                             }
+                            .frame(width: imageWidth, height: imageWidth * 1.4)
+                            .cornerRadius(12)
                             if rowAlignment == .center || rowAlignment == .leading { Spacer() }
                         }
                         .padding(.vertical, 8)
