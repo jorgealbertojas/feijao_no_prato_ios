@@ -483,10 +483,14 @@ struct PerguntaView: View {
             ForEach(Array(opcoes.enumerated()), id: \.offset) { _, opcao in
                 let label = opcao.descricao ?? ""
                 let isSelected = selectedOption == label
+                let attrLabel = (try? AttributedString(
+                    markdown: preprocessForMarkdown(label),
+                    options: AttributedString.MarkdownParsingOptions(interpretedSyntax: .inlineOnlyPreservingWhitespace)
+                )) ?? AttributedString(label)
                 Button {
                     onSelect(label)
                 } label: {
-                    Text(label)
+                    Text(attrLabel)
                         .font(.system(size: 15))
                         .foregroundColor(isSelected ? .white : Color(.label))
                         .multilineTextAlignment(.leading)
