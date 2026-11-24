@@ -114,9 +114,11 @@ struct DynamicContentView: View {
                     let imageWidth = CGFloat(sizeNumber)
 
                     if isFullWidth {
-                        // Full-width: no Spacers — they would halve the available width
+                        // WKWebView (UIViewRepresentable) ignores maxWidth:.infinity — needs explicit width.
+                        // 32 = 2 × 16pt horizontal padding applied by the parent.
+                        let contentWidth = UIScreen.main.bounds.width - 32
                         WebImageView(url: imageURL)
-                            .frame(maxWidth: .infinity, minHeight: UIScreen.main.bounds.width * 0.75)
+                            .frame(width: contentWidth, height: contentWidth)
                             .cornerRadius(12)
                             .padding(.vertical, 8)
                     } else {
