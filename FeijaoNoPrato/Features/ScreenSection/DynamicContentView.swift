@@ -120,17 +120,12 @@ struct DynamicContentView: View {
 
                     if isFullWidth {
                         // Android: fillMaxWidth() + wrapContentHeight() + ContentScale.FillWidth
-                        // AsyncImage needs a concrete width to start downloading; maxWidth:.infinity
-                        // resolves to zero during SwiftUI's initial layout pass and the image never loads.
+                        // SelfSizingWebImageView loads via WKWebView (reliable for Azure Blob URLs)
+                        // and auto-sizes height to the image's natural aspect ratio via JS scrollHeight.
                         let contentWidth = UIScreen.main.bounds.width - 32
-                        AsyncImage(url: imageURL) { img in
-                            img.resizable().scaledToFit()
-                        } placeholder: {
-                            Color(.systemGray5).frame(width: contentWidth, height: 200)
-                        }
-                        .frame(width: contentWidth)
-                        .cornerRadius(12)
-                        .padding(.vertical, 8)
+                        SelfSizingWebImageView(url: imageURL, width: contentWidth)
+                            .cornerRadius(12)
+                            .padding(.vertical, 8)
                     } else {
                         let rowAlignment: HorizontalAlignment = {
                             switch item.alinhamento {
@@ -228,8 +223,71 @@ struct DynamicContentView: View {
     }
 }
 
+// MARK: - SelfSizingWebImageView
+// Full-width image that auto-sizes its height to the image's natural aspect ratio.
+// Uses WKWebView (which reliably loads Azure Blob Storage URLs) and injects CSS so
+// the image fills the width; JS reads scrollHeight after load to set the SwiftUI frame.
+
+private struct SelfSizingWebImageView: View {
+    let url: URL
+    let width: CGFloat
+    @State private var height: CGFloat = 240
+
+    var body: some View {
+        _SelfSizingWebView(url: url, width: width, height: $height)
+            .frame(width: width, height: height)
+    }
+}
+
+private struct _SelfSizingWebView: UIViewRepresentable {
+    let url: URL
+    let width: CGFloat
+    @Binding var height: CGFloat
+
+    func makeCoordinator() -> Coordinator { Coordinator(height: $height) }
+
+    func makeUIView(context: Context) -> WKWebView {
+        let cfg = WKWebViewConfiguration()
+        let webView = WKWebView(frame: .zero, configuration: cfg)
+        webView.backgroundColor = .clear
+        webView.isOpaque = false
+        webView.scrollView.isScrollEnabled = false
+        webView.scrollView.bounces = false
+        webView.navigationDelegate = context.coordinator
+        return webView
+    }
+
+    func updateUIView(_ webView: WKWebView, context: Context) {
+        webView.load(URLRequest(url: url))
+    }
+
+    class Coordinator: NSObject, WKNavigationDelegate {
+        @Binding var height: CGFloat
+        init(height: Binding<CGFloat>) { _height = height }
+
+        func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+            // CSS: image fills width, height follows natural aspect ratio
+            let css = "body{margin:0;padding:0;background:transparent;}img{width:100%;height:auto;display:block;}"
+            let js = """
+            (function(){
+              var s=document.createElement('style');
+              s.textContent='\(css)';
+              document.head.appendChild(s);
+              return document.body.scrollHeight;
+            })();
+            """
+            webView.evaluateJavaScript(js) { [weak self] result, _ in
+                let h = (result as? Double).map(CGFloat.init) ?? 0
+                if h > 20 {
+                    DispatchQueue.main.async { self?.height = h }
+                }
+            }
+        }
+    }
+}
+
 // MARK: - WebImageView
-// WKWebView-based image renderer — handles SVG, PNG, JPG and any other format.
+// Fixed-size WKWebView-based image renderer — handles SVG, PNG, JPG and any other format.
 // AsyncImage silently fails on SVG; this view handles all formats uniformly.
 
 private struct WebImageView: UIViewRepresentable {
@@ -253,11 +311,7 @@ private struct WebImageView: UIViewRepresentable {
 
     class Coordinator: NSObject, WKNavigationDelegate {
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-            // Inject CSS to fit the image inside the view without scroll
-            let css = """
-            body{margin:0;padding:0;background:transparent;display:flex;align-items:center;justify-content:center;height:100vh;}
-            img{max-width:100%;max-height:100%;object-fit:contain;}
-            """
+            let css = "body{margin:0;padding:0;background:transparent;display:flex;align-items:center;justify-content:center;height:100vh;}img{max-width:100%;max-height:100%;object-fit:contain;}"
             let js = "var s=document.createElement('style');s.textContent=`\(css)`;document.head.appendChild(s);"
             webView.evaluateJavaScript(js, completionHandler: nil)
         }
