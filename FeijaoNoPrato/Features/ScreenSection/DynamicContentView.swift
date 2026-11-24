@@ -13,15 +13,9 @@ struct DynamicContentView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            // DEBUG — remove after diagnosis
-            Text("TIPOS: \(items.map { "\($0.tipo ?? "?")[\($0.direcao ?? "-")]" }.joined(separator: " · "))")
-                .font(.system(size: 9, weight: .bold))
-                .foregroundColor(.red)
-                .padding(.horizontal, 16)
-
             ForEach(Array(items.enumerated()), id: \.offset) { _, item in
-                // GrupoImagens horizontal spans full width — no horizontal padding
-                if isHorizontalGrupo(item) {
+                // Carrossel and GrupoImagens horizontal span full width — no horizontal padding
+                if isFullWidthItem(item) {
                     itemView(item)
                 } else {
                     itemView(item)
@@ -32,9 +26,11 @@ struct DynamicContentView: View {
         .padding(.vertical, 8)
     }
 
-    private func isHorizontalGrupo(_ item: SectionItem) -> Bool {
-        item.tipo?.caseInsensitiveCompare("GrupoImagens") == .orderedSame &&
-        item.direcao?.caseInsensitiveCompare("Horizontal") == .orderedSame
+    private func isFullWidthItem(_ item: SectionItem) -> Bool {
+        // Carrossel is always full-width; GrupoImagens only when horizontal
+        if item.tipo?.caseInsensitiveCompare("Carrossel") == .orderedSame { return true }
+        return item.tipo?.caseInsensitiveCompare("GrupoImagens") == .orderedSame &&
+               item.direcao?.caseInsensitiveCompare("Horizontal") == .orderedSame
     }
 
     @ViewBuilder
@@ -99,11 +95,6 @@ struct DynamicContentView: View {
         case "GrupoImagens":
             if let imgs = item.imagens, !imgs.isEmpty {
                 let isHorizontal = item.direcao?.caseInsensitiveCompare("Horizontal") == .orderedSame
-                // DEBUG — remove after diagnosis
-                Text("🔍 direcao='\(item.direcao ?? "nil")'  count=\(imgs.count)  horiz=\(isHorizontal ? "✓" : "✗")")
-                    .font(.system(size: 11, weight: .bold))
-                    .foregroundColor(.red)
-                    .padding(.horizontal, 16)
                 if isHorizontal {
                     HorizontalImageCarousel(images: imgs, imageBaseURL: imageBaseURL)
                 } else {
@@ -349,40 +340,68 @@ private struct ImageCarouselCard: View {
 }
 
 // MARK: - CarrosselView
+// Horizontal peekable carousel matching Android: 72% card width so next card peeks at right edge.
+// Each SectionItem subitem has nomeArquivo (image) + texto (caption).
 
 private struct CarrosselView: View {
     let items: [SectionItem]
     let imageBaseURL: String
 
-    @State private var currentIndex = 0
-
     var body: some View {
-        TabView(selection: $currentIndex) {
-            ForEach(Array(items.enumerated()), id: \.offset) { idx, item in
-                VStack(spacing: 8) {
-                    if let name = item.nomeArquivo, !name.isEmpty {
-                        let url = URL(string: imageBaseURL + name)
-                        AsyncImage(url: url) { phase in
-                            switch phase {
-                            case .success(let img): img.resizable().scaledToFit()
-                            default: Color(.systemGray5)
-                            }
-                        }
-                        .frame(height: 180)
-                        .cornerRadius(8)
-                    }
-                    if let texto = item.texto, !texto.isEmpty {
-                        Text(texto)
-                            .font(.system(size: 14))
-                            .multilineTextAlignment(.center)
-                            .padding(.horizontal, 8)
+        GeometryReader { geo in
+            let cardWidth = max(geo.size.width * 0.72, 200)
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 12) {
+                    ForEach(Array(items.enumerated()), id: \.offset) { _, item in
+                        CarrosselCard(item: item, imageBaseURL: imageBaseURL, cardWidth: cardWidth)
                     }
                 }
-                .tag(idx)
+                .padding(.leading, 16)
+                .padding(.trailing, 8)
+                .padding(.vertical, 8)
+            }
+            .frame(width: geo.size.width)
+        }
+        .frame(height: UIScreen.main.bounds.width * 0.72 * 0.65 + 56)
+    }
+}
+
+private struct CarrosselCard: View {
+    let item: SectionItem
+    let imageBaseURL: String
+    let cardWidth: CGFloat
+
+    var body: some View {
+        VStack(spacing: 0) {
+            if let name = item.nomeArquivo, !name.isEmpty {
+                let url = URL(string: imageBaseURL + name)
+                AsyncImage(url: url) { phase in
+                    switch phase {
+                    case .success(let img): img.resizable().scaledToFill()
+                    default: Color(.systemGray5)
+                    }
+                }
+                .frame(width: cardWidth, height: cardWidth * 0.65)
+                .clipped()
+            } else {
+                Color(.systemGray5)
+                    .frame(width: cardWidth, height: cardWidth * 0.65)
+            }
+
+            if let texto = item.texto, !texto.isEmpty {
+                Text(texto)
+                    .font(.system(size: 14))
+                    .foregroundColor(Color(.secondaryLabel))
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 10)
             }
         }
-        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .automatic))
-        .frame(height: 240)
+        .frame(width: cardWidth)
+        .background(Color(.systemGray6))
+        .cornerRadius(10)
+        .shadow(color: .black.opacity(0.06), radius: 3, x: 0, y: 2)
     }
 }
 
