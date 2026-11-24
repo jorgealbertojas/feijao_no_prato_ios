@@ -105,6 +105,7 @@ struct ScreenSectionView: View {
                         .font(.system(size: 17, weight: .medium))
                         .foregroundColor(.primary)
                 }
+                .buttonStyle(.plain)
                 .padding(.leading, 16)
 
                 GeometryReader { geo in
