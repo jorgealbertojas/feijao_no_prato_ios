@@ -80,10 +80,30 @@ struct DynamicContentView: View {
                 let encoded = decoded.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? decoded
                 let fullURL = imgName.hasPrefix("http") ? imgName : imageBaseURL + encoded
                 if let imageURL = URL(string: fullURL) {
-                    WebImageView(url: imageURL)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: UIScreen.main.bounds.width)
-                        .padding(.vertical, 8)
+                    // Android: sizeNumber = (tamanho ?? 100) * 3
+                    // sizeNumber == 300 → fillMaxWidth(); else → fixed width in dp
+                    let sizeNumber = Int((item.tamanho ?? 100) * 3)
+                    let isFullWidth = sizeNumber == 300
+                    let imageWidth = CGFloat(sizeNumber)
+                    let rowAlignment: HorizontalAlignment = {
+                        switch item.alinhamento {
+                        case "Esquerda": return .leading
+                        case "Direita": return .trailing
+                        default: return .center
+                        }
+                    }()
+
+                    HStack {
+                        if rowAlignment == .center || rowAlignment == .trailing { Spacer() }
+                        // Height = width to preserve aspect ratio in WKWebView (CSS fits image inside)
+                        let frameWidth: CGFloat = isFullWidth ? UIScreen.main.bounds.width : imageWidth
+                        WebImageView(url: imageURL)
+                            .frame(width: isFullWidth ? nil : imageWidth, height: frameWidth)
+                            .frame(maxWidth: isFullWidth ? .infinity : nil)
+                            .cornerRadius(12)
+                        if rowAlignment == .center || rowAlignment == .leading { Spacer() }
+                    }
+                    .padding(.vertical, 8)
                 }
             }
 
