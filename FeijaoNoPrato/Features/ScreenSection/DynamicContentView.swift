@@ -242,39 +242,53 @@ private struct _SelfSizingWebView: UIViewRepresentable {
     func makeCoordinator() -> Coordinator { Coordinator(heightBinding: $height) }
 
     func makeUIView(context: Context) -> WKWebView {
-        let webView = WKWebView()
+        let contentController = WKUserContentController()
+        contentController.add(context.coordinator, name: "imageLoaded")
+        let config = WKWebViewConfiguration()
+        config.userContentController = contentController
+        let webView = WKWebView(frame: .zero, configuration: config)
         webView.backgroundColor = .clear
         webView.isOpaque = false
         webView.scrollView.isScrollEnabled = false
         webView.scrollView.bounces = false
-        webView.navigationDelegate = context.coordinator
         return webView
     }
 
     func updateUIView(_ webView: WKWebView, context: Context) {
-        webView.load(URLRequest(url: url))
+        // Load HTML string so img.onload fires AFTER image downloads and renders.
+        // didFinish fires before the image loads, so scrollHeight there is unreliable.
+        let w = Int(width)
+        let html = """
+        <!DOCTYPE html>
+        <html><head>
+        <meta name="viewport" content="width=\(w),initial-scale=1,maximum-scale=1">
+        <style>*{margin:0;padding:0;box-sizing:border-box;}body{background:transparent;}img{width:\(w)px;height:auto;display:block;}</style>
+        </head><body>
+        <img src="\(url.absoluteString)"
+             onload="window.webkit.messageHandlers.imageLoaded.postMessage(this.offsetHeight)"
+             onerror="window.webkit.messageHandlers.imageLoaded.postMessage(-1)">
+        </body></html>
+        """
+        webView.loadHTMLString(html, baseURL: nil)
+    }
+
+    static func dismantleUIView(_ webView: WKWebView, coordinator: Coordinator) {
+        webView.configuration.userContentController.removeScriptMessageHandler(forName: "imageLoaded")
     }
 
     // Store Binding<CGFloat> as a plain var (not @Binding) to avoid NSObject init ambiguity.
-    class Coordinator: NSObject, WKNavigationDelegate {
+    class Coordinator: NSObject, WKScriptMessageHandler {
         var heightBinding: Binding<CGFloat>
         init(heightBinding: Binding<CGFloat>) { self.heightBinding = heightBinding }
 
-        func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-            let css = "body{margin:0;padding:0;background:transparent;}img{width:100%;height:auto;display:block;}"
-            let js = """
-            (function(){
-              var s=document.createElement('style');
-              s.textContent='\(css)';
-              document.head.appendChild(s);
-              return document.body.scrollHeight;
-            })();
-            """
-            webView.evaluateJavaScript(js) { [weak self] result, _ in
-                if let d = result as? Double, d > 20 {
-                    DispatchQueue.main.async { self?.heightBinding.wrappedValue = CGFloat(d) }
-                }
-            }
+        func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+            guard message.name == "imageLoaded" else { return }
+            let h: Double
+            if let d = message.body as? Double { h = d }
+            else if let i = message.body as? Int { h = Double(i) }
+            else { return }
+            guard h > 20 else { return }
+            DispatchQueue.main.async { self.heightBinding.wrappedValue = CGFloat(h) }
         }
     }
 }
