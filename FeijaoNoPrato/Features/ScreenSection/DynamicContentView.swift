@@ -14,10 +14,15 @@ struct DynamicContentView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             ForEach(Array(items.enumerated()), id: \.offset) { _, item in
-                itemView(item)
+                // GrupoImagens horizontal spans full width — no horizontal padding
+                if item.tipo == "GrupoImagens" && item.direcao == "Horizontal" {
+                    itemView(item)
+                } else {
+                    itemView(item)
+                        .padding(.horizontal, 16)
+                }
             }
         }
-        .padding(.horizontal, 16)
         .padding(.vertical, 8)
     }
 
@@ -84,9 +89,7 @@ struct DynamicContentView: View {
             if let imgs = item.imagens, !imgs.isEmpty {
                 let isHorizontal = item.direcao == "Horizontal"
                 if isHorizontal {
-                    // Extends beyond the parent's 16pt horizontal padding so cards reach screen edges
                     HorizontalImageCarousel(images: imgs, imageBaseURL: imageBaseURL)
-                        .padding(.horizontal, -16)
                 } else {
                     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
                         ForEach(Array(imgs.enumerated()), id: \.offset) { _, img in
