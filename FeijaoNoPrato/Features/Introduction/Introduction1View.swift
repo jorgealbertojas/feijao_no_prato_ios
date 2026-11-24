@@ -124,18 +124,43 @@ struct Introduction1View: View {
             .padding(.horizontal, 4)
 
         case 5:
-            VStack(spacing: 20) {
-                Image(systemName: "sparkles")
-                    .resizable().scaledToFit()
-                    .frame(width: 80, height: 80)
-                    .foregroundColor(Color.brandOrange)
-                Text(boldText("**A Carioquinha** vai te apresentar conteúdos, desafios e dicas ao longo da jornada.\n\nEla fica feliz quando você come feijão! 🫘"))
-                    .font(.system(size: 18))
-                    .multilineTextAlignment(.center)
-                    .foregroundColor(Color(red: 0.231, green: 0.231, blue: 0.231))
-                    .lineSpacing(6)
+            // Android: Introduction_1_55 — same balloon card layout as case 4, different text
+            VStack(spacing: 0) {
+                ZStack(alignment: .bottom) {
+                    VStack(spacing: 0) {
+                        RoundedRectangle(cornerRadius: 24)
+                            .fill(Color.white)
+                            .shadow(color: Color.black.opacity(0.12), radius: 8, x: 0, y: 4)
+                            .overlay(
+                                VStack(spacing: 10) {
+                                    Text("Provavelmente eu já te acompanho muitos dias à mesa. Pode ser preto, branco, marrom, vermelho…")
+                                        .font(.system(size: 18))
+                                        .multilineTextAlignment(.center)
+                                        .foregroundColor(.black)
+                                        .lineSpacing(4)
+                                    Text("O que importa é\nFeijão no Prato!")
+                                        .font(.system(size: 24, weight: .bold))
+                                        .multilineTextAlignment(.center)
+                                        .foregroundColor(Color(red: 0.2, green: 0.2, blue: 0.2))
+                                        .lineSpacing(4)
+                                }
+                                .padding(.horizontal, 24)
+                                .padding(.vertical, 32)
+                            )
+                        TriangleDown()
+                            .fill(Color.white)
+                            .frame(width: 32, height: 16)
+                    }
+                }
+
+                Spacer().frame(height: 16)
+
+                Image("icon_c3")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 240, height: 240)
             }
-            .padding(24)
+            .padding(.horizontal, 4)
 
         case 6:
             VStack(spacing: 24) {
