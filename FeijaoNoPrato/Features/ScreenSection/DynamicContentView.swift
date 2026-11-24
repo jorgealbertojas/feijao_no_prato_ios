@@ -75,6 +75,11 @@ struct DynamicContentView: View {
             let imgName = item.nomeArquivo ?? item.url ?? item.personalizacao ?? ""
             if !imgName.isEmpty {
                 let fullURL = imgName.hasPrefix("http") ? imgName : imageBaseURL + imgName
+                // DEBUG — remove after fix
+                Text("URL: \(fullURL)")
+                    .font(.system(size: 10))
+                    .foregroundColor(.red)
+                    .padding(.vertical, 2)
                 // WKWebView renders SVG, PNG, JPG and any other format the server returns
                 if let imageURL = URL(string: fullURL) {
                     WebImageView(url: imageURL)
