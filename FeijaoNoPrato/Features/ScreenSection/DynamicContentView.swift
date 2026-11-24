@@ -71,25 +71,33 @@ struct DynamicContentView: View {
             Spacer().frame(height: size)
 
         case "imagem":
-            if let name = item.nomeArquivo, !name.isEmpty {
-                let imageURL = URL(string: imageBaseURL + name)
-                AsyncImage(url: imageURL) { phase in
-                    switch phase {
-                    case .success(let img):
-                        img.resizable()
-                            .scaledToFit()
-                            .frame(maxWidth: .infinity)
-                            .cornerRadius(8)
-                    case .failure:
-                        Color(.systemGray5)
-                            .frame(maxWidth: .infinity, minHeight: 120)
-                            .cornerRadius(8)
-                    default:
-                        ProgressView()
-                            .frame(maxWidth: .infinity, minHeight: 120)
+            VStack(alignment: .leading, spacing: 4) {
+                // DEBUG — remove after fix
+                Text("IMG DEBUG: nomeArquivo=\(item.nomeArquivo ?? "nil") url=\(item.url ?? "nil") personalizacao=\(item.personalizacao ?? "nil") descricao=\(item.descricao ?? "nil")")
+                    .font(.system(size: 10))
+                    .foregroundColor(.red)
+
+                let imgName = item.nomeArquivo ?? item.url ?? item.personalizacao ?? ""
+                if !imgName.isEmpty {
+                    let imageURL = URL(string: imgName.hasPrefix("http") ? imgName : imageBaseURL + imgName)
+                    AsyncImage(url: imageURL) { phase in
+                        switch phase {
+                        case .success(let img):
+                            img.resizable()
+                                .scaledToFit()
+                                .frame(maxWidth: .infinity)
+                                .cornerRadius(8)
+                        case .failure:
+                            Color(.systemGray5)
+                                .frame(maxWidth: .infinity, minHeight: 120)
+                                .cornerRadius(8)
+                        default:
+                            ProgressView()
+                                .frame(maxWidth: .infinity, minHeight: 120)
+                        }
                     }
+                    .padding(.vertical, 8)
                 }
-                .padding(.vertical, 8)
             }
 
         case "grupoimagens":
