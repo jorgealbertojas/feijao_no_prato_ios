@@ -129,8 +129,9 @@ struct DynamicContentView: View {
                         }()
                         HStack {
                             if rowAlignment == .center || rowAlignment == .trailing { Spacer() }
+                            // Height = width * 1.4 — bean characters are portrait, not square
                             WebImageView(url: imageURL)
-                                .frame(width: imageWidth, height: imageWidth)
+                                .frame(width: imageWidth, height: imageWidth * 1.4)
                                 .cornerRadius(12)
                             if rowAlignment == .center || rowAlignment == .leading { Spacer() }
                         }
