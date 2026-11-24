@@ -147,30 +147,36 @@ struct ScreenSectionView: View {
                 let isConfirmar = desc == "CONFIRMAR"
                 let isSeguir = desc.contains("SELECT_DOUBLE")
                 let isDefaultProximo = desc == "PRÓXIMO"
-                // Use the data label; fall back to PRÓXIMO/CONCLUIR only for the generic default
-                let label = isSeguir ? "SEGUIR" : (isConfirmar ? "CONFIRMAR" : (isDefaultProximo ? (viewModel.isLastPage ? "CONCLUIR" : "PRÓXIMO") : desc))
+                // Android: standard next-page navigation uses a circle → button (no text)
+                let isCircleArrow = isDefaultProximo && !viewModel.isLastPage
+                let label = isSeguir ? "SEGUIR" : (isConfirmar ? "CONFIRMAR" : (isDefaultProximo ? "CONCLUIR" : desc))
 
-                Button(action: {
-                    if isConfirmar {
-                        viewModel.confirmarResposta()
-                    } else {
-                        viewModel.goNext()
+                if isCircleArrow {
+                    Spacer()
+                    Button(action: { viewModel.goNext() }) {
+                        Image(systemName: "arrow.right")
+                            .font(.system(size: 18, weight: .semibold))
+                            .foregroundColor(.white)
+                            .frame(width: 48, height: 48)
+                            .background(Color.brandOrange)
+                            .clipShape(Circle())
                     }
-                }) {
-                    HStack(spacing: 8) {
+                } else {
+                    Button(action: {
+                        if isConfirmar {
+                            viewModel.confirmarResposta()
+                        } else {
+                            viewModel.goNext()
+                        }
+                    }) {
                         Text(label)
                             .font(.system(size: 15, weight: .bold))
                             .foregroundColor(.white)
-                        if !isConfirmar && !isSeguir && isDefaultProximo && !viewModel.isLastPage {
-                            Image(systemName: "arrow.right")
-                                .font(.system(size: 14, weight: .bold))
-                                .foregroundColor(.white)
-                        }
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 48)
+                            .background(Color.brandOrange)
+                            .cornerRadius(50)
                     }
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 48)
-                    .background(Color.brandOrange)
-                    .cornerRadius(50)
                 }
             }
         }

@@ -80,14 +80,9 @@ struct DynamicContentView: View {
             if let imgs = item.imagens, !imgs.isEmpty {
                 let isHorizontal = item.direcao == "Horizontal"
                 if isHorizontal {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 8) {
-                            ForEach(Array(imgs.enumerated()), id: \.offset) { _, img in
-                                imageCell(img.nomeArquivo)
-                                    .frame(width: 160, height: 120)
-                            }
-                        }
-                    }
+                    // Extends beyond the parent's 16pt horizontal padding so cards reach screen edges
+                    HorizontalImageCarousel(images: imgs, imageBaseURL: imageBaseURL)
+                        .padding(.horizontal, -16)
                 } else {
                     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
                         ForEach(Array(imgs.enumerated()), id: \.offset) { _, img in
@@ -260,6 +255,62 @@ private struct DestaqueCard: View {
                     .stroke(yellow200, lineWidth: 1)
             )
             .padding(.vertical, 16)
+    }
+}
+
+// MARK: - HorizontalImageCarousel (Android GrupoImagens direcao=="Horizontal")
+// Swipeable card carousel: each card shows image (top) + caption (bottom).
+// Works for all GrupoImagens callers — modelo field is the caption text.
+
+private struct HorizontalImageCarousel: View {
+    let images: [SectionItemImage]
+    let imageBaseURL: String
+
+    var body: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 12) {
+                ForEach(Array(images.enumerated()), id: \.offset) { _, img in
+                    ImageCarouselCard(image: img, imageBaseURL: imageBaseURL)
+                }
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 8)
+        }
+    }
+}
+
+private struct ImageCarouselCard: View {
+    let image: SectionItemImage
+    let imageBaseURL: String
+
+    var body: some View {
+        VStack(spacing: 0) {
+            let url = image.nomeArquivo.flatMap { URL(string: imageBaseURL + $0) }
+            AsyncImage(url: url) { phase in
+                switch phase {
+                case .success(let img):
+                    img.resizable().scaledToFill()
+                default:
+                    Color(.systemGray5)
+                }
+            }
+            .frame(width: 260, height: 180)
+            .clipped()
+
+            if let caption = image.modelo, !caption.isEmpty {
+                Text(caption)
+                    .font(.system(size: 14))
+                    .foregroundColor(Color(.secondaryLabel))
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 10)
+            }
+        }
+        .frame(width: 260)
+        .background(Color(.systemBackground))
+        .cornerRadius(10)
+        .shadow(color: .black.opacity(0.08), radius: 4, x: 0, y: 2)
     }
 }
 
