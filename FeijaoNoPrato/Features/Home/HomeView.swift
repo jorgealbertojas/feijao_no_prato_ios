@@ -233,11 +233,10 @@ struct TrailNodeRow: View {
                 TrailDividerView(label: item.dividerLabel, moduleNumber: item.sectionItem.moduleIndex)
             }
 
-            HStack(alignment: .center) {
+            VStack(alignment: .leading, spacing: 0) {
                 if item.showHereIndicator {
                     hereIndicator
                 }
-
                 sectionNode
             }
             .frame(maxWidth: .infinity, alignment: positionAlignment)
@@ -252,20 +251,33 @@ struct TrailNodeRow: View {
         }
     }
 
+    // Android: CustomCardViewPosition — white card + down triangle
     private var hereIndicator: some View {
-        HStack(spacing: 4) {
-            Image(systemName: "mappin.circle.fill")
-                .foregroundColor(.brandOrange)
-                .font(.system(size: 12))
-            Text("Você está aqui")
-                .font(.system(size: 11, weight: .semibold))
-                .foregroundColor(.brandOrange)
+        VStack(alignment: .leading, spacing: 0) {
+            VStack(alignment: .leading, spacing: 4) {
+                HStack(spacing: 6) {
+                    Image(systemName: "mappin.circle.fill")
+                        .foregroundColor(.brandOrange)
+                        .font(.system(size: 14))
+                    Text("Onde estou")
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundColor(.black)
+                }
+                Text(item.sectionItem.section.name)
+                    .font(.system(size: 18))
+                    // Android primary_300 = #c64b4e
+                    .foregroundColor(Color(red: 0.776, green: 0.294, blue: 0.306))
+            }
+            .padding(10)
+            .background(Color.white)
+            .shadow(color: .black.opacity(0.2), radius: 3, x: 0, y: 2)
+
+            TriangleDown()
+                .fill(Color.white)
+                .frame(width: 16, height: 10)
+                .padding(.leading, 20)
         }
-        .padding(.horizontal, 8)
-        .padding(.vertical, 4)
-        .background(Color.brandOrange.opacity(0.1))
-        .clipShape(Capsule())
-        .padding(.bottom, -6)
+        .padding(.bottom, 2)
     }
 
     private var sectionNode: some View {
@@ -361,16 +373,17 @@ struct SectionDialogSheet: View {
     var onNavigate: () -> Void
     var onCancel: () -> Void
 
+    // Android strings.xml: dialog_title_sessao_1..7
     private var subTitleText: String {
         switch section.sessaoDaVez {
-        case 1: return "Introdução teórica"
-        case 2: return "Aprofundamento"
-        case 3: return "Conexão com a prática"
-        case 4: return "Prática"
-        case 5: return "Avaliação"
-        case 6: return "Revisão"
-        case 7: return "Extra"
-        default: return "Seção"
+        case 1: return "Ao concluir esta seção, você completa 14% do módulo."
+        case 2: return "Ao concluir esta seção, você completa 28% do módulo."
+        case 3: return "Ao concluir esta seção, você completa 42% do módulo."
+        case 4: return "Ao concluir esta seção, você completa 56% do módulo."
+        case 5: return "Ao concluir esta seção, você completa 70% do módulo."
+        case 6: return "Ao concluir esta seção, você completa 84% do módulo."
+        case 7: return "Ao concluir esta seção, você completa 100% do módulo."
+        default: return "Você já conclui 25% da sessão. \n Preparado para continuar?"
         }
     }
 
@@ -418,7 +431,7 @@ struct SectionDialogSheet: View {
                 .buttonStyle(.plain)
 
                 Button(action: onNavigate) {
-                    Text("INICIAR SEÇÃO")
+                    Text("ACESSAR SEÇÃO")
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)

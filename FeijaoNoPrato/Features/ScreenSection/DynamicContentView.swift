@@ -180,7 +180,34 @@ private struct ChipRow: View {
     }
 }
 
-// MARK: - ConteudoText (renders **bold** inline markers)
+// Android uses *text* (single asterisk) for bold and #text# for italic.
+// Convert to SwiftUI markdown format (**text** = bold, *text* = italic).
+private func preprocessForMarkdown(_ text: String) -> String {
+    var out = ""
+    var i = text.startIndex
+    while i < text.endIndex {
+        let c = text[i]
+        let next = text.index(after: i)
+        if c == "*" {
+            if next < text.endIndex && text[next] == "*" {
+                out += "**"
+                i = text.index(after: next)
+            } else {
+                out += "**"
+                i = next
+            }
+        } else if c == "#" {
+            out += "*"
+            i = next
+        } else {
+            out.append(c)
+            i = next
+        }
+    }
+    return out
+}
+
+// MARK: - ConteudoText (renders *bold* Android inline markers as bold)
 
 private struct ConteudoText: View {
     let texto: String
@@ -188,7 +215,7 @@ private struct ConteudoText: View {
 
     var body: some View {
         let attrStr = (try? AttributedString(
-            markdown: texto,
+            markdown: preprocessForMarkdown(texto),
             options: AttributedString.MarkdownParsingOptions(interpretedSyntax: .inlineOnlyPreservingWhitespace)
         )) ?? AttributedString(texto)
 
@@ -212,8 +239,15 @@ private struct DestaqueCard: View {
     // Android QuadroDestaque uses a warm golden border — matches secondary/warning yellow
     private let borderColor = Color(red: 0.780, green: 0.639, blue: 0.212) // ~#C7A336
 
+    private var parsedText: AttributedString {
+        (try? AttributedString(
+            markdown: preprocessForMarkdown(texto),
+            options: AttributedString.MarkdownParsingOptions(interpretedSyntax: .inlineOnlyPreservingWhitespace)
+        )) ?? AttributedString(texto)
+    }
+
     var body: some View {
-        Text(texto)
+        Text(parsedText)
             .font(.system(size: 15, weight: .bold))
             .multilineTextAlignment(isCentered ? .center : .leading)
             .foregroundColor(Color(.label))
