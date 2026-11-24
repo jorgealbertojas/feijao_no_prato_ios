@@ -72,11 +72,15 @@ struct Introduction1View: View {
             }
 
         case 3:
-            BalloonCard(
-                text: "**Mudar de hábitos não é fácil, mas vamos te ajudar.**\n\nSerá uma jornada de **120 dias que irão transformar sua alimentação.** Sem contar calorias, sem dietas da moda e sem metas impossíveis.",
-                icon: "calendar.badge.clock",
-                iconColor: Color.brandOrange
-            )
+            // Android: Introduction_1_3 shows R.drawable.dias_t2intro (305×250dp)
+            // text goes into the footer card
+            VStack {
+                Spacer().frame(height: 5)
+                Image("dias_t2intro")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 305, height: 250)
+            }
 
         case 4:
             VStack(spacing: 20) {
@@ -174,7 +178,20 @@ struct Introduction1View: View {
             }
 
         case 3:
+            // Android footer: bold title + subtitle + nav row
             IntroductionFooterCard {
+                Text(boldText("**Mudar de hábitos não é fácil, mas vamos te ajudar.**"))
+                    .font(.system(size: 20))
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(Color(red: 0.231, green: 0.231, blue: 0.231))
+                    .lineSpacing(6)
+                    .padding(.bottom, 12)
+                Text(boldText("Será uma jornada de **120 dias que irão transformar sua alimentação.** Sem contar calorias, sem dietas da moda e sem metas impossíveis.\n\n**E você terá um amigo nesta viagem...**"))
+                    .font(.system(size: 18))
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(Color(red: 0.231, green: 0.231, blue: 0.231))
+                    .lineSpacing(6)
+                    .padding(.bottom, 12)
                 IntroductionNavRow(total: totalScreens, current: screenNumber, onBack: goBack, onNext: goNext)
             }
 
