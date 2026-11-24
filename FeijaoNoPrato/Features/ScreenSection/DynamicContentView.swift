@@ -2,6 +2,7 @@
 // Ports DynamicPaginas.kt — renders SectionItem list by tipo
 
 import SwiftUI
+import WebKit
 
 struct DynamicContentView: View {
 
@@ -71,26 +72,24 @@ struct DynamicContentView: View {
             Spacer().frame(height: size)
 
         case "imagem":
-            VStack(alignment: .leading, spacing: 4) {
-                // DEBUG — remove after fix
-                Text("IMG DEBUG: nomeArquivo=\(item.nomeArquivo ?? "nil") url=\(item.url ?? "nil") personalizacao=\(item.personalizacao ?? "nil") descricao=\(item.descricao ?? "nil")")
-                    .font(.system(size: 10))
-                    .foregroundColor(.red)
-
-                let imgName = item.nomeArquivo ?? item.url ?? item.personalizacao ?? ""
-                if !imgName.isEmpty {
-                    let imageURL = URL(string: imgName.hasPrefix("http") ? imgName : imageBaseURL + imgName)
+            let imgName = item.nomeArquivo ?? item.url ?? item.personalizacao ?? ""
+            if !imgName.isEmpty {
+                let fullURL = imgName.hasPrefix("http") ? imgName : imageBaseURL + imgName
+                if imgName.lowercased().hasSuffix(".svg"), let svgURL = URL(string: fullURL) {
+                    SVGImageView(url: svgURL)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: UIScreen.main.bounds.width)
+                        .padding(.vertical, 8)
+                } else if let imageURL = URL(string: fullURL) {
                     AsyncImage(url: imageURL) { phase in
                         switch phase {
                         case .success(let img):
                             img.resizable()
                                 .scaledToFit()
                                 .frame(maxWidth: .infinity)
-                                .cornerRadius(8)
                         case .failure:
                             Color(.systemGray5)
                                 .frame(maxWidth: .infinity, minHeight: 120)
-                                .cornerRadius(8)
                         default:
                             ProgressView()
                                 .frame(maxWidth: .infinity, minHeight: 120)
@@ -170,6 +169,36 @@ struct DynamicContentView: View {
         }
         .clipped()
         .cornerRadius(6)
+    }
+}
+
+// MARK: - SVGImageView
+// AsyncImage does not support SVG; use WKWebView to render it.
+
+private struct SVGImageView: UIViewRepresentable {
+    let url: URL
+
+    func makeUIView(context: Context) -> WKWebView {
+        let webView = WKWebView()
+        webView.backgroundColor = .clear
+        webView.isOpaque = false
+        webView.scrollView.isScrollEnabled = false
+        webView.scrollView.bounces = false
+        return webView
+    }
+
+    func updateUIView(_ webView: WKWebView, context: Context) {
+        let html = """
+        <html><head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: transparent; display: flex; align-items: center; justify-content: center; height: 100vh; }
+        img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        </style>
+        </head><body><img src="\(url.absoluteString)"/></body></html>
+        """
+        webView.loadHTMLString(html, baseURL: nil)
     }
 }
 
