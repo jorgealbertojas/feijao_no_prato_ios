@@ -113,11 +113,6 @@ struct DynamicContentView: View {
                     let isFullWidth = sizeNumber == 300
                     let imageWidth = CGFloat(sizeNumber)
 
-                    // Android: ContentScale.FillWidth + wrapContentHeight for non-SVG
-                    // → AsyncImage scaledToFit fills the width and auto-sizes height to natural aspect ratio.
-                    // SVG: WebImageView (WKWebView) with explicit frame since AsyncImage can't decode SVG.
-                    let isSvg = imgName.lowercased().contains(".svg") || imgName.lowercased().contains("format=svg")
-
                     if isFullWidth {
                         // Android: fillMaxWidth() + wrapContentHeight() + ContentScale.FillWidth
                         // SelfSizingWebImageView loads via WKWebView (reliable for Azure Blob URLs)
@@ -276,9 +271,8 @@ private struct _SelfSizingWebView: UIViewRepresentable {
             })();
             """
             webView.evaluateJavaScript(js) { [weak self] result, _ in
-                let h = (result as? Double).map(CGFloat.init) ?? 0
-                if h > 20 {
-                    DispatchQueue.main.async { self?.heightBinding.wrappedValue = h }
+                if let d = result as? Double, d > 20 {
+                    DispatchQueue.main.async { self?.heightBinding.wrappedValue = CGFloat(d) }
                 }
             }
         }
