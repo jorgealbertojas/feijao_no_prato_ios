@@ -13,6 +13,12 @@ struct DynamicContentView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
+            // DEBUG — remove after diagnosis
+            Text("TIPOS: \(items.map { "\($0.tipo ?? "?")[\($0.direcao ?? "-")]" }.joined(separator: " · "))")
+                .font(.system(size: 9, weight: .bold))
+                .foregroundColor(.red)
+                .padding(.horizontal, 16)
+
             ForEach(Array(items.enumerated()), id: \.offset) { _, item in
                 // GrupoImagens horizontal spans full width — no horizontal padding
                 if isHorizontalGrupo(item) {
