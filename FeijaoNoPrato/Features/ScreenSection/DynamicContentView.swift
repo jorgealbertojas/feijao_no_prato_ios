@@ -174,6 +174,13 @@ private struct WebImageView: UIViewRepresentable {
     }
 
     func updateUIView(_ webView: WKWebView, context: Context) {
+        // baseURL must be the image's origin so the img tag is treated as same-origin
+        let baseURL: URL?
+        if let scheme = url.scheme, let host = url.host {
+            baseURL = URL(string: "\(scheme)://\(host)")
+        } else {
+            baseURL = nil
+        }
         let html = """
         <html><head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -184,7 +191,7 @@ private struct WebImageView: UIViewRepresentable {
         </style>
         </head><body><img src="\(url.absoluteString)"/></body></html>
         """
-        webView.loadHTMLString(html, baseURL: nil)
+        webView.loadHTMLString(html, baseURL: baseURL)
     }
 }
 
