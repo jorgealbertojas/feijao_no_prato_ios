@@ -38,33 +38,53 @@ struct LoginStartView: View {
         }
     }
 
+    // Android primary_400 = #D9D4CA (light warm beige)
+    private let loginBg = Color(red: 0.851, green: 0.831, blue: 0.792)
+    // Android feijão text color = #702722 (dark red-brown)
+    private let feijaoTextColor = Color(red: 0.439, green: 0.153, blue: 0.133)
+
     // MARK: - Login
 
     private var loginView: some View {
         VStack(spacing: 0) {
-            Color.brandOrange
+            loginBg
                 .ignoresSafeArea(edges: .top)
                 .frame(height: 0)
 
             VStack(spacing: 0) {
                 Spacer().frame(height: 80)
 
-                // Logo
-                Image("icon_main_name")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 160, height: 198)
+                // Composite logo: icon_logo (bean) + brand wordmark text
+                // Mirrors Android icon_main_name.xml (160×198dp):
+                // bean illustration (~58%), "feijão" text (~23%), "no prato" text (~19%)
+                VStack(spacing: 2) {
+                    Image("icon_logo")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 112)
+
+                    Text("feijão")
+                        .font(.system(size: 34, weight: .bold))
+                        .foregroundColor(feijaoTextColor)
+                        .tracking(-0.5)
+
+                    Text("no prato")
+                        .font(.system(size: 17, weight: .medium))
+                        .foregroundColor(.black)
+                }
+                .frame(width: 160, height: 198)
 
                 Spacer().frame(height: 36)
 
                 Text("É brasileiro, é acessível, é para todos!")
                     .font(.system(size: 18))
+                    .foregroundColor(Color(red: 0.2, green: 0.15, blue: 0.1))
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 24)
 
                 Spacer().frame(height: 50)
             }
-            .background(Color.brandOrange)
+            .background(loginBg)
 
             // White card
             VStack(spacing: 0) {
@@ -113,7 +133,7 @@ struct LoginStartView: View {
             .background(Color.white)
             .clipShape(UnevenRoundedRectangle(topLeadingRadius: 32, bottomLeadingRadius: 0, bottomTrailingRadius: 0, topTrailingRadius: 32))
         }
-        .background(Color.brandOrange.ignoresSafeArea())
+        .background(loginBg.ignoresSafeArea())
     }
 }
 
