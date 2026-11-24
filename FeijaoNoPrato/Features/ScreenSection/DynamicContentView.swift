@@ -244,11 +244,10 @@ private struct _SelfSizingWebView: UIViewRepresentable {
     let width: CGFloat
     @Binding var height: CGFloat
 
-    func makeCoordinator() -> Coordinator { Coordinator(height: $height) }
+    func makeCoordinator() -> Coordinator { Coordinator(heightBinding: $height) }
 
     func makeUIView(context: Context) -> WKWebView {
-        let cfg = WKWebViewConfiguration()
-        let webView = WKWebView(frame: .zero, configuration: cfg)
+        let webView = WKWebView()
         webView.backgroundColor = .clear
         webView.isOpaque = false
         webView.scrollView.isScrollEnabled = false
@@ -261,12 +260,12 @@ private struct _SelfSizingWebView: UIViewRepresentable {
         webView.load(URLRequest(url: url))
     }
 
+    // Store Binding<CGFloat> as a plain var (not @Binding) to avoid NSObject init ambiguity.
     class Coordinator: NSObject, WKNavigationDelegate {
-        @Binding var height: CGFloat
-        init(height: Binding<CGFloat>) { _height = height }
+        var heightBinding: Binding<CGFloat>
+        init(heightBinding: Binding<CGFloat>) { self.heightBinding = heightBinding }
 
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-            // CSS: image fills width, height follows natural aspect ratio
             let css = "body{margin:0;padding:0;background:transparent;}img{width:100%;height:auto;display:block;}"
             let js = """
             (function(){
@@ -279,7 +278,7 @@ private struct _SelfSizingWebView: UIViewRepresentable {
             webView.evaluateJavaScript(js) { [weak self] result, _ in
                 let h = (result as? Double).map(CGFloat.init) ?? 0
                 if h > 20 {
-                    DispatchQueue.main.async { self?.height = h }
+                    DispatchQueue.main.async { self?.heightBinding.wrappedValue = h }
                 }
             }
         }
