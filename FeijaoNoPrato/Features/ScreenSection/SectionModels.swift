@@ -103,10 +103,11 @@ struct SectionItem: Codable {
         nomeArquivo = try c.decodeIfPresent(String.self, forKey: .nomeArquivo)
         alinhamento = try c.decodeIfPresent(String.self, forKey: .alinhamento)
         descricao = try c.decodeIfPresent(String.self, forKey: .descricao)
-        // Android model: Tamanho is String? — Gson cannot put a JSON number into String, so numeric
-        // values from the API silently become null on Android, triggering the "100 * 3 = 300 → fillMaxWidth"
-        // default. iOS must match this: only parse String, so numeric JSON values also become nil here.
-        if let str = try? c.decodeIfPresent(String.self, forKey: .tamanho) {
+        // Tamanho can be a JSON number or a JSON string depending on the page.
+        // Try Double first (most common), then String fallback.
+        if let dbl = try? c.decodeIfPresent(Double.self, forKey: .tamanho) {
+            tamanho = dbl
+        } else if let str = try? c.decodeIfPresent(String.self, forKey: .tamanho) {
             tamanho = Double(str)
         } else {
             tamanho = nil

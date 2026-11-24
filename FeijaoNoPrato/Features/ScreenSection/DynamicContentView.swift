@@ -113,6 +113,13 @@ struct DynamicContentView: View {
                     let isFullWidth = sizeNumber == 300
                     let imageWidth = CGFloat(sizeNumber)
 
+                    // DEBUG — remove after confirming correct tamanho values from API
+                    Text("DEBUG tamanho=\(item.tamanho.map { String($0) } ?? "nil") sizeNumber=\(sizeNumber) full=\(isFullWidth ? "YES" : "NO")")
+                        .font(.system(size: 10))
+                        .foregroundColor(.red)
+                        .padding(2)
+                        .background(Color.yellow.opacity(0.5))
+
                     if isFullWidth {
                         // WKWebView (UIViewRepresentable) ignores maxWidth:.infinity — needs explicit width.
                         // 32 = 2 × 16pt horizontal padding applied by the parent.
