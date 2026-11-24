@@ -37,7 +37,11 @@ struct DynamicContentView: View {
                 .padding(.vertical, 4)
 
         case "SubTitulo":
-            Text(item.texto ?? "")
+            let subAttr = (try? AttributedString(
+                markdown: preprocessForMarkdown(item.texto ?? ""),
+                options: AttributedString.MarkdownParsingOptions(interpretedSyntax: .inlineOnlyPreservingWhitespace)
+            )) ?? AttributedString(item.texto ?? "")
+            Text(subAttr)
                 .font(.system(size: 20, weight: .bold))
                 .foregroundColor(Color(.label))
                 .multilineTextAlignment(align)
@@ -260,20 +264,25 @@ private struct DestaqueCard: View {
 
 // MARK: - HorizontalImageCarousel (Android GrupoImagens direcao=="Horizontal")
 // Swipeable card carousel: each card shows image (top) + caption (bottom).
+// Card width is 72% of screen width so the next card always peeks regardless of container width.
 // Works for all GrupoImagens callers — modelo field is the caption text.
 
 private struct HorizontalImageCarousel: View {
     let images: [SectionItemImage]
     let imageBaseURL: String
 
+    // 72% of screen → next card peeks ~22% at right edge, matching Android proportion
+    private let cardWidth: CGFloat = UIScreen.main.bounds.width * 0.72
+
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 12) {
                 ForEach(Array(images.enumerated()), id: \.offset) { _, img in
-                    ImageCarouselCard(image: img, imageBaseURL: imageBaseURL)
+                    ImageCarouselCard(image: img, imageBaseURL: imageBaseURL, cardWidth: cardWidth)
                 }
             }
-            .padding(.horizontal, 16)
+            .padding(.leading, 16)
+            .padding(.trailing, 8)
             .padding(.vertical, 8)
         }
     }
@@ -282,6 +291,7 @@ private struct HorizontalImageCarousel: View {
 private struct ImageCarouselCard: View {
     let image: SectionItemImage
     let imageBaseURL: String
+    let cardWidth: CGFloat
 
     var body: some View {
         VStack(spacing: 0) {
@@ -294,7 +304,7 @@ private struct ImageCarouselCard: View {
                     Color(.systemGray5)
                 }
             }
-            .frame(width: 260, height: 180)
+            .frame(width: cardWidth, height: cardWidth * 0.65)
             .clipped()
 
             if let caption = image.modelo, !caption.isEmpty {
@@ -307,10 +317,10 @@ private struct ImageCarouselCard: View {
                     .padding(.vertical, 10)
             }
         }
-        .frame(width: 260)
-        .background(Color(.systemBackground))
+        .frame(width: cardWidth)
+        .background(Color(.systemGray6))
         .cornerRadius(10)
-        .shadow(color: .black.opacity(0.08), radius: 4, x: 0, y: 2)
+        .shadow(color: .black.opacity(0.06), radius: 3, x: 0, y: 2)
     }
 }
 
