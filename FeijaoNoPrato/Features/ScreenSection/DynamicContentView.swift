@@ -112,25 +112,30 @@ struct DynamicContentView: View {
                     let sizeNumber = Int((item.tamanho ?? 100) * 3)
                     let isFullWidth = sizeNumber == 300
                     let imageWidth = CGFloat(sizeNumber)
-                    let rowAlignment: HorizontalAlignment = {
-                        switch item.alinhamento {
-                        case "Esquerda": return .leading
-                        case "Direita": return .trailing
-                        default: return .center
-                        }
-                    }()
 
-                    HStack {
-                        if rowAlignment == .center || rowAlignment == .trailing { Spacer() }
-                        // Height = width to preserve aspect ratio in WKWebView (CSS fits image inside)
-                        let frameWidth: CGFloat = isFullWidth ? UIScreen.main.bounds.width : imageWidth
+                    if isFullWidth {
+                        // Full-width: no Spacers — they would halve the available width
                         WebImageView(url: imageURL)
-                            .frame(width: isFullWidth ? nil : imageWidth, height: frameWidth)
-                            .frame(maxWidth: isFullWidth ? .infinity : nil)
+                            .frame(maxWidth: .infinity, minHeight: UIScreen.main.bounds.width * 0.75)
                             .cornerRadius(12)
-                        if rowAlignment == .center || rowAlignment == .leading { Spacer() }
+                            .padding(.vertical, 8)
+                    } else {
+                        let rowAlignment: HorizontalAlignment = {
+                            switch item.alinhamento {
+                            case "Esquerda": return .leading
+                            case "Direita": return .trailing
+                            default: return .center
+                            }
+                        }()
+                        HStack {
+                            if rowAlignment == .center || rowAlignment == .trailing { Spacer() }
+                            WebImageView(url: imageURL)
+                                .frame(width: imageWidth, height: imageWidth)
+                                .cornerRadius(12)
+                            if rowAlignment == .center || rowAlignment == .leading { Spacer() }
+                        }
+                        .padding(.vertical, 8)
                     }
-                    .padding(.vertical, 8)
                 }
             }
 
