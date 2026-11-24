@@ -93,7 +93,11 @@ struct DynamicContentView: View {
         case "GrupoImagens":
             if let imgs = item.imagens, !imgs.isEmpty {
                 let isHorizontal = item.direcao?.caseInsensitiveCompare("Horizontal") == .orderedSame
-                let _ = print("[GrupoImagens] direcao='\(item.direcao ?? "nil")', count=\(imgs.count), isHorizontal=\(isHorizontal)")
+                // DEBUG — remove after diagnosis
+                Text("🔍 direcao='\(item.direcao ?? "nil")'  count=\(imgs.count)  horiz=\(isHorizontal ? "✓" : "✗")")
+                    .font(.system(size: 11, weight: .bold))
+                    .foregroundColor(.red)
+                    .padding(.horizontal, 16)
                 if isHorizontal {
                     HorizontalImageCarousel(images: imgs, imageBaseURL: imageBaseURL)
                 } else {
