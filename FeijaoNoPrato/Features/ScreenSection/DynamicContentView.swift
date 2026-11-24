@@ -75,27 +75,12 @@ struct DynamicContentView: View {
             let imgName = item.nomeArquivo ?? item.url ?? item.personalizacao ?? ""
             if !imgName.isEmpty {
                 let fullURL = imgName.hasPrefix("http") ? imgName : imageBaseURL + imgName
-                if imgName.lowercased().hasSuffix(".svg"), let svgURL = URL(string: fullURL) {
-                    SVGImageView(url: svgURL)
+                // WKWebView renders SVG, PNG, JPG and any other format the server returns
+                if let imageURL = URL(string: fullURL) {
+                    WebImageView(url: imageURL)
                         .frame(maxWidth: .infinity)
                         .frame(height: UIScreen.main.bounds.width)
                         .padding(.vertical, 8)
-                } else if let imageURL = URL(string: fullURL) {
-                    AsyncImage(url: imageURL) { phase in
-                        switch phase {
-                        case .success(let img):
-                            img.resizable()
-                                .scaledToFit()
-                                .frame(maxWidth: .infinity)
-                        case .failure:
-                            Color(.systemGray5)
-                                .frame(maxWidth: .infinity, minHeight: 120)
-                        default:
-                            ProgressView()
-                                .frame(maxWidth: .infinity, minHeight: 120)
-                        }
-                    }
-                    .padding(.vertical, 8)
                 }
             }
 
@@ -172,10 +157,11 @@ struct DynamicContentView: View {
     }
 }
 
-// MARK: - SVGImageView
-// AsyncImage does not support SVG; use WKWebView to render it.
+// MARK: - WebImageView
+// WKWebView-based image renderer — handles SVG, PNG, JPG and any other format.
+// AsyncImage silently fails on SVG; this view handles all formats uniformly.
 
-private struct SVGImageView: UIViewRepresentable {
+private struct WebImageView: UIViewRepresentable {
     let url: URL
 
     func makeUIView(context: Context) -> WKWebView {
