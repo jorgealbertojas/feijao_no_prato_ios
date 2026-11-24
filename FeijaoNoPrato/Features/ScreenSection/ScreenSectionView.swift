@@ -113,7 +113,7 @@ struct ScreenSectionView: View {
                             .fill(Color(.systemGray5))
                             .frame(height: 6)
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color.brandOrange)
+                            .fill(Color(red: 0.3, green: 0.7, blue: 0.4))
                             .frame(width: geo.size.width * CGFloat(viewModel.progress), height: 6)
                             .animation(.easeInOut(duration: 0.3), value: viewModel.progress)
                     }
@@ -135,9 +135,9 @@ struct ScreenSectionView: View {
                 Button(action: { viewModel.goPrev() }) {
                     Image(systemName: "arrow.left")
                         .font(.system(size: 18, weight: .semibold))
-                        .foregroundColor(.primary)
+                        .foregroundColor(.white)
                         .frame(width: 48, height: 48)
-                        .background(Color(.systemGray5))
+                        .background(Color.brandOrange)
                         .clipShape(Circle())
                 }
             }
@@ -146,12 +146,11 @@ struct ScreenSectionView: View {
                 let desc = viewModel.nextDescricao.uppercased()
                 let isConfirmar = desc == "CONFIRMAR"
                 let isSeguir = desc.contains("SELECT_DOUBLE")
-                let isDefaultProximo = desc == "PRÓXIMO"
-                // Android: standard next-page navigation uses a circle → button (no text)
-                let isCircleArrow = isDefaultProximo && !viewModel.isLastPage
-                let label = isSeguir ? "SEGUIR" : (isConfirmar ? "CONFIRMAR" : (isDefaultProximo ? "CONCLUIR" : desc))
+                let isProximo = desc == "PRÓXIMO"
+                // Android: "Próximo" always shows circle arrow icon, never text
+                let label = isSeguir ? "SEGUIR" : (isConfirmar ? "CONFIRMAR" : desc)
 
-                if isCircleArrow {
+                if isProximo {
                     Spacer()
                     Button(action: { viewModel.goNext() }) {
                         Image(systemName: "arrow.right")
