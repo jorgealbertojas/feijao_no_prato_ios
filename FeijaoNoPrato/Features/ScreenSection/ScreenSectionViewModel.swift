@@ -23,6 +23,9 @@ final class ScreenSectionViewModel: ObservableObject {
     @Published var feedbackIsCorrect: Bool = false
     @Published var feedbackText: String = ""
 
+    // Running count of correct answers in this session (mirrors tempCorrectCount in Android)
+    @Published var tempCorrectCount: Int = 0
+
     // Session concluded flag (shown on completion)
     @Published var sessionConcluded: Bool = false
 
@@ -132,6 +135,7 @@ final class ScreenSectionViewModel: ObservableObject {
     }
 
     func dismissFeedbackAndAdvance() {
+        if feedbackIsCorrect { tempCorrectCount += 1 }
         showFeedback = false
         goNext()
     }

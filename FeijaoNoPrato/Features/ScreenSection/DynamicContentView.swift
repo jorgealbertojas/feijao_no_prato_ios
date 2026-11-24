@@ -9,8 +9,26 @@ struct DynamicContentView: View {
     let items: [SectionItem]
     let imageBaseURL: String
     let selectedOption: String?
+    let tempCorrectCount: Int
     let onOptionSelected: (String) -> Void
     let navigate: (AppRoute) -> Void
+
+    // Android: parsePersonalizacao — extracts all numbers from personalizacao string
+    private func parsePersonalizacao(_ personalizacao: String?) -> Set<Int> {
+        guard let p = personalizacao, !p.isEmpty else { return [] }
+        let nums = p.components(separatedBy: CharacterSet.decimalDigits.inverted)
+            .compactMap { Int($0) }
+        return Set(nums)
+    }
+
+    // Android: replaceXPlaceholder — replaces {{x}} or standalone "x" with the count
+    private func replaceXPlaceholder(_ text: String, count: Int) -> String {
+        var t = text.replacingOccurrences(of: "{{x}}", with: "\(count)")
+        t = t.replacingOccurrences(of: "\\bx\\b",
+                                   with: "\(count)",
+                                   options: .regularExpression)
+        return t
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -42,12 +60,18 @@ struct DynamicContentView: View {
         switch item.tipo?.lowercased() ?? "" {
 
         case "titulo":
-            Text(item.texto ?? "")
-                .font(.system(size: 24, weight: .bold))
-                .foregroundColor(Color(.label))
-                .multilineTextAlignment(align)
-                .frame(maxWidth: .infinity, alignment: isCentered ? .center : .leading)
-                .padding(.vertical, 4)
+            // Android: only show if personalizacao numbers contain tempCorrectCount (or no filter)
+            let tituloNums = parsePersonalizacao(item.personalizacao)
+            if tituloNums.isEmpty || tituloNums.contains(tempCorrectCount) {
+                let rawText = item.texto ?? ""
+                let displayText = replaceXPlaceholder(rawText, count: tempCorrectCount)
+                Text(displayText)
+                    .font(.system(size: 24, weight: .bold))
+                    .foregroundColor(Color(.label))
+                    .multilineTextAlignment(align)
+                    .frame(maxWidth: .infinity, alignment: isCentered ? .center : .leading)
+                    .padding(.vertical, 4)
+            }
 
         case "subtitulo":
             let subAttr = (try? AttributedString(
@@ -72,8 +96,11 @@ struct DynamicContentView: View {
             Spacer().frame(height: size)
 
         case "imagem":
-            let imgName = item.nomeArquivo ?? item.url ?? item.personalizacao ?? ""
-            if !imgName.isEmpty {
+            // Android: only show if personalizacao numbers contain tempCorrectCount (or no filter)
+            let imagemNums = parsePersonalizacao(item.personalizacao)
+            let shouldShow = imagemNums.isEmpty || imagemNums.contains(tempCorrectCount)
+            let imgName = item.nomeArquivo ?? item.url ?? ""
+            if shouldShow && !imgName.isEmpty {
                 // The API sometimes returns partially-encoded filenames (e.g. %2C for comma but
                 // literal spaces). Decode first then re-encode so the URL is valid for Azure Blob.
                 let decoded = imgName.removingPercentEncoding ?? imgName

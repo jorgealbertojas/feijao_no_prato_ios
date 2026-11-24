@@ -84,6 +84,7 @@ struct ScreenSectionView: View {
                             items: items,
                             imageBaseURL: viewModel.imageBaseURL,
                             selectedOption: viewModel.selectedOption,
+                            tempCorrectCount: viewModel.tempCorrectCount,
                             onOptionSelected: { viewModel.selectedOption = $0 },
                             navigate: navigate
                         )
