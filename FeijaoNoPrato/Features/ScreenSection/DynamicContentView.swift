@@ -164,34 +164,32 @@ struct DynamicContentView: View {
 private struct WebImageView: UIViewRepresentable {
     let url: URL
 
+    func makeCoordinator() -> Coordinator { Coordinator() }
+
     func makeUIView(context: Context) -> WKWebView {
         let webView = WKWebView()
         webView.backgroundColor = .clear
         webView.isOpaque = false
         webView.scrollView.isScrollEnabled = false
         webView.scrollView.bounces = false
+        webView.navigationDelegate = context.coordinator
         return webView
     }
 
     func updateUIView(_ webView: WKWebView, context: Context) {
-        // baseURL must be the image's origin so the img tag is treated as same-origin
-        let baseURL: URL?
-        if let scheme = url.scheme, let host = url.host {
-            baseURL = URL(string: "\(scheme)://\(host)")
-        } else {
-            baseURL = nil
+        webView.load(URLRequest(url: url))
+    }
+
+    class Coordinator: NSObject, WKNavigationDelegate {
+        func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+            // Inject CSS to fit the image inside the view without scroll
+            let css = """
+            body{margin:0;padding:0;background:transparent;display:flex;align-items:center;justify-content:center;height:100vh;}
+            img{max-width:100%;max-height:100%;object-fit:contain;}
+            """
+            let js = "var s=document.createElement('style');s.textContent=`\(css)`;document.head.appendChild(s);"
+            webView.evaluateJavaScript(js, completionHandler: nil)
         }
-        let html = """
-        <html><head>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: transparent; display: flex; align-items: center; justify-content: center; height: 100vh; }
-        img { max-width: 100%; max-height: 100%; object-fit: contain; }
-        </style>
-        </head><body><img src="\(url.absoluteString)"/></body></html>
-        """
-        webView.loadHTMLString(html, baseURL: baseURL)
     }
 }
 
