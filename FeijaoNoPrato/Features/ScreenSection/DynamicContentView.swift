@@ -276,8 +276,8 @@ private struct HorizontalImageCarousel: View {
 
     var body: some View {
         GeometryReader { geo in
-            // 78% of container so next card peeks ~16% at right edge
-            let cardWidth = max(geo.size.width * 0.78, 200)
+            // 72% of container so next card peeks ~22% at right edge, matching Android
+            let cardWidth = max(geo.size.width * 0.72, 200)
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 12) {
@@ -291,8 +291,8 @@ private struct HorizontalImageCarousel: View {
             }
             .frame(width: geo.size.width)
         }
-        // Fix GeometryReader height: image + caption (~40pt) + vertical padding (16pt)
-        .frame(height: UIScreen.main.bounds.width * 0.78 * 0.65 + 56)
+        // Fix GeometryReader height: image (72% * 65% of screen) + caption (~40pt) + padding (16pt)
+        .frame(height: UIScreen.main.bounds.width * 0.72 * 0.65 + 56)
     }
 }
 
