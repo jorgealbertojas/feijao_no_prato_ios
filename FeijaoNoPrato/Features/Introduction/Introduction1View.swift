@@ -61,11 +61,15 @@ struct Introduction1View: View {
             }
 
         case 2:
-            BalloonCard(
-                text: "Ter uma boa alimentação é uma das melhores decisões que você pode tomar.\n\n**Pela sua saúde e pelo planeta!**",
-                icon: "heart.fill",
-                iconColor: Color.brandOrange
-            )
+            // Android: Introduction_1_2 shows R.drawable.parabens_atitude (305×250dp)
+            // text goes into the footer card (title + subTitle), not here
+            VStack {
+                Spacer().frame(height: 50)
+                Image("parabens_atitude")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 305, height: 250)
+            }
 
         case 3:
             BalloonCard(
@@ -152,7 +156,24 @@ struct Introduction1View: View {
                 IntroductionNavRow(total: totalScreens, current: screenNumber, showArrows: false, onBack: goBack, onNext: goNext)
             }
 
-        case 2, 3:
+        case 2:
+            // Android footer: title + subTitle text + nav row
+            IntroductionFooterCard {
+                Text("Ter uma boa alimentação é uma das melhores decisões que você pode tomar.")
+                    .font(.system(size: 20))
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(Color(red: 0.231, green: 0.231, blue: 0.231))
+                    .lineSpacing(6)
+                    .padding(.bottom, 12)
+                Text(boldText("**Pela sua saúde e pelo planeta!**"))
+                    .font(.system(size: 18))
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(Color(red: 0.231, green: 0.231, blue: 0.231))
+                    .padding(.bottom, 12)
+                IntroductionNavRow(total: totalScreens, current: screenNumber, onBack: goBack, onNext: goNext)
+            }
+
+        case 3:
             IntroductionFooterCard {
                 IntroductionNavRow(total: totalScreens, current: screenNumber, onBack: goBack, onNext: goNext)
             }
