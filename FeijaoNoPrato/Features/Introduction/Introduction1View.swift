@@ -43,15 +43,21 @@ struct Introduction1View: View {
         switch screenNumber {
         case 1:
             VStack(spacing: 24) {
-                Image(systemName: "leaf.circle.fill")
+                // Android uses R.drawable.introduction_app (200dp) = feijão colorido
+                Image("icon_logo")
                     .resizable().scaledToFit()
-                    .frame(width: 120, height: 120)
-                    .foregroundColor(Color.brandOrange)
-                    .padding(.top, 40)
-                Text("Bem-vindo ao\nFeijão no Prato!")
-                    .font(.system(size: 26, weight: .bold))
+                    .frame(width: 200, height: 200)
+                    .padding(.top, 30)
+                Text("Boas vindas ao\nFeijão no Prato!")
+                    .font(.system(size: 28, weight: .bold))
                     .multilineTextAlignment(.center)
-                    .foregroundColor(.white)
+                    .foregroundColor(Color(red: 0.231, green: 0.231, blue: 0.231))
+                    .lineSpacing(8)
+                Text("Transforme sua alimentação com o Guia Alimentar para a População Brasileira.")
+                    .font(.system(size: 18))
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(Color(red: 0.231, green: 0.231, blue: 0.231))
+                    .lineSpacing(6)
             }
 
         case 2:
@@ -125,6 +131,12 @@ struct Introduction1View: View {
         switch screenNumber {
         case 1:
             IntroductionFooterCard {
+                // Android shows "Vamos começar?" as title in the footer card
+                Text("Vamos começar?")
+                    .font(.system(size: 24, weight: .bold))
+                    .foregroundColor(Color(red: 0.231, green: 0.231, blue: 0.231))
+                    .padding(.bottom, 8)
+
                 Button {
                     screenNumber = 2
                 } label: {

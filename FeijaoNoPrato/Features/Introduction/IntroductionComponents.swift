@@ -42,7 +42,8 @@ struct IntroductionBackground<Content: View>: View {
     private var backgroundColor: Color {
         if isWhite { return .white }
         if isCarioquina { return Color(red: 0.698, green: 0.388, blue: 0.267) }
-        return Color(red: 0.149, green: 0.149, blue: 0.165)
+        // Android carioquina_introdution = #F1ECE1 (warm cream)
+        return Color(red: 0.945, green: 0.925, blue: 0.882)
     }
 }
 
@@ -115,7 +116,8 @@ struct IntroductionNavRow: View {
             HStack(spacing: 14) {
                 ForEach(0..<total, id: \.self) { i in
                     Circle()
-                        .fill(i == current - 1 ? Color(red: 0.545, green: 0.243, blue: 0.184) : Color(red: 0.792, green: 0.431, blue: 0.298))
+                        // active = #8B3E2F, inactive = primary_400 #D9D4CA (matches Android)
+                        .fill(i == current - 1 ? Color(red: 0.545, green: 0.243, blue: 0.184) : Color(red: 0.851, green: 0.831, blue: 0.792))
                         .frame(width: 10, height: 10)
                 }
             }
@@ -163,7 +165,7 @@ struct IntroductionContinueRow: View {
             HStack(spacing: 14) {
                 ForEach(0..<total, id: \.self) { i in
                     Circle()
-                        .fill(i == current - 1 ? Color(red: 0.545, green: 0.243, blue: 0.184) : Color(red: 0.792, green: 0.431, blue: 0.298))
+                        .fill(i == current - 1 ? Color(red: 0.545, green: 0.243, blue: 0.184) : Color(red: 0.851, green: 0.831, blue: 0.792))
                         .frame(width: 10, height: 10)
                 }
             }
