@@ -74,13 +74,11 @@ struct DynamicContentView: View {
         case "imagem":
             let imgName = item.nomeArquivo ?? item.url ?? item.personalizacao ?? ""
             if !imgName.isEmpty {
-                let fullURL = imgName.hasPrefix("http") ? imgName : imageBaseURL + imgName
-                // DEBUG — remove after fix
-                Text("URL: \(fullURL)")
-                    .font(.system(size: 10))
-                    .foregroundColor(.red)
-                    .padding(.vertical, 2)
-                // WKWebView renders SVG, PNG, JPG and any other format the server returns
+                // The API sometimes returns partially-encoded filenames (e.g. %2C for comma but
+                // literal spaces). Decode first then re-encode so the URL is valid for Azure Blob.
+                let decoded = imgName.removingPercentEncoding ?? imgName
+                let encoded = decoded.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? decoded
+                let fullURL = imgName.hasPrefix("http") ? imgName : imageBaseURL + encoded
                 if let imageURL = URL(string: fullURL) {
                     WebImageView(url: imageURL)
                         .frame(maxWidth: .infinity)
