@@ -9,6 +9,7 @@ struct ScreenSectionView: View {
     var dismiss: () -> Void
 
     @StateObject private var viewModel = ScreenSectionViewModel()
+    @EnvironmentObject private var gamificacaoViewModel: GamificacaoViewModel
 
     var body: some View {
         ZStack {
@@ -52,7 +53,22 @@ struct ScreenSectionView: View {
             FeedbackSheet(
                 isCorrect: viewModel.feedbackIsCorrect,
                 feedbackText: viewModel.feedbackText,
-                onContinue: { viewModel.dismissFeedbackAndAdvance() }
+                onContinue: {
+                    // Award [FIXANDO] points when answer is correct, mirroring Android ScreenSection.kt
+                    if viewModel.feedbackIsCorrect,
+                       let page = viewModel.currentPage,
+                       let pergunta = page.itens?.first(where: { $0.tipo == "Pergunta" }),
+                       pergunta.personalizacao == "[FIXANDO]" {
+                        let ref = "\(viewModel.sessaoAtual + 1)_\(viewModel.currentPageIndex)"
+                        gamificacaoViewModel.adicionarPontos(
+                            modulo_numero: String(viewModel.moduloAtual),
+                            modulo: "0",
+                            atividade: "[FIXANDO]",
+                            referenciaUnica: ref
+                        )
+                    }
+                    viewModel.dismissFeedbackAndAdvance()
+                }
             )
             .presentationDetents([.fraction(0.4)])
         }

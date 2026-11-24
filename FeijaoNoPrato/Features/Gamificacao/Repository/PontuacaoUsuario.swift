@@ -10,6 +10,7 @@ struct PontuacaoUsuario: Codable {
     var ultimoSessao: Int = 1
     var list_rescue: [Int] = []
     var historico: [PontoAtividade] = []
+    var atividadesPontuadasUnicas: [String] = []
 
     var saldo: Int { totalAcumulado - totalConsumido }
 }

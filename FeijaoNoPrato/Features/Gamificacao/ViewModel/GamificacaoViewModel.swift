@@ -90,5 +90,37 @@ final class GamificacaoViewModel: ObservableObject {
         return true
     }
 
+    // MARK: - Add points (mirrors Android GamificacaoViewModel.adicionarPontos)
+
+    func adicionarPontos(modulo_numero: String, modulo: String, atividade: String, referenciaUnica: String) {
+        guard let repository else { return }
+        let pontos = getPontos(modulo: modulo, atividade: atividade)
+        guard pontos > 0 else { return }
+        Task {
+            await repository.adicionarPontos(
+                modulo_numero: modulo_numero,
+                modulo: modulo,
+                atividade: atividade,
+                pontos: pontos,
+                referenciaUnica: referenciaUnica
+            )
+            pontuacao.totalAcumulado = repository.cachedPontuacao().totalAcumulado
+        }
+    }
+
+    // Reads point value for (modulo, atividade) pair from bundled gamificacao.json.
+    private func getPontos(modulo: String, atividade: String) -> Int {
+        guard let url = Bundle.main.url(forResource: "gamificacao", withExtension: "json"),
+              let data = try? Data(contentsOf: url),
+              let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let atividades = obj["atividades"] as? [[String: Any]] else { return 0 }
+        for item in atividades {
+            if (item["modulo"] as? String) == modulo && (item["atividade"] as? String) == atividade {
+                return (item["pontos"] as? Int) ?? 0
+            }
+        }
+        return 0
+    }
+
     func adicionarBonusIAAoEntrarSessao1(modulo: Int, sessao: Int) { }
 }
