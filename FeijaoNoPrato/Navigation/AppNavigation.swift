@@ -162,6 +162,7 @@ struct AppNavigation: View {
                 navigate: { path.append($0) },
                 dismiss: { path.removeLast() }
             )
+            .environmentObject(gamificacaoViewModel)
         case .moduleDetail:
             ModuleDetailView(dismiss: { path.removeLast() })
         case .gamificacao:
