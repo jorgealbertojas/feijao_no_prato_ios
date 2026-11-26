@@ -45,17 +45,29 @@ struct ResourceDetailView: View {
 
                 ScrollView {
                     VStack(alignment: .leading, spacing: 0) {
-                        // Image placeholder
-                        item.placeholderColor
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 260)
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                            .overlay(
-                                Image(systemName: typeIcon)
-                                    .font(.system(size: 48))
-                                    .foregroundColor(.white.opacity(0.6))
-                            )
-                            .padding(.horizontal, 16)
+                        // Image (local asset with icon overlay; placeholder if not found)
+                        ZStack {
+                            if UIImage(named: item.imagens) != nil {
+                                Image(item.imagens)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 260)
+                                    .clipped()
+                                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                            } else {
+                                item.placeholderColor
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 260)
+                                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                                    .overlay(
+                                        Image(systemName: typeIcon)
+                                            .font(.system(size: 48))
+                                            .foregroundColor(.white.opacity(0.6))
+                                    )
+                            }
+                        }
+                        .padding(.horizontal, 16)
 
                         Spacer().frame(height: 20)
 
@@ -182,6 +194,7 @@ struct ResourceDetailView: View {
                 ConfirmRescateView(
                     recursoNome: item.displayTitle,
                     feijoes: item.quantidade,
+                    imagens: item.imagens,
                     placeholderColor: item.placeholderColor,
                     onConfirmar: {
                         let sucesso = gamificacaoViewModel.registrarRescue(
@@ -238,6 +251,7 @@ struct ConfirmRescateView: View {
 
     let recursoNome: String
     let feijoes: Int
+    let imagens: String
     let placeholderColor: Color
     let onConfirmar: () -> Void
     let onCancelar: () -> Void
@@ -259,9 +273,18 @@ struct ConfirmRescateView: View {
 
                     // Resource card preview
                     HStack(spacing: 12) {
-                        placeholderColor
-                            .frame(width: 90, height: 90)
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                        Group {
+                            if UIImage(named: imagens) != nil {
+                                Image(imagens)
+                                    .resizable()
+                                    .scaledToFill()
+                            } else {
+                                placeholderColor
+                            }
+                        }
+                        .frame(width: 90, height: 90)
+                        .clipped()
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
                         Text(recursoNome)
                             .font(.system(size: 14, weight: .medium))
                         Spacer()
