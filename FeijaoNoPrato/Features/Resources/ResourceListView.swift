@@ -109,11 +109,20 @@ struct ResourceCardRow: View {
     var body: some View {
         Button(action: onTap) {
             HStack(alignment: .top, spacing: 12) {
-                // Image placeholder
+                // Image (local asset, same as ResourceParentCard)
                 ZStack(alignment: .topLeading) {
-                    item.placeholderColor
-                        .frame(width: 120, height: 150)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                    if UIImage(named: item.imagens) != nil {
+                        Image(item.imagens)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 120, height: 150)
+                            .clipped()
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                    } else {
+                        item.placeholderColor
+                            .frame(width: 120, height: 150)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                    }
 
                     if item.isAvailable(rescuedItems: rescuedItems) {
                         Image(systemName: "checkmark.circle.fill")
