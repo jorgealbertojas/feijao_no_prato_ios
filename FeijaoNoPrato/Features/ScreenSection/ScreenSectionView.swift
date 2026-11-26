@@ -186,6 +186,7 @@ struct ScreenSectionView: View {
                 let isProximo = desc == "PRÓXIMO"
                 // Android: "Próximo" always shows circle arrow icon, never text
                 let label = isSeguir ? "SEGUIR" : (isConfirmar ? "CONFIRMAR" : desc)
+                let confirmarDisabled = isConfirmar && viewModel.selectedOption == nil
 
                 if isProximo {
                     Spacer()
@@ -211,9 +212,10 @@ struct ScreenSectionView: View {
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
                             .frame(height: 48)
-                            .background(Color.brandOrange)
+                            .background(confirmarDisabled ? Color.brandOrange.opacity(0.4) : Color.brandOrange)
                             .cornerRadius(50)
                     }
+                    .disabled(confirmarDisabled)
                 }
             }
         }
