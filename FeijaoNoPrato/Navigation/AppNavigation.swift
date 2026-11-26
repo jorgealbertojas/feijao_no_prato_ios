@@ -45,6 +45,8 @@ enum AppRoute: Hashable {
     // Resources / Feira
     case resourceList(title: String, items: [ResourceItem])
     case resourceDetail(item: ResourceItem, isAvailable: Bool)
+    // Direct Feira navigation from module content (mirrors Android ?categoriaFiltro= param)
+    case resourcesFiltered(categoria: String)
 
     // Profile text pages
     case profileText(title: String)
@@ -186,6 +188,14 @@ struct AppNavigation: View {
         case .history:
             HistoricoFeijoesView(dismiss: { path.removeLast() })
                 .environmentObject(gamificacaoViewModel)
+        case .resourcesFiltered(let categoria):
+            ResourcesView(
+                navigate: { path.append($0) },
+                dismiss: { path.removeLast() },
+                initialCategoria: categoria.isEmpty ? nil : categoria
+            )
+            .environmentObject(gamificacaoViewModel)
+            .environmentObject(appDependencies)
         case .resourceList(let title, let items):
             ResourceListView(
                 title: title,

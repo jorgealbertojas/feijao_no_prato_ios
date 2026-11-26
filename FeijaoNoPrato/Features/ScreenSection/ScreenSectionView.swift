@@ -102,7 +102,21 @@ struct ScreenSectionView: View {
                             selectedOption: viewModel.selectedOption,
                             tempCorrectCount: viewModel.tempCorrectCount,
                             onOptionSelected: { viewModel.selectedOption = $0 },
-                            navigate: navigate
+                            navigate: navigate,
+                            onBotaoExtra: { personalizacao in
+                                if personalizacao.contains("[OPEN_FEIRA") {
+                                    // Extract category from [OPEN_FEIRA_Cereais] → "Cereais"
+                                    // [OPEN_FEIRA] or [OPEN_FEIRA (no underscore) → no filter
+                                    let categoria = personalizacao
+                                        .components(separatedBy: "OPEN_FEIRA_").dropFirst().first?
+                                        .components(separatedBy: "]").first ?? ""
+                                    navigate(.resourcesFiltered(categoria: categoria))
+                                } else if personalizacao == "[OPEN_MENU]" {
+                                    dismiss()
+                                } else if personalizacao == "[NEXT_SECTION]" {
+                                    dismiss()
+                                }
+                            }
                         )
                     }
                     // Extra padding so last content is not hidden behind floating bar

@@ -11,8 +11,11 @@ final class ResourcesViewModel: ObservableObject {
     @Published var categoriasFiltro: Set<String> = []
     @Published var showInfoBanner: Bool = true
 
-    init() {
+    init(initialCategoria: String? = nil) {
         loadResources()
+        if let cat = initialCategoria, !cat.isEmpty {
+            categoriasFiltro = [cat]
+        }
     }
 
     private func loadResources() {

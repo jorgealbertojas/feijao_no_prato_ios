@@ -8,11 +8,18 @@ import SwiftUI
 struct ResourcesView: View {
 
     var navigate: (AppRoute) -> Void
+    var dismiss: (() -> Void)? = nil
 
-    @StateObject private var viewModel = ResourcesViewModel()
+    @StateObject private var viewModel: ResourcesViewModel
     @EnvironmentObject var gamificacaoViewModel: GamificacaoViewModel
     @EnvironmentObject var appDependencies: AppDependencies
     @State private var showFilter = false
+
+    init(navigate: @escaping (AppRoute) -> Void, dismiss: (() -> Void)? = nil, initialCategoria: String? = nil) {
+        self.navigate = navigate
+        self.dismiss = dismiss
+        _viewModel = StateObject(wrappedValue: ResourcesViewModel(initialCategoria: initialCategoria))
+    }
 
     var body: some View {
         ScrollView {
@@ -21,6 +28,14 @@ struct ResourcesView: View {
 
                 // MARK: Header
                 HStack {
+                    if let dismiss {
+                        Button(action: dismiss) {
+                            Image(systemName: "xmark")
+                                .font(.system(size: 17, weight: .medium))
+                                .foregroundColor(.primary)
+                        }
+                        .buttonStyle(.plain)
+                    }
                     Text("Feira")
                         .font(.system(size: 24, weight: .bold))
                     Spacer()

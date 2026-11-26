@@ -12,6 +12,7 @@ struct DynamicContentView: View {
     let tempCorrectCount: Int
     let onOptionSelected: (String) -> Void
     let navigate: (AppRoute) -> Void
+    var onBotaoExtra: ((String) -> Void)?
 
     // Android: parsePersonalizacao — extracts all numbers from personalizacao string
     private func parsePersonalizacao(_ personalizacao: String?) -> Set<Int> {
@@ -89,7 +90,7 @@ struct DynamicContentView: View {
             ConteudoText(texto: item.texto ?? "", isCentered: isCentered)
 
         case "etiqueta":
-            ChipRow(text: item.texto ?? "")
+            ChipRow(text: item.texto ?? "", isCentered: item.alinhamento == "Centro")
 
         case "espacamento":
             let size = CGFloat(item.tamanho ?? 8)
@@ -131,9 +132,9 @@ struct DynamicContentView: View {
                         }()
                         HStack {
                             if rowAlignment == .center || rowAlignment == .trailing { Spacer() }
-                            // AsyncImage fails silently on Azure Blob URLs; use WKWebView instead.
-                            WebImageView(url: imageURL)
-                                .frame(width: imageWidth, height: imageWidth * 1.4)
+                            // Use SelfSizingWebImageView so height matches the image's natural aspect
+                            // ratio — same as Android which only sets width and lets height wrap.
+                            SelfSizingWebImageView(url: imageURL, width: imageWidth)
                                 .cornerRadius(12)
                             if rowAlignment == .center || rowAlignment == .leading { Spacer() }
                         }
@@ -187,8 +188,13 @@ struct DynamicContentView: View {
             }
 
         case "botaoextra":
-            // Rendered separately via bottom bar; skip inline rendering
-            EmptyView()
+            let personalizacao = item.personalizacao ?? ""
+            let label = (item.descricao ?? item.texto ?? "").uppercased()
+            if !personalizacao.isEmpty && !label.isEmpty {
+                BotaoExtraView(label: label, personalizacao: personalizacao) {
+                    onBotaoExtra?(personalizacao)
+                }
+            }
 
         default:
             if let texto = item.texto, !texto.isEmpty {
@@ -323,25 +329,92 @@ private struct WebImageView: UIViewRepresentable {
 }
 
 // MARK: - ChipRow
+// Ports ChipRowFromString.kt: outlined pill, transparent bg, neutral_400 border + text, uppercase.
+// Delimiter is "|" (Android); centered when isCentered matches alinhamento=="Centro".
 
 private struct ChipRow: View {
     let text: String
+    let isCentered: Bool
+
+    // Android neutral_400 — mid-gray used for chip border and text
+    private static let neutral400 = Color(red: 0.55, green: 0.55, blue: 0.55)
+
+    private var chips: [String] {
+        text.components(separatedBy: "|")
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { !$0.isEmpty }
+    }
+
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
+        if isCentered {
             HStack(spacing: 8) {
-                ForEach(text.components(separatedBy: ","), id: \.self) { chip in
-                    let trimmed = chip.trimmingCharacters(in: .whitespaces)
-                    if !trimmed.isEmpty {
-                        Text(trimmed)
-                            .font(.system(size: 12))
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 4)
-                            .background(Color.brandOrange.opacity(0.12))
-                            .foregroundColor(Color.brandOrange)
-                            .clipShape(Capsule())
-                    }
+                ForEach(chips, id: \.self) { ChipLabel(text: $0) }
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 4)
+        } else {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    ForEach(chips, id: \.self) { ChipLabel(text: $0) }
                 }
             }
+            .padding(.vertical, 4)
+        }
+    }
+}
+
+private struct ChipLabel: View {
+    let text: String
+    private let neutral400 = Color(red: 0.55, green: 0.55, blue: 0.55)
+
+    var body: some View {
+        Text(text.uppercased())
+            .font(.system(size: 14, weight: .bold))
+            .foregroundColor(neutral400)
+            .padding(.top, 3)
+            .padding(.horizontal, 8)
+            .padding(.bottom, 2)
+            .background(Color.clear)
+            .clipShape(Capsule())
+            .overlay(Capsule().stroke(neutral400, lineWidth: 1))
+    }
+}
+
+// MARK: - BotaoExtraView
+// Ports Android DynamicPaginas.kt BotaoExtra branch:
+//   [NEXT_SECTION] → ContinueButton1 (filled orange, full width, 60dp)
+//   [OPEN_MENU] / [OPEN_FEIRA...] → ContinueButton2 (orange text, no bg)
+
+private struct BotaoExtraView: View {
+    let label: String
+    let personalizacao: String
+    let action: () -> Void
+
+    // Android Color(0xFFD16D52)
+    private let continueButton2Color = Color(red: 0.820, green: 0.427, blue: 0.322)
+
+    var body: some View {
+        if personalizacao == "[NEXT_SECTION]" {
+            Button(action: action) {
+                Text(label)
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 60)
+                    .background(Color.brandOrange)
+                    .cornerRadius(50)
+            }
+            .buttonStyle(.plain)
+            .padding(.vertical, 4)
+        } else {
+            Button(action: action) {
+                Text(label)
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundColor(continueButton2Color)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 8)
+            }
+            .buttonStyle(.plain)
         }
     }
 }
