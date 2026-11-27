@@ -176,6 +176,11 @@ struct DynamicContentView: View {
                 ReadinessToChangesSlider(onReady: onOptionSelected)
             } else if item.personalizacao == "[SELECT_SLIDER_NUMBER_QUEST]" {
                 ReadinessToChangesSliderQuest(onReady: onOptionSelected)
+            } else if item.personalizacao == "[SELECT_DOUBLE]" {
+                SelectPairsMatchView(
+                    descricaOopcaoCorreta: item.descricaOopcaoCorreta ?? "",
+                    onOptionSelected: onOptionSelected
+                )
             } else if item.personalizacao == "[SELECT_MULT]", let opcoes = item.opcoes, !opcoes.isEmpty {
                 NutritionTipCardSelect(
                     prefixo: item.descricao ?? item.texto ?? "",
@@ -228,6 +233,175 @@ struct DynamicContentView: View {
         }
         .clipped()
         .cornerRadius(6)
+    }
+}
+
+// MARK: - SelectPairsMatchView
+// Ports SelectPairsMatchItem.kt — two-column matching pairs quiz.
+// descricaOopcaoCorreta format: "[item1/group1][item2/group2]..."
+// Left column: items in order. Right column: groups shuffled.
+// Tap one from each side to match; green = correct (then disabled), red = wrong (retry).
+
+private enum PairChipState { case normal, selected, correct, wrong, disabled }
+
+private struct PairChipItem: Identifiable {
+    let id: Int
+    let text: String
+    let correctMatchId: Int
+    var state: PairChipState
+}
+
+private struct SelectPairsMatchView: View {
+    let descricaOopcaoCorreta: String
+    let onOptionSelected: (String) -> Void
+
+    @State private var leftItems: [PairChipItem] = []
+    @State private var rightItems: [PairChipItem] = []
+    @State private var selectedLeftId: Int? = nil
+    @State private var selectedRightId: Int? = nil
+    @State private var matchedTokens: [String] = []
+
+    private func parsePairs() -> [(left: String, right: String)] {
+        guard !descricaOopcaoCorreta.isEmpty,
+              let regex = try? NSRegularExpression(pattern: #"\[([^\]]+)\]"#) else { return [] }
+        let str = descricaOopcaoCorreta
+        let range = NSRange(str.startIndex..., in: str)
+        return regex.matches(in: str, range: range).compactMap { match in
+            guard let r = Range(match.range(at: 1), in: str) else { return nil }
+            let parts = String(str[r]).split(separator: "/", maxSplits: 1).map { $0.trimmingCharacters(in: .whitespaces) }
+            guard parts.count == 2 else { return nil }
+            return (left: parts[0], right: parts[1])
+        }
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Toque nos pares")
+                .font(.system(size: 16, weight: .semibold))
+                .padding(.bottom, 4)
+
+            HStack(alignment: .top, spacing: 14) {
+                VStack(spacing: 10) {
+                    ForEach(leftItems) { item in
+                        PairChipView(item: item) { handleLeftTap(item) }
+                    }
+                }
+                .frame(maxWidth: .infinity)
+
+                VStack(spacing: 10) {
+                    ForEach(rightItems) { item in
+                        PairChipView(item: item) { handleRightTap(item) }
+                    }
+                }
+                .frame(maxWidth: .infinity)
+            }
+        }
+        .padding(16)
+        .background(Color(.systemGray6))
+        .cornerRadius(12)
+        .onAppear {
+            let pairs = parsePairs()
+            leftItems = pairs.enumerated().map { idx, p in
+                PairChipItem(id: idx, text: p.left, correctMatchId: idx, state: .normal)
+            }
+            rightItems = pairs.enumerated().map { idx, p in
+                PairChipItem(id: idx, text: p.right, correctMatchId: idx, state: .normal)
+            }.shuffled()
+        }
+    }
+
+    private func handleLeftTap(_ item: PairChipItem) {
+        guard item.state != .disabled else { return }
+        if selectedLeftId == item.id {
+            updateLeft(item.id, .normal); selectedLeftId = nil; return
+        }
+        if let prev = selectedLeftId { updateLeft(prev, .normal) }
+        selectedLeftId = item.id
+        updateLeft(item.id, .selected)
+        tryResolve()
+    }
+
+    private func handleRightTap(_ item: PairChipItem) {
+        guard item.state != .disabled else { return }
+        if selectedRightId == item.id {
+            updateRight(item.id, .normal); selectedRightId = nil; return
+        }
+        if let prev = selectedRightId { updateRight(prev, .normal) }
+        selectedRightId = item.id
+        updateRight(item.id, .selected)
+        tryResolve()
+    }
+
+    private func tryResolve() {
+        guard let lId = selectedLeftId, let rId = selectedRightId,
+              let left = leftItems.first(where: { $0.id == lId }),
+              let right = rightItems.first(where: { $0.id == rId }) else { return }
+
+        let isCorrect = left.correctMatchId == right.correctMatchId
+
+        if isCorrect {
+            updateLeft(lId, .correct)
+            updateRight(rId, .correct)
+            let token = "\(left.text)/\(right.text)"
+            if !matchedTokens.contains(token) { matchedTokens.append(token) }
+            let formatted = matchedTokens.map { "[\($0)]" }.joined()
+            onOptionSelected(formatted)
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+                updateLeft(lId, .disabled)
+                updateRight(rId, .disabled)
+                selectedLeftId = nil
+                selectedRightId = nil
+            }
+        } else {
+            updateLeft(lId, .wrong)
+            updateRight(rId, .wrong)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.9) {
+                updateLeft(lId, .normal)
+                updateRight(rId, .normal)
+                selectedLeftId = nil
+                selectedRightId = nil
+            }
+        }
+    }
+
+    private func updateLeft(_ id: Int, _ state: PairChipState) {
+        leftItems = leftItems.map { $0.id == id ? PairChipItem(id: $0.id, text: $0.text, correctMatchId: $0.correctMatchId, state: state) : $0 }
+    }
+    private func updateRight(_ id: Int, _ state: PairChipState) {
+        rightItems = rightItems.map { $0.id == id ? PairChipItem(id: $0.id, text: $0.text, correctMatchId: $0.correctMatchId, state: state) : $0 }
+    }
+}
+
+private struct PairChipView: View {
+    let item: PairChipItem
+    let onTap: () -> Void
+
+    var body: some View {
+        let (bg, border, alpha): (Color, Color, Double) = {
+            switch item.state {
+            case .normal:   return (.clear,                                   Color(white: 0.87), 1.0)
+            case .selected: return (Color(red: 0.918, green: 0.949, blue: 1.0), Color(red: 0.608, green: 0.725, blue: 1.0), 1.0)
+            case .correct:  return (Color(red: 0.867, green: 0.965, blue: 0.867), Color(red: 0.263, green: 0.627, blue: 0.278), 1.0)
+            case .wrong:    return (Color(red: 1.0,   green: 0.882, blue: 0.882), Color(red: 0.898, green: 0.224, blue: 0.208), 1.0)
+            case .disabled: return (.clear,                                   Color(white: 0.9),  0.45)
+            }
+        }()
+
+        Button(action: onTap) {
+            Text(item.text)
+                .font(.system(size: 14))
+                .lineLimit(2)
+                .frame(maxWidth: .infinity, minHeight: 40, alignment: .leading)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 10)
+                .background(bg)
+                .overlay(RoundedRectangle(cornerRadius: 12).stroke(border, lineWidth: 1))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+        }
+        .buttonStyle(.plain)
+        .opacity(alpha)
+        .disabled(item.state == .disabled)
     }
 }
 
