@@ -234,9 +234,6 @@ struct TrailNodeRow: View {
             }
 
             VStack(alignment: .leading, spacing: 0) {
-                if item.showHereIndicator {
-                    hereIndicator
-                }
                 sectionNode
             }
             .frame(maxWidth: .infinity, alignment: positionAlignment)
@@ -324,46 +321,12 @@ struct TrailNodeRow: View {
     }
 }
 
-// MARK: - TrailDividerView
-// Mirrors myDivider.kt: level name text centered above, then Row(Divider, "Módulo X" pill, Divider)
+// MARK: - TrailDividerView (hidden — Android does not show module dividers in the trail)
 
 struct TrailDividerView: View {
     let label: String
     let moduleNumber: Int
-
-    var body: some View {
-        if !label.isEmpty {
-            VStack(alignment: .center, spacing: 12) {
-                Text(label)
-                    .font(.system(size: 11, weight: .bold))
-                    .foregroundColor(Color(white: 0.45))
-                    .frame(maxWidth: .infinity, alignment: .center)
-
-                HStack(spacing: 8) {
-                    Rectangle()
-                        .fill(Color(white: 0.8))
-                        .frame(height: 1)
-                        .frame(maxWidth: .infinity)
-
-                    Text("Módulo \(moduleNumber)")
-                        .font(.system(size: 11))
-                        .foregroundColor(Color(white: 0.5))
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 4)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(Color(white: 0.8), lineWidth: 1)
-                        )
-
-                    Rectangle()
-                        .fill(Color(white: 0.8))
-                        .frame(height: 1)
-                        .frame(maxWidth: .infinity)
-                }
-            }
-            .padding(.vertical, 16)
-        }
-    }
+    var body: some View { EmptyView() }
 }
 
 // MARK: - SectionDialogSheet
