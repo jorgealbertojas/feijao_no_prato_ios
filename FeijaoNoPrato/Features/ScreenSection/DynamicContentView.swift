@@ -576,7 +576,7 @@ private struct HorizontalImageCarousel: View {
     var body: some View {
         let cardWidth = max(UIScreen.main.bounds.width * 0.72, 200)
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 12, alignment: .top) {
+            HStack(alignment: .top, spacing: 12) {
                 ForEach(Array(images.enumerated()), id: \.offset) { _, img in
                     ImageCarouselCard(image: img, imageBaseURL: imageBaseURL, cardWidth: cardWidth)
                 }
@@ -634,7 +634,7 @@ private struct CarrosselView: View {
     var body: some View {
         let cardWidth = max(UIScreen.main.bounds.width * 0.72, 200)
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 12, alignment: .top) {
+            HStack(alignment: .top, spacing: 12) {
                 ForEach(Array(items.enumerated()), id: \.offset) { _, item in
                     CarrosselCard(item: item, imageBaseURL: imageBaseURL, cardWidth: cardWidth)
                 }
