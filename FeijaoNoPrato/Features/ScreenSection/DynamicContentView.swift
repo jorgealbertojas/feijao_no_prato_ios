@@ -574,24 +574,17 @@ private struct HorizontalImageCarousel: View {
     let imageBaseURL: String
 
     var body: some View {
-        GeometryReader { geo in
-            // 72% of container so next card peeks ~22% at right edge, matching Android
-            let cardWidth = max(geo.size.width * 0.72, 200)
-
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 12) {
-                    ForEach(Array(images.enumerated()), id: \.offset) { _, img in
-                        ImageCarouselCard(image: img, imageBaseURL: imageBaseURL, cardWidth: cardWidth)
-                    }
+        let cardWidth = max(UIScreen.main.bounds.width * 0.72, 200)
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 12, alignment: .top) {
+                ForEach(Array(images.enumerated()), id: \.offset) { _, img in
+                    ImageCarouselCard(image: img, imageBaseURL: imageBaseURL, cardWidth: cardWidth)
                 }
-                .padding(.leading, 16)
-                .padding(.trailing, 8)
-                .padding(.vertical, 8)
             }
-            .frame(width: geo.size.width)
+            .padding(.leading, 16)
+            .padding(.trailing, 8)
+            .padding(.vertical, 8)
         }
-        // Fix GeometryReader height: image (72% * 65% of screen) + caption (~40pt) + padding (16pt)
-        .frame(height: UIScreen.main.bounds.width * 0.72 * 0.65 + 56)
     }
 }
 
@@ -639,21 +632,17 @@ private struct CarrosselView: View {
     let imageBaseURL: String
 
     var body: some View {
-        GeometryReader { geo in
-            let cardWidth = max(geo.size.width * 0.72, 200)
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 12) {
-                    ForEach(Array(items.enumerated()), id: \.offset) { _, item in
-                        CarrosselCard(item: item, imageBaseURL: imageBaseURL, cardWidth: cardWidth)
-                    }
+        let cardWidth = max(UIScreen.main.bounds.width * 0.72, 200)
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 12, alignment: .top) {
+                ForEach(Array(items.enumerated()), id: \.offset) { _, item in
+                    CarrosselCard(item: item, imageBaseURL: imageBaseURL, cardWidth: cardWidth)
                 }
-                .padding(.leading, 16)
-                .padding(.trailing, 8)
-                .padding(.vertical, 8)
             }
-            .frame(width: geo.size.width)
+            .padding(.leading, 16)
+            .padding(.trailing, 8)
+            .padding(.vertical, 8)
         }
-        .frame(height: UIScreen.main.bounds.width * 0.72 * 0.65 + 56)
     }
 }
 
