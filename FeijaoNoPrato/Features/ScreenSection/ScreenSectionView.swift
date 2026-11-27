@@ -111,6 +111,8 @@ struct ScreenSectionView: View {
                                         .components(separatedBy: "OPEN_FEIRA_").dropFirst().first?
                                         .components(separatedBy: "]").first ?? ""
                                     navigate(.resourcesFiltered(categoria: categoria))
+                                } else if personalizacao.contains("[OPEN_IA]") {
+                                    navigate(.food)
                                 } else if personalizacao == "[OPEN_MENU]" {
                                     dismiss()
                                 } else if personalizacao == "[NEXT_SECTION]" {
