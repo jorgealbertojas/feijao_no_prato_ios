@@ -279,8 +279,12 @@ struct TrailNodeRow: View {
 
     private var sectionNode: some View {
         let size = CGFloat(item.sectionItem.section.imageSize)
-        // Android LevelScreen.kt: alpha(if (isClickable || imageRes == imagem3) 0.9f else 0.3f)
-        let alpha: Double = (item.isClickable || item.imageState == .completed) ? 0.9 : 0.3
+        let alpha: Double
+        switch item.imageState {
+        case .locked:               alpha = 0.3
+        case .available:            alpha = 0.6   // Android: próxima sessão fica mais clara que as concluídas
+        case .completed, .inProgress: alpha = 0.9
+        }
 
         return Group {
             if item.isSpecialModule {
