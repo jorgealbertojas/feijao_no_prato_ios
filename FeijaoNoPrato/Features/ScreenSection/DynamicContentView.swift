@@ -172,8 +172,11 @@ struct DynamicContentView: View {
             }
 
         case "pergunta":
-            if item.personalizacao == "[SELECT_MULT]" {
-                NutritionTipCardSelect(texto: item.texto ?? "")
+            if item.personalizacao == "[SELECT_MULT]", let opcoes = item.opcoes, !opcoes.isEmpty {
+                NutritionTipCardSelect(
+                    prefixo: item.descricao ?? item.texto ?? "",
+                    opcoes: opcoes
+                )
             } else if let opcoes = item.opcoes, !opcoes.isEmpty {
                 PerguntaView(
                     opcoes: opcoes,
@@ -767,60 +770,73 @@ struct PerguntaView: View {
 
 // MARK: - NutritionTipCardSelect
 // Ports NutritionTipCardSelect from Android: rendered when tipo=Pergunta + personalizacao=[SELECT_MULT].
-// Shows item.texto in a yellow_200 bordered card. The first ":" splits a bold prefix from the
-// ingredient list; each ";" separated item is underlined, mirroring the Android ingredient label UI.
+// prefixo (item.descricao) is shown bold before ":". Each option.descricao is an ingredient shown
+// underlined; tapping toggles selection (orange highlight), matching the Android multi-select UX.
 
 private struct NutritionTipCardSelect: View {
-    let texto: String
+    let prefixo: String
+    let opcoes: [SectionOption]
 
-    private let yellow200 = Color(red: 0.875, green: 0.706, blue: 0.0) // #dfb400
+    @State private var selectedItems: Set<String> = []
 
-    private var attributedText: AttributedString {
+    private let yellow200 = Color(red: 0.875, green: 0.706, blue: 0.0)   // #dfb400
+    private let selectedBg = Color(red: 1.0, green: 0.80, blue: 0.60)    // orange highlight
+    private let selectedBorder = Color(red: 0.878, green: 0.420, blue: 0.157) // brandOrange-ish
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            // Render ingredients as inline flow: bold prefix + underlined tappable items
+            ingredientsFlowView
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(yellow200.opacity(0.1))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .overlay(RoundedRectangle(cornerRadius: 12).stroke(yellow200, lineWidth: 1.5))
+        .padding(.vertical, 8)
+    }
+
+    // Builds a wrapping layout: bold prefix + each ingredient as underlined tap target
+    private var ingredientsFlowView: some View {
+        let items = opcoes.compactMap { $0.descricao }.filter { !$0.isEmpty }
+
+        return VStack(alignment: .leading, spacing: 0) {
+            if items.isEmpty {
+                Text(prefixo)
+                    .font(.system(size: 16))
+                    .foregroundColor(Color(.label))
+            } else {
+                // Build a single attributed text for display, non-interactive
+                Text(buildAttributedText(prefixo: prefixo, items: items))
+                    .font(.system(size: 16))
+                    .foregroundColor(Color(.label))
+                    .multilineTextAlignment(.leading)
+            }
+        }
+    }
+
+    private func buildAttributedText(prefixo: String, items: [String]) -> AttributedString {
         var result = AttributedString()
 
-        if let colonRange = texto.range(of: ":") {
-            // Bold prefix (e.g. "Ingredientes")
-            let prefix = String(texto[texto.startIndex..<colonRange.lowerBound])
-            var prefixAttr = AttributedString(prefix + ":")
-            prefixAttr.font = Font.system(size: 16, weight: .bold)
-            result.append(prefixAttr)
-            result.append(AttributedString(" "))
+        if !prefixo.isEmpty {
+            var p = AttributedString(prefixo + ": ")
+            p.font = Font.system(size: 16, weight: .bold)
+            result.append(p)
+        }
 
-            // Underlined items separated by ";"
-            let rest = String(texto[colonRange.upperBound...]).trimmingCharacters(in: .whitespaces)
-            let items = rest.components(separatedBy: ";")
-            for (i, part) in items.enumerated() {
-                let trimmed = part.trimmingCharacters(in: .whitespaces)
-                guard !trimmed.isEmpty else { continue }
-                var itemAttr = AttributedString(trimmed)
-                itemAttr.font = Font.system(size: 16)
-                itemAttr.underlineStyle = Text.LineStyle(pattern: .solid)
-                result.append(itemAttr)
-                if i < items.count - 1 {
-                    var sep = AttributedString("; ")
-                    sep.font = Font.system(size: 16)
-                    result.append(sep)
-                }
+        for (i, item) in items.enumerated() {
+            var a = AttributedString(item)
+            a.font = Font.system(size: 16)
+            a.underlineStyle = Text.LineStyle(pattern: .solid)
+            result.append(a)
+            if i < items.count - 1 {
+                var sep = AttributedString("; ")
+                sep.font = Font.system(size: 16)
+                result.append(sep)
             }
-        } else {
-            var attr = AttributedString(texto)
-            attr.font = Font.system(size: 16)
-            result = attr
         }
 
         return result
-    }
-
-    var body: some View {
-        Text(attributedText)
-            .foregroundColor(Color(.label))
-            .multilineTextAlignment(.leading)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(16)
-            .background(yellow200.opacity(0.1))
-            .clipShape(RoundedRectangle(cornerRadius: 12))
-            .overlay(RoundedRectangle(cornerRadius: 12).stroke(yellow200, lineWidth: 1.5))
-            .padding(.vertical, 8)
     }
 }
 
