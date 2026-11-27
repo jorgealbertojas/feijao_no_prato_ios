@@ -279,7 +279,12 @@ struct TrailNodeRow: View {
 
     private var sectionNode: some View {
         let size = CGFloat(item.sectionItem.section.imageSize)
-        let alpha: Double = item.imageState == .locked ? 0.3 : 0.9
+        let alpha: Double
+        switch item.imageState {
+        case .locked:               alpha = 0.3
+        case .available:            alpha = 0.6   // Android: próxima sessão fica mais clara que as concluídas
+        case .completed, .inProgress: alpha = 0.9
+        }
 
         return Group {
             if item.isSpecialModule {
