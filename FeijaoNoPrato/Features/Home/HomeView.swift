@@ -279,13 +279,16 @@ struct TrailNodeRow: View {
 
     private var sectionNode: some View {
         let size = CGFloat(item.sectionItem.section.imageSize)
+        // imagem1 (available/locked) + clicável = próxima sessão disponível → 0.6
+        // imagem1 + não clicável = bloqueada → 0.3
+        // imagem3/imagem2 (completed/inProgress) → 0.9
         let alpha: Double
-        if item.isClickable && item.imageState == .available {
-            alpha = 0.6  // liberada para click mas ainda não iniciada → mais clara que concluídas
-        } else if item.imageState == .locked {
-            alpha = 0.3
-        } else {
+        if item.imageState == .completed || item.imageState == .inProgress {
             alpha = 0.9
+        } else if item.isClickable {
+            alpha = 0.6
+        } else {
+            alpha = 0.3
         }
 
         return Group {
