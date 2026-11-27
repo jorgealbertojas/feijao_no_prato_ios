@@ -176,6 +176,13 @@ final class HomeViewModel: ObservableObject {
             $0.moduleIndex == moduloAtual && $0.sessaoDaVez == sessaoAtual
         })?.totalPagesInSection ?? 0
 
+        let terminouModuloAtual = totalSessoesModuloAtual > 0 && sessaoAtual >= totalSessoesModuloAtual
+
+        let sessaoVisualAtualFoiFinalizada =
+            moduloVisual > 0 && sessaoVisual > 0 &&
+            totalPaginasDaSessaoVisualAtual > 0 &&
+            totalTelaDaSessaoVisualAtual >= totalPaginasDaSessaoVisualAtual
+
         scrollToGlobalIndex = iOndeEstou
 
         // previousModuleGroup removed — divider now shows at every module's first section
@@ -185,6 +192,8 @@ final class HomeViewModel: ObservableObject {
             let sessao = item.sessaoDaVez
 
             let totalPaginasSessao = item.totalPagesInSection
+            let totalPaginasSessaoAnterior = sectionItems.first(where: { $0.moduleIndex == modIdx && $0.sectionIndex == secIdx - 1 })?.totalPagesInSection ?? 0
+
             let ehPrimeiraSessaoDoModulo1 = modIdx == 1 && sessao == 1
             let jaAvancouDepoisDaPrimeiraSessao = moduloConcluido > 1 || (moduloConcluido == 1 && sessaoConcluida > 1)
             let ehUltimaSessaoDoModuloAtual = modIdx == moduloAtual && sessaoAtual == item.totalSectionsInModule
@@ -198,6 +207,19 @@ final class HomeViewModel: ObservableObject {
                 totalDeSessao: totalSessoesModuloAtual,
                 totalTela: totalTela,
                 totalPaginasSessao: totalPaginasSessao,
+                moduloServidor: moduloServidor,
+                sessaoServidor: sessaoServidor,
+                liberarPrimeiraSessaoDoProximoModulo: ehUltimaSessaoDoModuloAtual
+            )
+
+            let statusAnterior = ModuleStatusResolver.resolve(
+                modulo: modIdx,
+                sessao: secIdx - 1,
+                moduloAtual: moduloAtual,
+                sessaoAtual: sessaoAtual,
+                totalDeSessao: totalSessoesModuloAtual,
+                totalTela: totalTela,
+                totalPaginasSessao: totalPaginasSessaoAnterior,
                 moduloServidor: moduloServidor,
                 sessaoServidor: sessaoServidor,
                 liberarPrimeiraSessaoDoProximoModulo: ehUltimaSessaoDoModuloAtual
@@ -217,11 +239,23 @@ final class HomeViewModel: ObservableObject {
                 totalPaginasDaSessaoVisualAtual > 0 && totalTelaDaSessaoVisualAtual >= totalPaginasDaSessaoVisualAtual
             let isSessaoEmAndamento = sessaoAtualTemProgresso && !jaFoiConcluidaVisualmente && !sessaoAtualFoiFinalizadaVisualmente
 
-            // Android LevelScreen.kt: ehPrimeiraSessaoDoModulo1 || desbloqueioEspecialFinal || (statusAtual != BLOQUEADO)
+            let ehPrimeiraSessaoDoProximoModulo = terminouModuloAtual && modIdx == moduloAtual + 1 && sessao == 1
+            let sessaoAnteriorConcluida = statusAtual == .proximaLiberado && sessao == sessaoAtual + 1 && statusAnterior == .sessaoConcluida
+
             let isClickableSeTerminou =
                 ehPrimeiraSessaoDoModulo1 ||
+                sessaoJaPercorridaSemBloqueio ||
                 desbloqueioEspecialFinal ||
-                statusAtual != .bloqueado
+                jaFoiConcluidaVisualmente ||
+                deveFicarAmarela ||
+                isSessaoEmAndamento ||
+                (sessaoVisualAtualFoiFinalizada && item.globalIndex == min(iPosicaoAtual + 1, sectionItems.count)) ||
+                (ehPrimeiraSessaoDoProximoModulo && totalPaginasSessaoAtual > 0 && totalTela >= totalPaginasSessaoAtual) ||
+                (statusAtual == .proximaSessaoDisponivelNaoIniciada && sessaoAtual == sessao) ||
+                (statusAtual != .bloqueado && sessaoAtual == sessao) ||
+                sessaoAnteriorConcluida ||
+                (moduloAtual > modIdx) ||
+                (moduloAtual == modIdx && sessaoAtual > sessao)
 
             let isBlocked = !sessaoJaPercorridaSemBloqueio && statusAtual == .proximaLiberado && !jaFoiConcluidaVisualmente
 

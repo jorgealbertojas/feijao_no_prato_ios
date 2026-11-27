@@ -279,8 +279,7 @@ struct TrailNodeRow: View {
 
     private var sectionNode: some View {
         let size = CGFloat(item.sectionItem.section.imageSize)
-        // Android: alpha(if (isClickable || imageRes == imagem3) 0.9f else 0.3f)
-        let alpha: Double = (item.isClickable || item.imageState == .completed) ? 0.9 : 0.3
+        let alpha: Double = item.imageState == .locked ? 0.3 : 0.9
 
         return Group {
             if item.isSpecialModule {
