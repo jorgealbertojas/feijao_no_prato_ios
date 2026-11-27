@@ -124,6 +124,14 @@ final class ScreenSectionViewModel: ObservableObject {
 
         let opcoes = pergunta.opcoes ?? []
 
+        // [SELECT_SLIDER_NUMBER]: always correct — slider records intent, no wrong answer
+        if pergunta.personalizacao == "[SELECT_SLIDER_NUMBER]" {
+            feedbackIsCorrect = true
+            feedbackText = pergunta.textoFeedbackPositivo ?? "Ótimo! Continue assim."
+            showFeedback = true
+            return
+        }
+
         // [SELECT_MULT]: single selection from ingredient list — same logic as normal quiz
         if pergunta.personalizacao == "[SELECT_MULT]" {
             let selectedOpcao = opcoes.first(where: { $0.descricao == selected })

@@ -172,7 +172,9 @@ struct DynamicContentView: View {
             }
 
         case "pergunta":
-            if item.personalizacao == "[SELECT_MULT]", let opcoes = item.opcoes, !opcoes.isEmpty {
+            if item.personalizacao == "[SELECT_SLIDER_NUMBER]" {
+                ReadinessToChangesSlider(onReady: onOptionSelected)
+            } else if item.personalizacao == "[SELECT_MULT]", let opcoes = item.opcoes, !opcoes.isEmpty {
                 NutritionTipCardSelect(
                     prefixo: item.descricao ?? item.texto ?? "",
                     opcoes: opcoes,
@@ -914,6 +916,103 @@ private struct IngredientFlowLayout: Layout {
         }
 
         return (CGSize(width: maxWidth, height: y + rowH), positions)
+    }
+}
+
+// MARK: - ReadinessToChangesSlider
+// Ports ReadinessToChangeSlider.kt: [SELECT_SLIDER_NUMBER] pergunta type.
+// Slider 0-10 with stage label pill, colored track, numbered ticks, and feedback text.
+// Auto-enables CONFIRMAR on appear by calling onReady("slider_answered").
+
+private struct ReadinessToChangesSlider: View {
+    let onReady: (String) -> Void
+
+    @State private var value: Double = 0
+
+    private var stageIndex: Int { Int(value.rounded()) }
+
+    private static let stages: [(text: String, color: Color)] = [
+        ("NADA PRONTO",               Color(red: 0.984, green: 0.753, blue: 0.176)), // 0  #FBC02D
+        ("NADA PRONTO",               Color(red: 0.984, green: 0.753, blue: 0.176)), // 1
+        ("NADA PRONTO",               Color(red: 0.984, green: 0.753, blue: 0.176)), // 2
+        ("COMEÇANDO A PENSAR",        Color(red: 0.961, green: 0.486, blue: 0.000)), // 3  #F57C00
+        ("COMEÇANDO A PENSAR",        Color(red: 0.961, green: 0.486, blue: 0.000)), // 4
+        ("ME PREPARANDO PARA MUDAR",  Color(red: 0.298, green: 0.686, blue: 0.314)), // 5  #4CAF50
+        ("ME PREPARANDO PARA MUDAR",  Color(red: 0.298, green: 0.686, blue: 0.314)), // 6
+        ("COMECEI A MUDAR",           Color(red: 0.012, green: 0.663, blue: 0.957)), // 7  #03A9F4
+        ("COMECEI A MUDAR",           Color(red: 0.012, green: 0.663, blue: 0.957)), // 8
+        ("MANTENDO MUDANÇAS",         Color(red: 0.098, green: 0.463, blue: 0.824)), // 9  #1976D2
+        ("MANTENDO MUDANÇAS",         Color(red: 0.098, green: 0.463, blue: 0.824)), // 10
+    ]
+
+    private static let feedbacks = [
+        "Mudar hábitos é MUITO difícil, mas nós sabemos como superar os obstáculos. Confia e vem com a gente.",
+        "Mudar hábitos é MUITO difícil, mas nós sabemos como superar os obstáculos. Confia e vem com a gente.",
+        "Mudar hábitos é MUITO difícil, mas nós sabemos como superar os obstáculos. Confia e vem com a gente.",
+        "Pode se orgulhar por querer melhorar sua alimentação! Há desafios, mas nós conhecemos várias estratégias para superá-los. Continue, vamos te ajudar!",
+        "Pode se orgulhar por querer melhorar sua alimentação! Há desafios, mas nós conhecemos várias estratégias para superá-los. Continue, vamos te ajudar!",
+        "Você está bastante disposto, mas bate aquela insegurança, né? Não se preocupe! Sabemos os principais desafios deste momento e vamos te passar todas as dicas para superar!",
+        "Você está bastante disposto, mas bate aquela insegurança, né? Não se preocupe! Sabemos os principais desafios deste momento e vamos te passar todas as dicas para superar!",
+        "Uhuuul! Hora de colocar a alimentação saudável em prática! Vamos dar dicas para organizar a rotina, receitas para substituir ultraprocessados e mais. Simbora!",
+        "Uhuuul! Hora de colocar a alimentação saudável em prática! Vamos dar dicas para organizar a rotina, receitas para substituir ultraprocessados e mais. Simbora!",
+        "Que conquista! Agora é manter o equilíbrio e a constância no dia a dia.",
+        "Que conquista! Agora é manter o equilíbrio e a constância no dia a dia.",
+    ]
+
+    private var stageColor: Color {
+        Self.stages[min(stageIndex, 10)].color
+    }
+    private var stageText: String {
+        Self.stages[min(stageIndex, 10)].text
+    }
+    private var feedbackText: String {
+        Self.feedbacks[min(stageIndex, 10)]
+    }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            Spacer().frame(height: 24)
+
+            // Stage pill
+            Text(stageText)
+                .font(.system(size: 14, weight: .bold))
+                .foregroundColor(.white)
+                .padding(.horizontal, 20)
+                .padding(.vertical, 10)
+                .background(stageColor)
+                .clipShape(Capsule())
+
+            Spacer().frame(height: 16)
+
+            // Slider — tint colors active track
+            Slider(value: $value, in: 0...10, step: 1)
+                .tint(stageColor)
+                .padding(.horizontal, 4)
+
+            // Number ticks 0-10
+            HStack(spacing: 0) {
+                ForEach(0...10, id: \.self) { n in
+                    Text("\(n)")
+                        .font(.system(size: 16, weight: n == stageIndex ? .bold : .regular))
+                        .foregroundColor(n == stageIndex ? stageColor : Color(.systemGray3))
+                        .frame(maxWidth: .infinity)
+                }
+            }
+
+            Spacer().frame(height: 16)
+
+            // Feedback message
+            Text(feedbackText)
+                .font(.system(size: 16, weight: .medium))
+                .foregroundColor(stageColor)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity)
+        }
+        .padding(.horizontal, 16)
+        .onAppear {
+            // Auto-enable CONFIRMAR: slider always counts as answered
+            onReady("slider_answered")
+        }
     }
 }
 
