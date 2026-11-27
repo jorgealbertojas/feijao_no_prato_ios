@@ -174,6 +174,8 @@ struct DynamicContentView: View {
         case "pergunta":
             if item.personalizacao == "[SELECT_SLIDER_NUMBER]" {
                 ReadinessToChangesSlider(onReady: onOptionSelected)
+            } else if item.personalizacao == "[SELECT_SLIDER_NUMBER_QUEST]" {
+                ReadinessToChangesSliderQuest(onReady: onOptionSelected)
             } else if item.personalizacao == "[SELECT_MULT]", let opcoes = item.opcoes, !opcoes.isEmpty {
                 NutritionTipCardSelect(
                     prefixo: item.descricao ?? item.texto ?? "",
@@ -1013,6 +1015,71 @@ private struct ReadinessToChangesSlider: View {
             // Auto-enable CONFIRMAR: slider always counts as answered
             onReady("slider_answered")
         }
+    }
+}
+
+// MARK: - ReadinessToChangesSliderQuest
+// Ports ReadinessToChangeSliderQuest.kt: [SELECT_SLIDER_NUMBER_QUEST] — avaliação do módulo.
+// Same layout as ReadinessToChangesSlider but with opinion labels and no feedback text.
+
+private struct ReadinessToChangesSliderQuest: View {
+    let onReady: (String) -> Void
+
+    @State private var value: Double = 0
+
+    private var stageIndex: Int { Int(value.rounded()) }
+
+    private static let stages: [(text: String, color: Color)] = [
+        ("Não gostei",   Color(red: 0.984, green: 0.753, blue: 0.176)), // 0  #FBC02D
+        ("Não gostei",   Color(red: 0.984, green: 0.753, blue: 0.176)), // 1
+        ("Não gostei",   Color(red: 0.984, green: 0.753, blue: 0.176)), // 2
+        ("Gostei pouco", Color(red: 0.961, green: 0.486, blue: 0.000)), // 3  #F57C00
+        ("Gostei pouco", Color(red: 0.961, green: 0.486, blue: 0.000)), // 4
+        ("Indiferente",  Color(red: 0.298, green: 0.686, blue: 0.314)), // 5  #4CAF50
+        ("Gostei",       Color(red: 0.012, green: 0.663, blue: 0.957)), // 6  #03A9F4
+        ("Gostei",       Color(red: 0.012, green: 0.663, blue: 0.957)), // 7
+        ("Gostei muito", Color(red: 0.098, green: 0.463, blue: 0.824)), // 8  #1976D2
+        ("Gostei muito", Color(red: 0.098, green: 0.463, blue: 0.824)), // 9
+        ("Gostei muito", Color(red: 0.098, green: 0.463, blue: 0.824)), // 10
+    ]
+
+    private var stageColor: Color { Self.stages[min(stageIndex, 10)].color }
+    private var stageText: String  { Self.stages[min(stageIndex, 10)].text }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            Spacer().frame(height: 24)
+
+            // Stage pill
+            Text(stageText)
+                .font(.system(size: 14, weight: .bold))
+                .foregroundColor(.white)
+                .padding(.horizontal, 20)
+                .padding(.vertical, 10)
+                .background(stageColor)
+                .clipShape(Capsule())
+
+            Spacer().frame(height: 16)
+
+            // Slider
+            Slider(value: $value, in: 0...10, step: 1)
+                .tint(stageColor)
+                .padding(.horizontal, 4)
+
+            // Number ticks 0-10
+            HStack(spacing: 0) {
+                ForEach(0...10, id: \.self) { n in
+                    Text("\(n)")
+                        .font(.system(size: 16, weight: n == stageIndex ? .bold : .regular))
+                        .foregroundColor(n == stageIndex ? stageColor : Color(.systemGray3))
+                        .frame(maxWidth: .infinity)
+                }
+            }
+
+            Spacer().frame(height: 16)
+        }
+        .padding(.horizontal, 16)
+        .onAppear { onReady("slider_answered") }
     }
 }
 

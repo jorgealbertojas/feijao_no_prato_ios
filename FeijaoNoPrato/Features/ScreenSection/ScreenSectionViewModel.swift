@@ -124,8 +124,9 @@ final class ScreenSectionViewModel: ObservableObject {
 
         let opcoes = pergunta.opcoes ?? []
 
-        // [SELECT_SLIDER_NUMBER]: always correct — slider records intent, no wrong answer
-        if pergunta.personalizacao == "[SELECT_SLIDER_NUMBER]" {
+        // [SELECT_SLIDER_NUMBER] / [SELECT_SLIDER_NUMBER_QUEST]: always correct — slider records value, no wrong answer
+        if pergunta.personalizacao == "[SELECT_SLIDER_NUMBER]"
+            || pergunta.personalizacao == "[SELECT_SLIDER_NUMBER_QUEST]" {
             feedbackIsCorrect = true
             feedbackText = pergunta.textoFeedbackPositivo ?? "Ótimo! Continue assim."
             showFeedback = true
