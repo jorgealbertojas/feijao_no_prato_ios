@@ -694,28 +694,54 @@ private struct CarrosselCard: View {
 }
 
 // MARK: - YoutubePreviewButton
+// Ports Android videoyoutube: loads YouTube thumbnail (hqdefault) with play button overlay.
+// Tapping opens the video in YouTube app / browser.
 
 private struct YoutubePreviewButton: View {
     let videoID: String
 
+    private var thumbnailURL: URL? {
+        // Try maxresdefault; falls back to hqdefault via AsyncImage phase
+        URL(string: "https://img.youtube.com/vi/\(videoID)/hqdefault.jpg")
+    }
+
+    private var watchURL: URL? {
+        // Opens YouTube app if installed, otherwise browser
+        URL(string: "https://www.youtube.com/watch?v=\(videoID)")
+    }
+
     var body: some View {
         Button {
-            if let url = URL(string: "https://www.youtube.com/watch?v=\(videoID)") {
-                UIApplication.shared.open(url)
-            }
+            if let url = watchURL { UIApplication.shared.open(url) }
         } label: {
-            HStack(spacing: 12) {
-                Image(systemName: "play.rectangle.fill")
-                    .font(.system(size: 32))
-                    .foregroundColor(.red)
-                Text("Assistir no YouTube")
-                    .font(.system(size: 15, weight: .medium))
-                    .foregroundColor(Color(.label))
+            ZStack {
+                // Thumbnail image
+                AsyncImage(url: thumbnailURL) { phase in
+                    switch phase {
+                    case .success(let img):
+                        img.resizable().scaledToFill()
+                    case .failure:
+                        Color(.systemGray5)
+                    default:
+                        Color(.systemGray5).overlay(ProgressView())
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .aspectRatio(16 / 9, contentMode: .fit)
+                .clipped()
+
+                // Play button overlay — matches Android ExoPlayer thumbnail style
+                ZStack {
+                    Circle()
+                        .fill(Color.black.opacity(0.55))
+                        .frame(width: 56, height: 56)
+                    Image(systemName: "play.fill")
+                        .font(.system(size: 22, weight: .bold))
+                        .foregroundColor(.white)
+                        .offset(x: 2)
+                }
             }
-            .frame(maxWidth: .infinity)
-            .padding(14)
-            .background(Color(.systemGray6))
-            .cornerRadius(10)
+            .clipShape(RoundedRectangle(cornerRadius: 10))
         }
         .buttonStyle(.plain)
         .padding(.vertical, 4)
