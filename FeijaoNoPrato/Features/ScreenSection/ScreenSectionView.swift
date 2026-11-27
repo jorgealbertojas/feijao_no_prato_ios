@@ -117,6 +117,10 @@ struct ScreenSectionView: View {
                                     dismiss()
                                 } else if personalizacao == "[NEXT_SECTION]" {
                                     dismiss()
+                                } else if personalizacao.hasPrefix("http") {
+                                    if let url = URL(string: personalizacao) {
+                                        UIApplication.shared.open(url)
+                                    }
                                 }
                             }
                         )
