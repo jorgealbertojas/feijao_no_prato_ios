@@ -280,7 +280,7 @@ final class HomeViewModel: ObservableObject {
             } else if statusAtual == .liberado || jaFoiConcluidaVisualmente || deveFicarAmarela || isPosicaoVisualAtual || isSessaoEmAndamento {
                 if sessaoAtualFoiFinalizadaVisualmente ||
                     (jaFoiConcluidaVisualmente && statusAtual == .sessaoConcluida) ||
-                    (item.globalIndex < iOndeEstou && !existeEmAndamento) {
+                    (item.globalIndex < iOndeEstou && !existeEmAndamento && statusAtual != .liberado) {
                     imageState = .completed
                 } else if (deveFicarAmarela || isSessaoEmAndamento) && totalPaginasSessaoAtual > 0 {
                     imageState = .inProgress
