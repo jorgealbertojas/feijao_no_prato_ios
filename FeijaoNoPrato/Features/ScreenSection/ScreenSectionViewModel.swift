@@ -117,6 +117,22 @@ final class ScreenSectionViewModel: ObservableObject {
         guard let page = currentPage,
               let items = page.itens else { return }
 
+        // GrupoImagens [OPTION_IMAGE]: image grid quiz — the GrupoImagens item itself is the question
+        if let imageQuiz = items.first(where: {
+            $0.tipo?.lowercased() == "grupoimagens" &&
+            $0.personalizacao?.contains("[OPTION_IMAGE]") == true
+        }) {
+            let resultado = imageQuiz.personalizacao?
+                .components(separatedBy: "[OPTION_IMAGE]").last ?? ""
+            let isCorrect = selectedOption == resultado && !resultado.isEmpty
+            feedbackIsCorrect = isCorrect
+            feedbackText = isCorrect
+                ? (imageQuiz.textoFeedbackPositivo ?? "Correto!")
+                : "Tente novamente."
+            showFeedback = true
+            return
+        }
+
         let pergunta = items.first(where: { $0.tipo == "Pergunta" })
         guard let pergunta else { return }
 

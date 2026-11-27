@@ -49,6 +49,8 @@ struct DynamicContentView: View {
     private func isFullWidthItem(_ item: SectionItem) -> Bool {
         let tipo = item.tipo?.lowercased() ?? ""
         if tipo == "carrossel" { return true }
+        // [OPTION_IMAGE] grids are padded normally; only horizontal image lists go edge-to-edge
+        if item.personalizacao?.contains("[OPTION_IMAGE]") == true { return false }
         return tipo == "grupoimagens" &&
                item.direcao?.caseInsensitiveCompare("Horizontal") == .orderedSame
     }
@@ -145,8 +147,19 @@ struct DynamicContentView: View {
 
         case "grupoimagens":
             if let imgs = item.imagens, !imgs.isEmpty {
+                let isOptionImage = item.personalizacao?.contains("[OPTION_IMAGE]") == true
                 let isHorizontal = item.direcao?.caseInsensitiveCompare("Horizontal") == .orderedSame
-                if isHorizontal {
+                if isOptionImage {
+                    let resultado = item.personalizacao?
+                        .components(separatedBy: "[OPTION_IMAGE]").last ?? ""
+                    SelectImageGridView(
+                        images: imgs,
+                        imageBaseURL: imageBaseURL,
+                        resultado: resultado,
+                        selectedOption: selectedOption,
+                        onOptionSelected: onOptionSelected
+                    )
+                } else if isHorizontal {
                     HorizontalImageCarousel(images: imgs, imageBaseURL: imageBaseURL)
                 } else {
                     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
@@ -1262,5 +1275,71 @@ private struct ContinueButton: View {
         }
         .buttonStyle(.plain)
         .padding(.vertical, 4)
+    }
+}
+
+// MARK: - SelectImageGridView
+// Ports selectSingleOptionItemImage.kt — 2x2 selectable image grid for GrupoImagens [OPTION_IMAGE].
+// Android: LazyVerticalGrid(2 cols), each cell Button with RoundedCornerShape(20dp), 140dp height,
+//          3dp salmon border (secondary_200) when selected, 0.15 dark overlay.
+
+struct SelectImageGridView: View {
+    let images: [SectionItemImage]
+    let imageBaseURL: String
+    let resultado: String
+    let selectedOption: String?
+    let onOptionSelected: (String) -> Void
+
+    // Android secondary_200 ≈ salmon/coral used for selected border
+    private let selectionBorderColor = Color(red: 0.918, green: 0.459, blue: 0.400)
+
+    var body: some View {
+        LazyVGrid(
+            columns: [GridItem(.flexible()), GridItem(.flexible())],
+            spacing: 12
+        ) {
+            ForEach(Array(images.enumerated()), id: \.offset) { _, img in
+                let fileName = img.nomeArquivo ?? ""
+                let isSelected = selectedOption == fileName
+                let imageURL = imageBaseURL + fileName
+
+                Button(action: {
+                    if isSelected {
+                        onOptionSelected("")
+                    } else {
+                        onOptionSelected(fileName)
+                    }
+                }) {
+                    ZStack {
+                        AsyncImage(url: URL(string: imageURL)) { phase in
+                            switch phase {
+                            case .success(let image):
+                                image
+                                    .resizable()
+                                    .scaledToFill()
+                            default:
+                                Color(white: 0.92)
+                            }
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .clipped()
+
+                        if isSelected {
+                            Color.black.opacity(0.15)
+                        }
+                    }
+                }
+                .frame(height: 140)
+                .clipShape(RoundedRectangle(cornerRadius: 20))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 20)
+                        .strokeBorder(
+                            isSelected ? selectionBorderColor : Color.clear,
+                            lineWidth: isSelected ? 3 : 0
+                        )
+                )
+                .buttonStyle(.plain)
+            }
+        }
     }
 }
