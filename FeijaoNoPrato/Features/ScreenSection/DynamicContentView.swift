@@ -175,7 +175,8 @@ struct DynamicContentView: View {
             if item.personalizacao == "[SELECT_MULT]", let opcoes = item.opcoes, !opcoes.isEmpty {
                 NutritionTipCardSelect(
                     prefixo: item.descricao ?? item.texto ?? "",
-                    opcoes: opcoes
+                    opcoes: opcoes,
+                    onSelectionChanged: onOptionSelected
                 )
             } else if let opcoes = item.opcoes, !opcoes.isEmpty {
                 PerguntaView(
@@ -769,24 +770,41 @@ struct PerguntaView: View {
 }
 
 // MARK: - NutritionTipCardSelect
-// Ports NutritionTipCardSelect from Android: rendered when tipo=Pergunta + personalizacao=[SELECT_MULT].
-// prefixo (item.descricao) is shown bold before ":". Each option.descricao is an ingredient shown
-// underlined; tapping toggles selection (orange highlight), matching the Android multi-select UX.
+// Ports NutritionTipCardSelect from Android: tipo=Pergunta + personalizacao=[SELECT_MULT].
+// Shows ingredients as inline flowing tappable text inside a yellow_200 bordered card.
+// Tapping toggles selection (orange highlight); onSelectionChanged reports comma-joined selections
+// back to the ViewModel so CONFIRMAR can validate them.
 
 private struct NutritionTipCardSelect: View {
     let prefixo: String
     let opcoes: [SectionOption]
+    let onSelectionChanged: (String) -> Void
 
     @State private var selectedItems: Set<String> = []
 
-    private let yellow200 = Color(red: 0.875, green: 0.706, blue: 0.0)   // #dfb400
-    private let selectedBg = Color(red: 1.0, green: 0.80, blue: 0.60)    // orange highlight
-    private let selectedBorder = Color(red: 0.878, green: 0.420, blue: 0.157) // brandOrange-ish
+    private let yellow200 = Color(red: 0.875, green: 0.706, blue: 0.0)
+    private let orangeHL  = Color(red: 0.878, green: 0.420, blue: 0.157) // brandOrange
+
+    private var ingredients: [String] {
+        opcoes.compactMap { $0.descricao }.filter { !$0.isEmpty }
+    }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            // Render ingredients as inline flow: bold prefix + underlined tappable items
-            ingredientsFlowView
+        VStack(alignment: .leading, spacing: 8) {
+            if !prefixo.isEmpty {
+                Text(prefixo + ":")
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundColor(Color(.label))
+            }
+
+            // Inline flow of tappable ingredient tokens
+            IngredientFlow(
+                items: ingredients,
+                selectedItems: $selectedItems,
+                orangeHL: orangeHL
+            ) { newSet in
+                onSelectionChanged(newSet.sorted().joined(separator: ","))
+            }
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -795,48 +813,90 @@ private struct NutritionTipCardSelect: View {
         .overlay(RoundedRectangle(cornerRadius: 12).stroke(yellow200, lineWidth: 1.5))
         .padding(.vertical, 8)
     }
+}
 
-    // Builds a wrapping layout: bold prefix + each ingredient as underlined tap target
-    private var ingredientsFlowView: some View {
-        let items = opcoes.compactMap { $0.descricao }.filter { !$0.isEmpty }
+// MARK: - IngredientFlow (iOS 16 Layout)
+// Renders ingredient tokens inline with line-wrapping, like a paragraph of underlined text.
+// Tapping a token toggles its selection state.
 
-        return VStack(alignment: .leading, spacing: 0) {
-            if items.isEmpty {
-                Text(prefixo)
-                    .font(.system(size: 16))
-                    .foregroundColor(Color(.label))
-            } else {
-                // Build a single attributed text for display, non-interactive
-                Text(buildAttributedText(prefixo: prefixo, items: items))
-                    .font(.system(size: 16))
-                    .foregroundColor(Color(.label))
-                    .multilineTextAlignment(.leading)
+private struct IngredientFlow: View {
+    let items: [String]
+    @Binding var selectedItems: Set<String>
+    let orangeHL: Color
+    let onChanged: (Set<String>) -> Void
+
+    var body: some View {
+        IngredientFlowLayout(spacing: 0) {
+            ForEach(Array(items.enumerated()), id: \.offset) { i, item in
+                let isSelected = selectedItems.contains(item)
+                // Each ingredient + its trailing separator as one tappable unit
+                Button {
+                    if selectedItems.contains(item) {
+                        selectedItems.remove(item)
+                    } else {
+                        selectedItems.insert(item)
+                    }
+                    onChanged(selectedItems)
+                } label: {
+                    HStack(spacing: 0) {
+                        Text(item)
+                            .font(.system(size: 16))
+                            .underline(!isSelected)
+                            .foregroundColor(isSelected ? orangeHL : Color(.label))
+                            .padding(.vertical, 2)
+                            .padding(.horizontal, isSelected ? 3 : 0)
+                            .background(isSelected ? orangeHL.opacity(0.15) : Color.clear)
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                        if i < items.count - 1 {
+                            Text("; ")
+                                .font(.system(size: 16))
+                                .foregroundColor(Color(.label))
+                        }
+                    }
+                }
+                .buttonStyle(.plain)
             }
         }
     }
+}
 
-    private func buildAttributedText(prefixo: String, items: [String]) -> AttributedString {
-        var result = AttributedString()
+// Custom Layout that wraps subviews like inline text
+private struct IngredientFlowLayout: Layout {
+    var spacing: CGFloat = 0
 
-        if !prefixo.isEmpty {
-            var p = AttributedString(prefixo + ": ")
-            p.font = Font.system(size: 16, weight: .bold)
-            result.append(p)
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        layout(subviews: subviews, in: proposal.replacingUnspecifiedDimensions().width).size
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        let positions = layout(subviews: subviews, in: bounds.width).positions
+        for (i, pos) in positions.enumerated() {
+            subviews[i].place(
+                at: CGPoint(x: pos.x + bounds.minX, y: pos.y + bounds.minY),
+                proposal: .unspecified
+            )
         }
+    }
 
-        for (i, item) in items.enumerated() {
-            var a = AttributedString(item)
-            a.font = Font.system(size: 16)
-            a.underlineStyle = Text.LineStyle(pattern: .solid)
-            result.append(a)
-            if i < items.count - 1 {
-                var sep = AttributedString("; ")
-                sep.font = Font.system(size: 16)
-                result.append(sep)
+    private func layout(subviews: Subviews, in maxWidth: CGFloat) -> (size: CGSize, positions: [CGPoint]) {
+        var positions: [CGPoint] = []
+        var x: CGFloat = 0
+        var y: CGFloat = 0
+        var rowH: CGFloat = 0
+
+        for subview in subviews {
+            let sz = subview.sizeThatFits(.unspecified)
+            if x + sz.width > maxWidth && x > 0 {
+                x = 0
+                y += rowH + spacing
+                rowH = 0
             }
+            positions.append(CGPoint(x: x, y: y))
+            x += sz.width + spacing
+            rowH = max(rowH, sz.height)
         }
 
-        return result
+        return (CGSize(width: maxWidth, height: y + rowH), positions)
     }
 }
 
