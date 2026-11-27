@@ -717,14 +717,21 @@ private struct YoutubePreviewButton: View {
 }
 
 // MARK: - PerguntaView
+// Android selectOptionItem.kt: quaternary_11 (#F8F7F3) bg always; selected adds 2dp border in
+// secondary_200 (#c64b4e) and colors the text secondary_200. Unselected = black text, no border.
 
 struct PerguntaView: View {
     let opcoes: [SectionOption]
     let selectedOption: String?
     let onSelect: (String) -> Void
 
+    // Android secondary_200 = #c64b4e
+    private let selectedColor = Color(red: 0.776, green: 0.294, blue: 0.306)
+    // Android quaternary_11 = #F8F7F3
+    private let optionBg = Color(red: 0.973, green: 0.969, blue: 0.953)
+
     var body: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: 8) {
             ForEach(Array(opcoes.enumerated()), id: \.offset) { _, opcao in
                 let label = opcao.descricao ?? ""
                 let isSelected = selectedOption == label
@@ -736,16 +743,17 @@ struct PerguntaView: View {
                     onSelect(label)
                 } label: {
                     Text(attrLabel)
-                        .font(.system(size: 15))
-                        .foregroundColor(isSelected ? .white : Color(.label))
+                        .font(.system(size: 17))
+                        .foregroundColor(isSelected ? selectedColor : Color(.label))
                         .multilineTextAlignment(.leading)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(14)
-                        .background(isSelected ? Color.brandOrange : Color(.systemGray6))
-                        .cornerRadius(10)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 12)
+                        .background(optionBg)
+                        .clipShape(RoundedRectangle(cornerRadius: 20))
                         .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(isSelected ? Color.brandOrange : Color(.systemGray4), lineWidth: 1)
+                            RoundedRectangle(cornerRadius: 20)
+                                .stroke(isSelected ? selectedColor : Color.clear, lineWidth: 2)
                         )
                 }
                 .buttonStyle(.plain)
