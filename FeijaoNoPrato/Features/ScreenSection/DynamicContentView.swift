@@ -329,15 +329,17 @@ private struct WebImageView: UIViewRepresentable {
 }
 
 // MARK: - ChipRow
-// Ports ChipRowFromString.kt: outlined pill, transparent bg, neutral_400 border + text, uppercase.
-// Delimiter is "|" (Android); centered when isCentered matches alinhamento=="Centro".
+// Ports ChipRowFromString.kt: pill chips in a yellow bordered card (yellow_200 = #dfb400).
+// Delimiter is "|" (Android); chips are uppercase, bold, 14pt, neutral_400 color.
 
 private struct ChipRow: View {
     let text: String
     let isCentered: Bool
 
-    // Android neutral_400 — mid-gray used for chip border and text
-    private static let neutral400 = Color(red: 0.55, green: 0.55, blue: 0.55)
+    // Android yellow_200 = #dfb400
+    private let yellow200 = Color(red: 0.875, green: 0.706, blue: 0.0)
+    // Android neutral_400 = mid-gray
+    private let neutral400 = Color(red: 0.55, green: 0.55, blue: 0.55)
 
     private var chips: [String] {
         text.components(separatedBy: "|")
@@ -346,20 +348,29 @@ private struct ChipRow: View {
     }
 
     var body: some View {
-        if isCentered {
-            HStack(spacing: 8) {
-                ForEach(chips, id: \.self) { ChipLabel(text: $0) }
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 4)
-        } else {
-            ScrollView(.horizontal, showsIndicators: false) {
+        // Android: ChipRowFromString wrapped in a yellow_200 bordered card
+        let chipContent = Group {
+            if isCentered {
                 HStack(spacing: 8) {
                     ForEach(chips, id: \.self) { ChipLabel(text: $0) }
                 }
+                .frame(maxWidth: .infinity)
+            } else {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        ForEach(chips, id: \.self) { ChipLabel(text: $0) }
+                    }
+                }
             }
-            .padding(.vertical, 4)
         }
+
+        chipContent
+            .padding(12)
+            .frame(maxWidth: .infinity, alignment: isCentered ? .center : .leading)
+            .background(yellow200.opacity(0.1))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .overlay(RoundedRectangle(cornerRadius: 12).stroke(yellow200, lineWidth: 1))
+            .padding(.vertical, 8)
     }
 }
 
@@ -371,9 +382,8 @@ private struct ChipLabel: View {
         Text(text.uppercased())
             .font(.system(size: 14, weight: .bold))
             .foregroundColor(neutral400)
-            .padding(.top, 3)
-            .padding(.horizontal, 8)
-            .padding(.bottom, 2)
+            .padding(.vertical, 4)
+            .padding(.horizontal, 10)
             .background(Color.clear)
             .clipShape(Capsule())
             .overlay(Capsule().stroke(neutral400, lineWidth: 1))

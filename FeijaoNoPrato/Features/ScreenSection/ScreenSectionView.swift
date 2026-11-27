@@ -145,16 +145,16 @@ struct ScreenSectionView: View {
 
                 GeometryReader { geo in
                     ZStack(alignment: .leading) {
-                        RoundedRectangle(cornerRadius: 4)
-                            .fill(Color(.systemGray5))
-                            .frame(height: 6)
-                        RoundedRectangle(cornerRadius: 4)
-                            .fill(Color(red: 0.3, green: 0.7, blue: 0.4))
-                            .frame(width: geo.size.width * CGFloat(viewModel.progress), height: 6)
+                        RoundedRectangle(cornerRadius: 6)
+                            .fill(Color(red: 0.957, green: 0.910, blue: 0.882)) // neutral_new #F4E8E1
+                            .frame(height: 12)
+                        RoundedRectangle(cornerRadius: 6)
+                            .fill(Color(red: 0.122, green: 0.757, blue: 0.420)) // green_200 #1fc16b
+                            .frame(width: geo.size.width * CGFloat(viewModel.progress), height: 12)
                             .animation(.easeInOut(duration: 0.3), value: viewModel.progress)
                     }
                 }
-                .frame(height: 6)
+                .frame(height: 12)
                 .padding(.horizontal, 12)
             }
             .frame(height: 44)
