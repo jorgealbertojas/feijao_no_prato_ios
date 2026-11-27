@@ -185,7 +185,7 @@ final class HomeViewModel: ObservableObject {
 
         scrollToGlobalIndex = iOndeEstou
 
-        var previousModuleGroup = -1
+        // previousModuleGroup removed — divider now shows at every module's first section
         trailItems = sectionItems.map { item in
             let modIdx = item.moduleIndex
             let secIdx = item.sectionIndex
@@ -295,10 +295,8 @@ final class HomeViewModel: ObservableObject {
                 imageState = statusAtual == .bloqueado ? .locked : .available
             }
 
-            // Divider: show at the first section of each module level group
-            let levelGroup = levelGroup(for: modIdx)
-            let showDiv = secIdx == 0 && levelGroup != previousModuleGroup
-            if showDiv { previousModuleGroup = levelGroup }
+            // Divider: show at the first section of every module (mirrors Android index == 0 check)
+            let showDiv = secIdx == 0
 
             return TrailItemState(
                 sectionItem: item,
