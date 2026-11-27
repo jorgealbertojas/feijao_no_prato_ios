@@ -297,7 +297,7 @@ private struct SelectPairsMatchView: View {
             }
         }
         .padding(16)
-        .background(Color(.systemGray6))
+        .background(Color(.systemBackground))
         .cornerRadius(12)
         .onAppear {
             let pairs = parsePairs()
