@@ -615,11 +615,10 @@ private struct ImageCarouselCard: View {
             .clipped()
 
             if let caption = image.modelo, !caption.isEmpty {
-                Text(caption)
+                Text(caption.replacingOccurrences(of: "\\n", with: "\n"))
                     .font(.system(size: 14))
                     .foregroundColor(Color(.secondaryLabel))
                     .multilineTextAlignment(.center)
-                    .lineLimit(2)
                     .padding(.horizontal, 10)
                     .padding(.vertical, 10)
             }
@@ -681,11 +680,10 @@ private struct CarrosselCard: View {
             }
 
             if let texto = item.texto, !texto.isEmpty {
-                Text(texto)
+                Text(texto.replacingOccurrences(of: "\\n", with: "\n"))
                     .font(.system(size: 14))
                     .foregroundColor(Color(.secondaryLabel))
                     .multilineTextAlignment(.center)
-                    .lineLimit(2)
                     .padding(.horizontal, 10)
                     .padding(.vertical, 10)
             }
