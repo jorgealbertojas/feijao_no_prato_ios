@@ -468,15 +468,45 @@ private struct ConteudoText: View {
     }
 }
 
-// MARK: - DestaqueCard (Android NutritionTipCard: yellow_200=#dfb400, 10% bg, 12dp radius, 18sp)
+// MARK: - DestaqueCard
+// Android DestaqueCard.kt: modelo drives icon + color scheme.
+// "Interrogacao" → green (EFF6E9 bg, 88A64E icon, questionmark)
+// "Exclamacao"   → red   (FFEBEE bg, D32F2F icon, exclamationmark.triangle)
+// "Informacao"   → gray  (F5F5F5 bg, 6D6D6D icon, info)
+// nil/other      → NutritionTipCard style (yellow_200 border, 10% bg, no icon)
 
 private struct DestaqueCard: View {
     let modelo: String?
     let texto: String
     let isCentered: Bool
 
+    private struct Style {
+        let bgColor: Color
+        let iconColor: Color
+        let iconName: String?
+    }
+
     // Android yellow_200 = #dfb400
     private let yellow200 = Color(red: 0.875, green: 0.706, blue: 0.0)
+
+    private var style: Style? {
+        switch modelo {
+        case "Interrogacao":
+            return Style(bgColor: Color(red: 0.937, green: 0.965, blue: 0.914),
+                         iconColor: Color(red: 0.533, green: 0.651, blue: 0.306),
+                         iconName: "questionmark.circle.fill")
+        case "Exclamacao":
+            return Style(bgColor: Color(red: 1.0, green: 0.922, blue: 0.933),
+                         iconColor: Color(red: 0.827, green: 0.184, blue: 0.184),
+                         iconName: "exclamationmark.triangle.fill")
+        case "Informacao":
+            return Style(bgColor: Color(red: 0.961, green: 0.961, blue: 0.961),
+                         iconColor: Color(red: 0.427, green: 0.427, blue: 0.427),
+                         iconName: "info.circle.fill")
+        default:
+            return nil
+        }
+    }
 
     private var parsedText: AttributedString {
         (try? AttributedString(
@@ -486,19 +516,41 @@ private struct DestaqueCard: View {
     }
 
     var body: some View {
-        Text(parsedText)
-            .font(.system(size: 18))
-            .foregroundColor(Color(red: 0.2, green: 0.2, blue: 0.2))
-            .multilineTextAlignment(isCentered ? .center : .leading)
-            .frame(maxWidth: .infinity, alignment: isCentered ? .center : .leading)
-            .padding(16)
-            .background(yellow200.opacity(0.1))
+        if let s = style {
+            HStack(alignment: .center, spacing: 12) {
+                if let iconName = s.iconName {
+                    Image(systemName: iconName)
+                        .font(.system(size: 24))
+                        .foregroundColor(s.iconColor)
+                }
+                Text(parsedText)
+                    .font(.system(size: 18))
+                    .foregroundColor(Color(red: 0.2, green: 0.2, blue: 0.2))
+                    .multilineTextAlignment(isCentered ? .center : .leading)
+                    .frame(maxWidth: .infinity, alignment: isCentered ? .center : .leading)
+                    .lineSpacing(4)
+            }
+            .padding(12)
+            .frame(maxWidth: .infinity)
+            .background(s.bgColor)
             .clipShape(RoundedRectangle(cornerRadius: 12))
-            .overlay(
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(yellow200, lineWidth: 1)
-            )
-            .padding(.vertical, 16)
+            .padding(.vertical, 4)
+        } else {
+            // Default: NutritionTipCard yellow style
+            Text(parsedText)
+                .font(.system(size: 18))
+                .foregroundColor(Color(red: 0.2, green: 0.2, blue: 0.2))
+                .multilineTextAlignment(isCentered ? .center : .leading)
+                .frame(maxWidth: .infinity, alignment: isCentered ? .center : .leading)
+                .padding(16)
+                .background(yellow200.opacity(0.1))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(yellow200, lineWidth: 1)
+                )
+                .padding(.vertical, 16)
+        }
     }
 }
 

@@ -171,10 +171,11 @@ struct ScreenSectionView: View {
                 Button(action: { viewModel.goPrev() }) {
                     Image(systemName: "arrow.left")
                         .font(.system(size: 18, weight: .semibold))
-                        .foregroundColor(.white)
+                        .foregroundColor(Color.brandOrange)
                         .frame(width: 48, height: 48)
-                        .background(Color.brandOrange)
+                        .background(Color(.systemBackground))
                         .clipShape(Circle())
+                        .overlay(Circle().stroke(Color.brandOrange, lineWidth: 2))
                 }
                 .buttonStyle(.plain)
             }
