@@ -780,10 +780,12 @@ private struct NutritionTipCardSelect: View {
     let opcoes: [SectionOption]
     let onSelectionChanged: (String) -> Void
 
-    @State private var selectedItems: Set<String> = []
+    // Single selection — tapping another deselects the previous
+    @State private var selectedItem: String? = nil
 
-    private let yellow200 = Color(red: 0.875, green: 0.706, blue: 0.0)
-    private let orangeHL  = Color(red: 0.878, green: 0.420, blue: 0.157) // brandOrange
+    private let yellow200   = Color(red: 0.875, green: 0.706, blue: 0.0)
+    // Android secondary_200 = #c64b4e (red text when selected)
+    private let selectedRed = Color(red: 0.776, green: 0.294, blue: 0.306)
 
     private var ingredients: [String] {
         opcoes.compactMap { $0.descricao }.filter { !$0.isEmpty }
@@ -797,13 +799,13 @@ private struct NutritionTipCardSelect: View {
                     .foregroundColor(Color(.label))
             }
 
-            // Inline flow of tappable ingredient tokens
             IngredientFlow(
                 items: ingredients,
-                selectedItems: $selectedItems,
-                orangeHL: orangeHL
-            ) { newSet in
-                onSelectionChanged(newSet.sorted().joined(separator: ","))
+                selectedItem: $selectedItem,
+                selectedRed: selectedRed
+            ) { item in
+                selectedItem = item
+                onSelectionChanged(item ?? "")
             }
         }
         .padding(16)
@@ -815,38 +817,27 @@ private struct NutritionTipCardSelect: View {
     }
 }
 
-// MARK: - IngredientFlow (iOS 16 Layout)
-// Renders ingredient tokens inline with line-wrapping, like a paragraph of underlined text.
-// Tapping a token toggles its selection state.
+// MARK: - IngredientFlow
+// Inline wrapping flow of ingredient tokens. Tapping selects (single); selected = red text only.
 
 private struct IngredientFlow: View {
     let items: [String]
-    @Binding var selectedItems: Set<String>
-    let orangeHL: Color
-    let onChanged: (Set<String>) -> Void
+    @Binding var selectedItem: String?
+    let selectedRed: Color
+    let onTap: (String?) -> Void
 
     var body: some View {
         IngredientFlowLayout(spacing: 0) {
             ForEach(Array(items.enumerated()), id: \.offset) { i, item in
-                let isSelected = selectedItems.contains(item)
-                // Each ingredient + its trailing separator as one tappable unit
+                let isSelected = selectedItem == item
                 Button {
-                    if selectedItems.contains(item) {
-                        selectedItems.remove(item)
-                    } else {
-                        selectedItems.insert(item)
-                    }
-                    onChanged(selectedItems)
+                    onTap(isSelected ? nil : item)
                 } label: {
                     HStack(spacing: 0) {
                         Text(item)
                             .font(.system(size: 16))
-                            .underline(!isSelected)
-                            .foregroundColor(isSelected ? orangeHL : Color(.label))
-                            .padding(.vertical, 2)
-                            .padding(.horizontal, isSelected ? 3 : 0)
-                            .background(isSelected ? orangeHL.opacity(0.15) : Color.clear)
-                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                            .underline()
+                            .foregroundColor(isSelected ? selectedRed : Color(.label))
                         if i < items.count - 1 {
                             Text("; ")
                                 .font(.system(size: 16))

@@ -124,25 +124,17 @@ final class ScreenSectionViewModel: ObservableObject {
 
         let opcoes = pergunta.opcoes ?? []
 
-        // [SELECT_MULT]: selectedOption encodes comma-joined selections
+        // [SELECT_MULT]: single selection from ingredient list — same logic as normal quiz
         if pergunta.personalizacao == "[SELECT_MULT]" {
-            let selectedSet = Set(
-                selected.components(separatedBy: ",")
-                    .map { $0.trimmingCharacters(in: .whitespaces) }
-                    .filter { !$0.isEmpty }
-            )
-            let correctSet = Set(opcoes.filter { $0.ehCorreta == "true" }.compactMap { $0.descricao })
-            let isCorrect = !selectedSet.isEmpty && selectedSet == correctSet
+            let selectedOpcao = opcoes.first(where: { $0.descricao == selected })
+            let isCorrect = selectedOpcao?.ehCorreta == "true"
 
             feedbackIsCorrect = isCorrect
-            if isCorrect {
-                feedbackText = pergunta.textoFeedbackPositivo ?? "Correto!"
-            } else {
-                let wrongSelected = opcoes.first { selectedSet.contains($0.descricao ?? "") && $0.ehCorreta != "true" }
-                feedbackText = wrongSelected?.textoFeedbackNegativo
-                    ?? opcoes.first(where: { $0.ehCorreta == "true" })?.textoFeedbackNegativo
-                    ?? "Tente novamente."
-            }
+            feedbackText = isCorrect
+                ? (pergunta.textoFeedbackPositivo ?? "Correto!")
+                : (selectedOpcao?.textoFeedbackNegativo
+                   ?? opcoes.first(where: { $0.ehCorreta == "true" })?.textoFeedbackNegativo
+                   ?? "Tente novamente.")
             showFeedback = true
             return
         }
