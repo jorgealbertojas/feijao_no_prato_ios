@@ -288,6 +288,9 @@ final class HomeViewModel: ObservableObject {
                     imageState = .inProgress
                 } else if isProximaSessaoLiberada || (item.globalIndex == iOndeEstou && totalTela >= totalPaginasSessaoAtual) {
                     imageState = .available
+                } else if statusAtual == .liberado && !jaFoiConcluidaVisualmente {
+                    // Android rule: unlocked but not yet visited → lighter (imagem1), not green (imagem3)
+                    imageState = .available
                 } else {
                     imageState = .completed
                 }
