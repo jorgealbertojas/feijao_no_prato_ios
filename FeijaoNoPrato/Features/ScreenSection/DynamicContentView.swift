@@ -172,7 +172,9 @@ struct DynamicContentView: View {
             }
 
         case "pergunta":
-            if let opcoes = item.opcoes, !opcoes.isEmpty {
+            if item.personalizacao == "[SELECT_MULT]" {
+                NutritionTipCardSelect(texto: item.texto ?? "")
+            } else if let opcoes = item.opcoes, !opcoes.isEmpty {
                 PerguntaView(
                     opcoes: opcoes,
                     selectedOption: selectedOption,
@@ -329,17 +331,15 @@ private struct WebImageView: UIViewRepresentable {
 }
 
 // MARK: - ChipRow
-// Ports ChipRowFromString.kt: pill chips in a yellow bordered card (yellow_200 = #dfb400).
-// Delimiter is "|" (Android); chips are uppercase, bold, 14pt, neutral_400 color.
+// Ports ChipRowFromString.kt: outlined pill, transparent bg, neutral_400 border + text, uppercase.
+// Delimiter is "|" (Android); centered when isCentered matches alinhamento=="Centro".
 
 private struct ChipRow: View {
     let text: String
     let isCentered: Bool
 
-    // Android yellow_200 = #dfb400
-    private let yellow200 = Color(red: 0.875, green: 0.706, blue: 0.0)
-    // Android neutral_400 = mid-gray
-    private let neutral400 = Color(red: 0.55, green: 0.55, blue: 0.55)
+    // Android neutral_400 — mid-gray used for chip border and text
+    private static let neutral400 = Color(red: 0.55, green: 0.55, blue: 0.55)
 
     private var chips: [String] {
         text.components(separatedBy: "|")
@@ -348,29 +348,20 @@ private struct ChipRow: View {
     }
 
     var body: some View {
-        // Android: ChipRowFromString wrapped in a yellow_200 bordered card
-        let chipContent = Group {
-            if isCentered {
+        if isCentered {
+            HStack(spacing: 8) {
+                ForEach(chips, id: \.self) { ChipLabel(text: $0) }
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 4)
+        } else {
+            ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
                     ForEach(chips, id: \.self) { ChipLabel(text: $0) }
                 }
-                .frame(maxWidth: .infinity)
-            } else {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 8) {
-                        ForEach(chips, id: \.self) { ChipLabel(text: $0) }
-                    }
-                }
             }
+            .padding(.vertical, 4)
         }
-
-        chipContent
-            .padding(12)
-            .frame(maxWidth: .infinity, alignment: isCentered ? .center : .leading)
-            .background(yellow200.opacity(0.1))
-            .clipShape(RoundedRectangle(cornerRadius: 12))
-            .overlay(RoundedRectangle(cornerRadius: 12).stroke(yellow200, lineWidth: 1))
-            .padding(.vertical, 8)
     }
 }
 
@@ -382,8 +373,9 @@ private struct ChipLabel: View {
         Text(text.uppercased())
             .font(.system(size: 14, weight: .bold))
             .foregroundColor(neutral400)
-            .padding(.vertical, 4)
-            .padding(.horizontal, 10)
+            .padding(.top, 3)
+            .padding(.horizontal, 8)
+            .padding(.bottom, 2)
             .background(Color.clear)
             .clipShape(Capsule())
             .overlay(Capsule().stroke(neutral400, lineWidth: 1))
@@ -770,6 +762,65 @@ struct PerguntaView: View {
             }
         }
         .padding(.vertical, 4)
+    }
+}
+
+// MARK: - NutritionTipCardSelect
+// Ports NutritionTipCardSelect from Android: rendered when tipo=Pergunta + personalizacao=[SELECT_MULT].
+// Shows item.texto in a yellow_200 bordered card. The first ":" splits a bold prefix from the
+// ingredient list; each ";" separated item is underlined, mirroring the Android ingredient label UI.
+
+private struct NutritionTipCardSelect: View {
+    let texto: String
+
+    private let yellow200 = Color(red: 0.875, green: 0.706, blue: 0.0) // #dfb400
+
+    private var attributedText: AttributedString {
+        var result = AttributedString()
+
+        if let colonRange = texto.range(of: ":") {
+            // Bold prefix (e.g. "Ingredientes")
+            let prefix = String(texto[texto.startIndex..<colonRange.lowerBound])
+            var prefixAttr = AttributedString(prefix + ":")
+            prefixAttr.font = Font.system(size: 16, weight: .bold)
+            result.append(prefixAttr)
+            result.append(AttributedString(" "))
+
+            // Underlined items separated by ";"
+            let rest = String(texto[colonRange.upperBound...]).trimmingCharacters(in: .whitespaces)
+            let items = rest.components(separatedBy: ";")
+            for (i, part) in items.enumerated() {
+                let trimmed = part.trimmingCharacters(in: .whitespaces)
+                guard !trimmed.isEmpty else { continue }
+                var itemAttr = AttributedString(trimmed)
+                itemAttr.font = Font.system(size: 16)
+                itemAttr.underlineStyle = Text.LineStyle(pattern: .solid)
+                result.append(itemAttr)
+                if i < items.count - 1 {
+                    var sep = AttributedString("; ")
+                    sep.font = Font.system(size: 16)
+                    result.append(sep)
+                }
+            }
+        } else {
+            var attr = AttributedString(texto)
+            attr.font = Font.system(size: 16)
+            result = attr
+        }
+
+        return result
+    }
+
+    var body: some View {
+        Text(attributedText)
+            .foregroundColor(Color(.label))
+            .multilineTextAlignment(.leading)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(16)
+            .background(yellow200.opacity(0.1))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .overlay(RoundedRectangle(cornerRadius: 12).stroke(yellow200, lineWidth: 1.5))
+            .padding(.vertical, 8)
     }
 }
 
